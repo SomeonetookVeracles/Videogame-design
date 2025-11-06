@@ -12,7 +12,7 @@ func _on_start_pressed() -> void:
 	globals.log("Level select pressed")
 func _on_settings_pressed() -> void:
 	var settings_menu = preload("res://scenes/SettingsMenu.tscn").instantiate()
-	get_tree().current_scene.add_child(settings_menu)\
+	get_tree().current_scene.add_child(settings_menu)
 	globals.log("Settings Button Pressed")
 func _on_exit_pressed() -> void:
 	get_tree().quit()
