@@ -1,16 +1,19 @@
-extends Node
-
-signal button_pressed(button_name: String) # establishes signal for console
-
+# File: MainMenu.gd
+extends Control
+@onready var start_button: Button = $PlayButton
+@onready var settings_button: Button = $SettingsButton
+@onready var exit_button: Button = $QuitButton
 func _ready() -> void:
-	_connect_buttons(self)
-	
-func _connect_buttons(node: Node) -> void: 
-	for child in node.get_children():
-		if child is Button:
-			child.pressed.connect(_on_button_pressed.bind(child))
-		elif child.get_child_count() > 0:
-			_connect_buttons(child)
-func _on_button_pressed(button: Button) -> void: 
-	print(button.name, " pressed! ")
-	emit_signal("button_pressed", button.name) #Sends signal to console with button name
+	start_button.pressed.connect(_on_start_pressed)
+	settings_button.pressed.connect(_on_settings_pressed)
+	exit_button.pressed.connect(_on_exit_pressed)
+func _on_start_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/LevelSelect.tscn")
+	globals.log("Level select pressed")
+func _on_settings_pressed() -> void:
+	var settings_menu = preload("res://scenes/SettingsMenu.tscn").instantiate()
+	get_tree().current_scene.add_child(settings_menu)\
+	globals.log("Settings Button Pressed")
+func _on_exit_pressed() -> void:
+	get_tree().quit()
+	globals.log("Exit Button Pressed")
