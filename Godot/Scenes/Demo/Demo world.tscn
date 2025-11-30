@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=4 uid="uid://drnf86w4ewx28"]
+[gd_scene load_steps=6 format=4 uid="uid://drnf86w4ewx28"]
 
 [ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="1_qm6ny"]
 [ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://Scenes/Main/Player.tscn" id="2_m2dw3"]
@@ -113,14 +113,31 @@ texture = ExtResource("1_qm6ny")
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_qm6ny")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qm6ny"]
+size = Vector2(3369, 240)
+
 [node name="Node2D" type="Node2D"]
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("2_m2dw3")]
-position = Vector2(48, -88)
+position = Vector2(55, -66)
 
-[node name="Tilemaps" type="Node" parent="."]
+[node name="Tilemaps" type="Node2D" parent="."]
 
 [node name="Solids" type="TileMapLayer" parent="Tilemaps"]
 scale = Vector2(2, 2)
 tile_map_data = PackedByteArray("AAAAAAAAAAABAAAAAAABAAAAAAABAAAAAAACAAAAAAABAAAAAAADAAAAAAABAAAAAAAEAAAAAAABAAAAAAAFAAAAAAABAAAAAAAGAAAAAAABAAAAAAAHAAAAAAABAAAAAAAIAAAAAAABAAAAAAAJAAAAAAABAAAAAAAKAAAAAAABAAAAAAAGAPn/AAABAAIAAAAFAPn/AAABAAIAAAAEAPn/AAABAAIAAAADAPn/AAABAAIAAAACAPn/AAABAAIAAAABAPn/AAABAAIAAAAAAPn/AAABAAIAAAD///n/AAABAAIAAAD//wAAAAABAAAAAAD+/wAAAAABAAAAAAD+//n/AAABAAIAAAAMAP7/AAABAAAAAAANAP7/AAABAAAAAAAOAP7/AAABAAAAAAAPAP7/AAABAAAAAAAQAP7/AAABAAAAAAARAP7/AAABAAAAAAA=")
 tile_set = SubResource("TileSet_m2dw3")
+
+[node name="Zones" type="Node2D" parent="."]
+modulate = Color(1, 0, 0, 1)
+position = Vector2(0, 19)
+
+[node name="death-zone" type="Area2D" parent="Zones"]
+position = Vector2(-267, 365)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Zones/death-zone"]
+position = Vector2(260, 528)
+shape = SubResource("RectangleShape2D_qm6ny")
+debug_color = Color(1, 0, 0, 0.41960785)
+
+[connection signal="body_entered" from="Zones/death-zone" to="CharacterBody2D" method="_on_death_zone_entered"]

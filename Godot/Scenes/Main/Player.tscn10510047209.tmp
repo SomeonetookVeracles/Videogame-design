@@ -1,11 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://dyd3r20y2tid0"]
+[gd_scene load_steps=13 format=3 uid="uid://dyd3r20y2tid0"]
 
 [ext_resource type="Script" uid="uid://ry14n7flj8xt" path="res://Scripts/player.gd" id="1_n3mh5"]
 [ext_resource type="Texture2D" uid="uid://bjf86yusvf63b" path="res://Assets/Static-Bob.png" id="2_5olkl"]
 [ext_resource type="Texture2D" uid="uid://djnsa7adbsgmy" path="res://Assets/Temp Assets/Female Character/SpriteSheets/01 Idle.png" id="3_vocxr"]
 [ext_resource type="Texture2D" uid="uid://b4jqvy72va2wh" path="res://Assets/Temp Assets/Female Character/SpriteSheets/02 Run.png" id="4_a13ad"]
-[ext_resource type="Texture2D" uid="uid://dcgho356wk0gl" path="res://Assets/Temp Assets/Female Character/SpriteSheets/03 Jump.png" id="5_un37i"]
-[ext_resource type="Texture2D" uid="uid://cxjuhivqo047m" path="res://Assets/Temp Assets/Female Character/SpriteSheets/05 Dash.png" id="6_j5bfj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5olkl"]
 size = Vector2(64, 112)
@@ -13,11 +11,8 @@ size = Vector2(64, 112)
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vocxr"]
 size = Vector2(64, 128)
 
-[sub_resource type="Gradient" id="Gradient_j5bfj"]
-
-[sub_resource type="Gradient" id="Gradient_o3w48"]
-offsets = PackedFloat32Array(0, 0.19863014, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.5479452, 0.5479452, 0.5479452, 1, 1, 1, 1, 1)
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5olkl"]
+size = Vector2(2, 2)
 
 [sub_resource type="Animation" id="Animation_a13ad"]
 resource_name = "Idle"
@@ -33,21 +28,6 @@ tracks/0/keys = {
 "handle_modes": PackedInt32Array(2, 2, 2, 2, 2, 2, 2, 2, 2),
 "points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 1, -0.020833334, -0.16666667, 0, 0, 2, -0.020833334, -0.16666667, 0, 0, 3, -0.020833334, -0.16666667, 0, 0, 4, -0.020833334, -0.16666667, 0, 0, 5, -0.020833334, -0.16666667, 0, 0, 6, -0.020833334, -0.16666667, 0, 0, 7, -0.020833334, -0.16666667, 0, 0, 8, -0.020833334, -0.16666667, 0, 0),
 "times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1)
-}
-
-[sub_resource type="Animation" id="Animation_j5bfj"]
-resource_name = "Jump"
-step = 0.125
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("animations/sprites/Jump:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 2, 2),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 2, -0.020833334, -0.16666667, 0, 0, 3, -0.020833334, -0.16666667, 0, 0),
-"times": PackedFloat32Array(0, 0.125, 0.25)
 }
 
 [sub_resource type="Animation" id="Animation_vocxr"]
@@ -74,28 +54,6 @@ tracks/1/keys = {
 "points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
 "times": PackedFloat32Array(0)
 }
-tracks/2/type = "bezier"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("animations/sprites/Jump:frame")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(2, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/3/type = "bezier"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("animations/sprites/Dash:frame")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
 
 [sub_resource type="Animation" id="Animation_un37i"]
 resource_name = "Run"
@@ -112,26 +70,9 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1)
 }
 
-[sub_resource type="Animation" id="Animation_o3w48"]
-resource_name = "Dash"
-step = 0.125
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("animations/sprites/Dash:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 2, 2, 2, 2, 2, 2, 2, 2),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 1, -0.020833334, -0.16666667, 0, 0, 2, -0.020833334, -0.16666667, 0, 0, 3, -0.020833334, -0.16666667, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0),
-"times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1)
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5olkl"]
 _data = {
-&"Dash": SubResource("Animation_o3w48"),
 &"Idle": SubResource("Animation_a13ad"),
-&"Jump": SubResource("Animation_j5bfj"),
 &"RESET": SubResource("Animation_vocxr"),
 &"Run": SubResource("Animation_un37i")
 }
@@ -142,8 +83,6 @@ _data = {
 script = ExtResource("1_n3mh5")
 run_speed = 400.0
 jump_velocity = -450.0
-respawn_delay = 0.5
-spawn_delay = 0.4
 
 [node name="hitbox-area" type="CollisionShape2D" parent="."]
 position = Vector2(0, 8)
@@ -167,53 +106,20 @@ texture = ExtResource("2_5olkl")
 [node name="particles" type="Node2D" parent="."]
 
 [node name="jump-particles" type="CPUParticles2D" parent="particles"]
-position = Vector2(3, 48)
+z_index = -1
+position = Vector2(-1, 64)
 emitting = false
-amount = 64
-lifetime = 0.2
-one_shot = true
-explosiveness = 1.0
-spread = 180.0
-initial_velocity_max = 289.7
-damping_max = 38.144
-angle_min = -345.0
-angle_max = 148.5
-scale_amount_max = 2.0
-
-[node name="dash-particles" type="CPUParticles2D" parent="particles"]
-position = Vector2(-9, 15)
-emitting = false
-amount = 64
+amount = 128
+texture = SubResource("PlaceholderTexture2D_5olkl")
 lifetime = 0.4
 one_shot = true
-explosiveness = 0.2
-spread = 4.45
-initial_velocity_max = 289.7
-damping_max = 38.144
-angle_min = -345.0
-angle_max = 148.5
-scale_amount_max = 2.0
-
-[node name="death-particles" type="CPUParticles2D" parent="particles"]
-position = Vector2(6, 13)
-emitting = false
-amount = 256
-lifetime = 0.25
-one_shot = true
-explosiveness = 1.0
-fixed_fps = 32
-emission_shape = 1
-emission_sphere_radius = 5.0
-spread = 180.0
-gravity = Vector2(0, 0)
-initial_velocity_max = 404.65
-damping_max = 52.565
-scale_amount_max = 3.0
-color = Color(0, 1, 1, 1)
-color_ramp = SubResource("Gradient_j5bfj")
-color_initial_ramp = SubResource("Gradient_o3w48")
-hue_variation_min = -1.0
-hue_variation_max = 1.0
+preprocess = 0.2
+explosiveness = 0.35
+fixed_fps = 12
+local_coords = true
+draw_order = 1
+emission_shape = 3
+emission_rect_extents = Vector2(48, 12)
 
 [node name="animations" type="Node2D" parent="."]
 
@@ -228,7 +134,6 @@ autoplay = "Idle"
 [node name="sprites" type="Node2D" parent="animations"]
 
 [node name="Idle" type="Sprite2D" parent="animations/sprites"]
-visible = false
 position = Vector2(0, 2)
 scale = Vector2(2, 2)
 texture = ExtResource("3_vocxr")
@@ -236,22 +141,7 @@ hframes = 12
 frame = 2
 
 [node name="Run" type="Sprite2D" parent="animations/sprites"]
-visible = false
 scale = Vector2(2, 2)
 texture = ExtResource("4_a13ad")
 hframes = 8
 frame = 1
-
-[node name="Jump" type="Sprite2D" parent="animations/sprites"]
-position = Vector2(6, 0)
-scale = Vector2(2, 2)
-texture = ExtResource("5_un37i")
-hframes = 4
-frame = 2
-
-[node name="Dash" type="Sprite2D" parent="animations/sprites"]
-visible = false
-position = Vector2(4, 2)
-scale = Vector2(2, 2)
-texture = ExtResource("6_j5bfj")
-hframes = 4
