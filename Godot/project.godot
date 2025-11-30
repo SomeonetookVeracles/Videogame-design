@@ -10,18 +10,14 @@ config_version=5
 
 [application]
 
-config/name="TSA-VGD"
-run/main_scene="res://scenes/MainMenu.tscn"
+config/name="VGD-2025"
+run/main_scene="uid://drnf86w4ewx28"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
-[autoload]
-
-globals="*res://scripts/globals.gd"
-
 [dotnet]
 
-project/assembly_name="TSA-VGD"
+project/assembly_name="VGD-2025"
 
 [rendering]
 
