@@ -83,8 +83,6 @@ func _handle_movement(delta: float) -> void:
 		# Apply friction when no input
 		velocity.x = move_toward(velocity.x, 0, friction * delta)
 
-# === EXPANSION POINTS ===
-# Below are empty functions you can override or fill in to expand functionality
 
 # Called when the character lands on the ground
 func _on_landed() -> void:
