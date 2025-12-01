@@ -10,21 +10,36 @@ config_version=5
 
 [application]
 
-config/name="VGD-2025"
-run/main_scene="uid://drnf86w4ewx28"
+config/name="Space Wizards?"
+run/main_scene="res://Scenes/Tempmenu/scenes/opening/opening.tscn"
 config/features=PackedStringArray("4.5", "GL Compatibility")
+run/max_fps=30
 config/icon="uid://bjf86yusvf63b"
+
+[autoload]
+
+AppConfig="*res://addons/maaacks_menus_template/base/nodes/autoloads/app_config/app_config.tscn"
+SceneLoader="*res://addons/maaacks_menus_template/base/nodes/autoloads/scene_loader/scene_loader.tscn"
+ProjectMusicController="*res://addons/maaacks_menus_template/base/nodes/autoloads/music_controller/project_music_controller.tscn"
+ProjectUISoundController="*res://addons/maaacks_menus_template/base/nodes/autoloads/ui_sound_controller/project_ui_sound_controller.tscn"
 
 [display]
 
-window/size/viewport_width=1200
-window/size/viewport_height=800
-window/size/mode=2
+window/size/sharp_corners=true
 window/stretch/mode="canvas_items"
+window/stretch/scale_mode="integer"
 
 [dotnet]
 
 project/assembly_name="VGD-2025"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/maaacks_menus_template/plugin.cfg")
+
+[gui]
+
+theme/custom="res://Scenes/Tempmenu/resources/themes/gravity.tres"
 
 [input]
 
@@ -54,6 +69,17 @@ movement_dash={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194325,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://addons/maaacks_menus_template/base/translations/menus_translations.en.translation", "res://addons/maaacks_menus_template/base/translations/menus_translations.fr.translation")
+
+[maaacks_menus_template]
+
+disable_install_audio_busses=true
+disable_update_check=false
+disable_install_wizard=true
+copy_path="res://Scenes/Tempmenu/"
 
 [rendering]
 

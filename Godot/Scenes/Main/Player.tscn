@@ -16,8 +16,23 @@ size = Vector2(64, 128)
 [sub_resource type="Gradient" id="Gradient_j5bfj"]
 
 [sub_resource type="Gradient" id="Gradient_o3w48"]
-offsets = PackedFloat32Array(0, 0.19863014, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.5479452, 0.5479452, 0.5479452, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0, 0.006849315, 0.28082192, 0.5410959, 0.7876712, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.5479452, 0.5479452, 0.5479452, 1, 0.5375634, 0.5375634, 0.5375634, 1, 0.5177435, 0.5177435, 0.5177435, 1, 0.4425872, 0.4425872, 0.4425872, 1, 1, 1, 1, 1)
+
+[sub_resource type="Animation" id="Animation_o3w48"]
+resource_name = "Dash"
+step = 0.125
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("animations/sprites/Dash:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 2, 2, 2, 2, 2, 2, 2, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 1, -0.020833334, -0.16666667, 0, 0, 2, -0.020833334, -0.16666667, 0, 0, 3, -0.020833334, -0.16666667, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0),
+"times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1)
+}
 
 [sub_resource type="Animation" id="Animation_a13ad"]
 resource_name = "Idle"
@@ -112,21 +127,6 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1)
 }
 
-[sub_resource type="Animation" id="Animation_o3w48"]
-resource_name = "Dash"
-step = 0.125
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("animations/sprites/Dash:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 2, 2, 2, 2, 2, 2, 2, 2),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 1, -0.020833334, -0.16666667, 0, 0, 2, -0.020833334, -0.16666667, 0, 0, 3, -0.020833334, -0.16666667, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0, 3, -0.020833334, 0, 0, 0),
-"times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1)
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5olkl"]
 _data = {
 &"Dash": SubResource("Animation_o3w48"),
@@ -155,8 +155,13 @@ scale = Vector2(1, 0.875)
 texture = SubResource("PlaceholderTexture2D_vocxr")
 
 [node name="player-camera" type="Camera2D" parent="."]
+scale = Vector2(0.9803404, 1)
 process_callback = 0
-position_smoothing_speed = 2.0
+limit_top = -600
+limit_bottom = 600
+limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 4.0
 
 [node name="static-character" type="Sprite2D" parent="."]
 visible = false
@@ -178,7 +183,9 @@ initial_velocity_max = 289.7
 damping_max = 38.144
 angle_min = -345.0
 angle_max = 148.5
-scale_amount_max = 2.0
+scale_amount_min = 0.5
+scale_amount_max = 8.0
+color = Color(1, 0.05882353, 1, 1)
 
 [node name="dash-particles" type="CPUParticles2D" parent="particles"]
 position = Vector2(-9, 15)
@@ -187,12 +194,16 @@ amount = 64
 lifetime = 0.4
 one_shot = true
 explosiveness = 0.2
-spread = 4.45
-initial_velocity_max = 289.7
+direction = Vector2(0, 0)
+spread = 65.69
+gravity = Vector2(980, 0)
+initial_velocity_max = 300.0
 damping_max = 38.144
 angle_min = -345.0
 angle_max = 148.5
-scale_amount_max = 2.0
+scale_amount_min = 0.5
+scale_amount_max = 8.0
+color = Color(1, 0.05882353, 1, 1)
 
 [node name="death-particles" type="CPUParticles2D" parent="particles"]
 position = Vector2(6, 13)
@@ -208,8 +219,8 @@ spread = 180.0
 gravity = Vector2(0, 0)
 initial_velocity_max = 404.65
 damping_max = 52.565
-scale_amount_max = 3.0
-color = Color(0, 1, 1, 1)
+scale_amount_max = 6.0
+color = Color(1, 0.05882353, 1, 1)
 color_ramp = SubResource("Gradient_j5bfj")
 color_initial_ramp = SubResource("Gradient_o3w48")
 hue_variation_min = -1.0

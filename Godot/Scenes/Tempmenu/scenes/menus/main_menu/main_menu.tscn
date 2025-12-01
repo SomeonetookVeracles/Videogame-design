@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://bgtawhvdg8nyo"]
+
+[ext_resource type="PackedScene" uid="uid://c6k5nnpbypshi" path="res://addons/maaacks_menus_template/base/nodes/menus/main_menu/main_menu.tscn" id="1_u672e"]
+[ext_resource type="Script" uid="uid://dcpfcp3j8spcs" path="res://Scenes/Tempmenu/scenes/menus/main_menu/main_menu.gd" id="2_7kano"]
+[ext_resource type="PackedScene" uid="uid://durktj73kdvmi" path="res://Scenes/Tempmenu/scenes/overlaid_menus/main_menu_options_overlaid_menu.tscn" id="3_4rb05"]
+[ext_resource type="PackedScene" uid="uid://b14nljdssf5pc" path="res://Scenes/Tempmenu/scenes/overlaid_menus/main_menu_credits_overlaid_menu.tscn" id="4_w62pd"]
+
+[node name="MainMenu" instance=ExtResource("1_u672e")]
+script = ExtResource("2_7kano")
+options_packed_scene = ExtResource("3_4rb05")
+credits_packed_scene = ExtResource("4_w62pd")
+
+[node name="TitleLabel" parent="MenuContainer/TitleMargin/TitleContainer" index="0"]
+text = "VGD-2025"
+
+[node name="NewGameButton" parent="MenuContainer/MenuButtonsMargin/MenuButtonsContainer/MenuButtonsBoxContainer" index="0"]
+text = "Run Demo"
