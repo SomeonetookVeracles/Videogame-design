@@ -1,3 +1,15 @@
 # Godot 4+ specific ignores
+# Godot-specific import files (auto-generated)
+.import/
+*.import
+
+# Godot 4 metadata
 .godot/
-/android/
+
+# Exported builds
+export/
+export_presets.cfg
+
+# Crash logs
+crash_logs/
+*.log
