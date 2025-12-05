@@ -18,6 +18,12 @@ extends CharacterBody2D
 @export var spawn_delay := 2.0
 @export var double_jump_particle_scene: PackedScene
 
+@export_group("Combat")
+@export var attack_damage := 10.0
+@export var attack_cooldown := 0.5
+@export var attack_knockback := 300.0
+@export var attack_animation_speed := 1.0
+
 # Node references
 @onready var animation_player := $"animations/debug-animations"
 @onready var animations_node := $animations
@@ -25,13 +31,15 @@ extends CharacterBody2D
 	"idle": $animations/sprites/Idle,
 	"run": $animations/sprites/Run,
 	"jump": $animations/sprites/Jump,
-	"dash": $animations/sprites/Dash
+	"dash": $animations/sprites/Dash,
+	"attack": $animations/sprites/Attack
 }
 @onready var particles := {
 	"jump": $"particles/jump-particles",
 	"dash": $"particles/dash-particles",
 	"death": $"particles/death-particles"
 }
+@onready var attack_hitbox := $combat/AttackHitbox
 
 # State variables
 var jumps_remaining := max_jumps
@@ -43,12 +51,20 @@ var dash_direction := 0
 var spawn_position := Vector2.ZERO
 var is_dead := false
 var is_spawning := true
+var is_attacking := false
+var attack_cooldown_timer := 0.0
 
-enum AnimState { IDLE, RUN, JUMP, DASH }
+enum AnimState { IDLE, RUN, JUMP, DASH, ATTACK }
 
 func _ready() -> void:
 	spawn_position = global_position
 	_hide_all_sprites()
+	_disable_hitbox()
+	
+	# Connect animation finished signal
+	if animation_player:
+		animation_player.animation_finished.connect(_on_attack_animation_finished)
+	
 	await get_tree().create_timer(spawn_delay).timeout
 	_spawn_in()
 
@@ -58,9 +74,17 @@ func _physics_process(delta: float) -> void:
 	
 	_update_timers(delta)
 	_apply_gravity(delta)
-	_handle_dash()
-	_handle_jump()
-	_handle_movement()
+	
+	# Combat takes priority over other actions
+	if not is_attacking:
+		_handle_dash()
+		_handle_jump()
+		_handle_movement()
+	else:
+		# Slow down during attack
+		velocity.x = move_toward(velocity.x, 0, walk_speed * delta * 2)
+	
+	_handle_attack()
 	_update_animation()
 	move_and_slide()
 
@@ -72,6 +96,9 @@ func _update_timers(delta: float) -> void:
 	
 	if dash_cooldown_timer > 0:
 		dash_cooldown_timer -= delta
+	
+	if attack_cooldown_timer > 0:
+		attack_cooldown_timer -= delta
 
 func _apply_gravity(delta: float) -> void:
 	if not is_on_floor() and not is_dashing:
@@ -80,7 +107,7 @@ func _apply_gravity(delta: float) -> void:
 		jumps_remaining = max_jumps
 
 func _handle_dash() -> void:
-	if not Input.is_action_just_pressed("movement_dash") or is_dashing or dash_cooldown_timer > 0:
+	if not Input.is_action_just_pressed("movement_dash") or is_dashing or dash_cooldown_timer > 0 or is_attacking:
 		return
 	
 	var direction := Input.get_axis("movement_left", "movement_right")
@@ -96,7 +123,7 @@ func _handle_dash() -> void:
 	_play_animation("Dash")
 
 func _handle_jump() -> void:
-	if not Input.is_action_just_pressed("movement_jump") or jumps_remaining <= 0:
+	if not Input.is_action_just_pressed("movement_jump") or jumps_remaining <= 0 or is_attacking:
 		return
 	
 	velocity.y = jump_velocity
@@ -122,7 +149,39 @@ func _handle_movement() -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0, current_speed)
 
+func _handle_attack() -> void:
+	if not Input.is_action_just_pressed("combat_attack") or attack_cooldown_timer > 0 or is_attacking:
+		return
+	
+	is_attacking = true
+	attack_cooldown_timer = attack_cooldown
+	
+	# Force show attack sprite and hide others
+	for key in sprites:
+		if sprites[key]:
+			sprites[key].visible = (key == "attack")
+			# Force show if it's the attack sprite
+			if key == "attack":
+				sprites[key].show()
+	
+	# Play attack animation with speed
+	if animation_player:
+		animation_player.stop()
+		animation_player.play("Attack", -1, attack_animation_speed)
+	
+	# Enable hitbox
+	_enable_hitbox()
+
+func _on_attack_animation_finished(anim_name: String) -> void:
+	if anim_name == "Attack":
+		is_attacking = false
+		_disable_hitbox()
+
 func _update_animation() -> void:
+	# Don't update animations while attacking
+	if is_attacking:
+		return
+	
 	var just_landed := was_in_air and is_on_floor()
 	was_in_air = not is_on_floor()
 	
@@ -139,27 +198,30 @@ func _update_animation() -> void:
 	_set_animation_state(state)
 
 func _set_animation_state(state: AnimState) -> void:
-	var anim_names: Array[String] = ["Idle", "Run", "Jump", "Dash"]
-	var sprite_keys: Array[String] = ["idle", "run", "jump", "dash"]
+	var anim_names: Array[String] = ["Idle", "Run", "Jump", "Dash", "Attack"]
+	var sprite_keys: Array[String] = ["idle", "run", "jump", "dash", "attack"]
 	var active_key: String = sprite_keys[state] as String
 	
 	# Update sprite visibility
 	for key in sprites:
-		sprites[key].visible = (key == active_key)
+		if sprites[key]:
+			sprites[key].visible = (key == active_key)
 	
 	# Update animation
 	var anim_name: String = anim_names[state] as String
-	if animation_player.current_animation != anim_name:
+	if animation_player and animation_player.current_animation != anim_name:
 		animation_player.stop()
 		animation_player.play(anim_name)
 
 func _hide_all_sprites() -> void:
 	for sprite in sprites.values():
-		sprite.visible = false
+		if sprite:
+			sprite.visible = false
 
 func _show_sprite(key: String) -> void:
 	_hide_all_sprites()
-	sprites[key].visible = true
+	if sprites.has(key) and sprites[key]:
+		sprites[key].visible = true
 
 func _trigger_particles(key: String, flip_x: float = 1.0) -> void:
 	if particles.has(key) and particles[key]:
@@ -177,10 +239,43 @@ func _spawn_in() -> void:
 	is_spawning = false
 	_show_sprite("idle")
 
-func _play_animation(anim_name: String) -> void:
+func _play_animation(anim_name: String, speed: float = 1.0) -> void:
 	if animation_player:
 		animation_player.stop()
-		animation_player.play(anim_name)
+		animation_player.play(anim_name, -1, speed)
+
+func _enable_hitbox() -> void:
+	if attack_hitbox:
+		attack_hitbox.monitoring = true
+
+func _disable_hitbox() -> void:
+	if attack_hitbox:
+		attack_hitbox.monitoring = false
+
+func _on_attack_hitbox_body_entered(body: Node2D) -> void:
+	if body == self:
+		return
+	
+	# Apply damage if the body has a damage method
+	if body.has_method("take_damage"):
+		body.take_damage(attack_damage)
+	
+	# Apply knockback
+	if body is CharacterBody2D:
+		var knockback_dir: float = sign(body.global_position.x - global_position.x)
+		if knockback_dir == 0:
+			knockback_dir = 1 if animations_node.scale.x > 0 else -1
+		
+		if body.has_method("apply_knockback"):
+			body.apply_knockback(Vector2(knockback_dir * attack_knockback, -200))
+
+func take_damage(amount: float) -> void:
+	# Trigger death if damaged
+	_on_death_zone_entered(self)
+
+func apply_knockback(force: Vector2) -> void:
+	if not is_dashing:
+		velocity = force
 
 func _on_death_zone_entered(body) -> void:
 	if is_dead:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dyd3r20y2tid0"]
+[gd_scene load_steps=20 format=3 uid="uid://dyd3r20y2tid0"]
 
 [ext_resource type="Script" uid="uid://ry14n7flj8xt" path="res://Scripts/player.gd" id="1_n3mh5"]
 [ext_resource type="Texture2D" uid="uid://bjf86yusvf63b" path="res://Assets/Static-Bob.png" id="2_5olkl"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b4jqvy72va2wh" path="res://Assets/Temp Assets/Female Character/SpriteSheets/02 Run.png" id="4_a13ad"]
 [ext_resource type="Texture2D" uid="uid://dcgho356wk0gl" path="res://Assets/Temp Assets/Female Character/SpriteSheets/03 Jump.png" id="5_un37i"]
 [ext_resource type="Texture2D" uid="uid://cxjuhivqo047m" path="res://Assets/Temp Assets/Female Character/SpriteSheets/05 Dash.png" id="6_j5bfj"]
+[ext_resource type="Texture2D" uid="uid://boiax14fbq8yg" path="res://Assets/Temp Assets/Female Character/SpriteSheets/Attack/Female Character Attack 01.png" id="7_o3w48"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5olkl"]
 size = Vector2(40.5, 112)
@@ -111,6 +112,17 @@ tracks/3/keys = {
 "points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
 "times": PackedFloat32Array(0)
 }
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("animations/sprites/combat_attack:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
 
 [sub_resource type="Animation" id="Animation_un37i"]
 resource_name = "Run"
@@ -127,8 +139,24 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1)
 }
 
+[sub_resource type="Animation" id="Animation_fmcob"]
+resource_name = "combat_attack"
+step = 0.125
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("animations/sprites/combat_attack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(2, 2, 2, 2, 2, 2, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 1, -0.020833334, -0.16666667, 0, 0, 2, -0.020833334, -0.16666667, 0, 0, 3, -0.020833334, -0.16666667, 0, 0, 4, -0.020833334, -0.16666667, 0, 0, 5, -0.020833334, -0.16666667, 0, 0, 6, -0.020833334, -0.16666667, 0, 0),
+"times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75)
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5olkl"]
 _data = {
+&"Attack": SubResource("Animation_fmcob"),
 &"Dash": SubResource("Animation_o3w48"),
 &"Idle": SubResource("Animation_a13ad"),
 &"Jump": SubResource("Animation_j5bfj"),
@@ -239,6 +267,7 @@ autoplay = "Idle"
 [node name="sprites" type="Node2D" parent="animations"]
 
 [node name="Idle" type="Sprite2D" parent="animations/sprites"]
+visible = false
 position = Vector2(0, 2)
 scale = Vector2(2, 2)
 texture = ExtResource("3_vocxr")
@@ -266,3 +295,10 @@ position = Vector2(4, 2)
 scale = Vector2(2, 2)
 texture = ExtResource("6_j5bfj")
 hframes = 4
+
+[node name="combat_attack" type="Sprite2D" parent="animations/sprites"]
+visible = false
+position = Vector2(22, -14)
+scale = Vector2(2, 1.9927279)
+texture = ExtResource("7_o3w48")
+hframes = 7
