@@ -121,7 +121,7 @@ size = Vector2(3369, 240)
 
 [node name="Node2D" type="Node2D"]
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("2_m2dw3")]
+[node name="Character" parent="." instance=ExtResource("2_m2dw3")]
 position = Vector2(40, -134)
 
 [node name="Tilemaps" type="Node2D" parent="."]
@@ -150,4 +150,4 @@ scale = Vector2(39.679996, 1)
 shape = SubResource("RectangleShape2D_qm6ny")
 debug_color = Color(1, 0, 0, 0.41960785)
 
-[connection signal="body_entered" from="Zones/death-zone" to="CharacterBody2D" method="_on_death_zone_entered"]
+[connection signal="body_entered" from="Zones/death-zone" to="Character" method="_on_death_zone_entered"]

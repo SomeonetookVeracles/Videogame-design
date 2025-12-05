@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cxjuhivqo047m" path="res://Assets/Temp Assets/Female Character/SpriteSheets/05 Dash.png" id="6_j5bfj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5olkl"]
-size = Vector2(64, 112)
+size = Vector2(40.5, 112)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vocxr"]
 size = Vector2(64, 128)
@@ -239,7 +239,6 @@ autoplay = "Idle"
 [node name="sprites" type="Node2D" parent="animations"]
 
 [node name="Idle" type="Sprite2D" parent="animations/sprites"]
-visible = false
 position = Vector2(0, 2)
 scale = Vector2(2, 2)
 texture = ExtResource("3_vocxr")
@@ -254,6 +253,7 @@ hframes = 8
 frame = 1
 
 [node name="Jump" type="Sprite2D" parent="animations/sprites"]
+visible = false
 position = Vector2(6, 0)
 scale = Vector2(2, 2)
 texture = ExtResource("5_un37i")

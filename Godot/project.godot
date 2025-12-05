@@ -37,6 +37,18 @@ project/assembly_name="VGD-2025"
 
 enabled=PackedStringArray("res://addons/maaacks_menus_template/plugin.cfg")
 
+[file_customization]
+
+folder_colors={
+"res://Assets/": "red",
+"res://Scenes/": "red",
+"res://Scenes/Demo/": "red",
+"res://Scenes/Main/": "red",
+"res://Scenes/Tempmenu/": "gray",
+"res://Scripts/": "red",
+"res://addons/": "green"
+}
+
 [gui]
 
 theme/custom="res://Scenes/Tempmenu/resources/themes/gravity.tres"
