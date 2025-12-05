@@ -23,6 +23,7 @@ extends CharacterBody2D
 @export var attack_cooldown := 0.5
 @export var attack_knockback := 300.0
 @export var attack_animation_speed := 1.0
+@export var attack_particle_delay := 0.1
 
 # Node references
 @onready var animation_player := $"animations/debug-animations"
@@ -32,12 +33,14 @@ extends CharacterBody2D
 	"run": $animations/sprites/Run,
 	"jump": $animations/sprites/Jump,
 	"dash": $animations/sprites/Dash,
-	"attack": $animations/sprites/Attack
+	"attack": $animations/sprites/combat_attack
+	
 }
 @onready var particles := {
 	"jump": $"particles/jump-particles",
 	"dash": $"particles/dash-particles",
-	"death": $"particles/death-particles"
+	"death": $"particles/death-particles",
+	"attack": $"particles/attack-particles"
 }
 @onready var attack_hitbox := $combat/AttackHitbox
 
@@ -74,6 +77,11 @@ func _physics_process(delta: float) -> void:
 	
 	_update_timers(delta)
 	_apply_gravity(delta)
+	
+	# Keep attack sprite visible during attack
+	if is_attacking and sprites.has("attack") and sprites["attack"]:
+		sprites["attack"].visible = true
+		sprites["attack"].show()
 	
 	# Combat takes priority over other actions
 	if not is_attacking:
@@ -171,6 +179,9 @@ func _handle_attack() -> void:
 	
 	# Enable hitbox
 	_enable_hitbox()
+	
+	# Schedule attack particles after delay
+	_schedule_attack_particles()
 
 func _on_attack_animation_finished(anim_name: String) -> void:
 	if anim_name == "Attack":
@@ -233,6 +244,30 @@ func _spawn_double_jump_particles() -> void:
 		var particle_instance := double_jump_particle_scene.instantiate()
 		get_parent().add_child(particle_instance)
 		particle_instance.global_position = global_position
+
+func _schedule_attack_particles() -> void:
+	# Wait for the delay, then trigger particles
+	await get_tree().create_timer(attack_particle_delay).timeout
+	
+	# Only trigger if still attacking
+	if is_attacking and particles.has("attack") and particles["attack"]:
+		var particle_node = particles["attack"]
+		
+		# Flip particles based on facing direction
+		var facing_right: bool = animations_node.scale.x > 0
+		
+		# For GPUParticles2D
+		if particle_node is GPUParticles2D:
+			particle_node.process_material.direction.x = 1 if facing_right else -1
+			particle_node.restart()
+		# For CPUParticles2D
+		elif particle_node is CPUParticles2D:
+			particle_node.direction.x = 1 if facing_right else -1
+			particle_node.restart()
+		else:
+			# Fallback: flip the entire node
+			particle_node.scale.x = 1 if facing_right else -1
+			particle_node.restart()
 
 func _spawn_in() -> void:
 	_trigger_particles("death")

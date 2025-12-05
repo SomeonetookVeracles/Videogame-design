@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dyd3r20y2tid0"]
+[gd_scene load_steps=21 format=3 uid="uid://dyd3r20y2tid0"]
 
 [ext_resource type="Script" uid="uid://ry14n7flj8xt" path="res://Scripts/player.gd" id="1_n3mh5"]
 [ext_resource type="Texture2D" uid="uid://bjf86yusvf63b" path="res://Assets/Static-Bob.png" id="2_5olkl"]
@@ -166,12 +166,16 @@ _data = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vocxr"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o3w48"]
+size = Vector2(130, 134)
+
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_n3mh5")
 run_speed = 400.0
 jump_velocity = -450.0
 respawn_delay = 0.5
 spawn_delay = 0.4
+attack_animation_speed = 3.0
 
 [node name="hitbox-area" type="CollisionShape2D" parent="."]
 position = Vector2(0, 8)
@@ -254,6 +258,31 @@ color_initial_ramp = SubResource("Gradient_o3w48")
 hue_variation_min = -1.0
 hue_variation_max = 1.0
 
+[node name="attack-particles" type="CPUParticles2D" parent="particles"]
+position = Vector2(54, 61)
+emitting = false
+amount = 128
+lifetime = 0.15000000000000002
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+fixed_fps = 32
+emission_shape = 1
+emission_sphere_radius = 1.0
+particle_flag_align_y = true
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_max = 404.65
+damping_max = 52.565
+scale_amount_min = 0.0
+scale_amount_max = 2.0
+color = Color(1, 0.05882353, 1, 1)
+color_ramp = SubResource("Gradient_j5bfj")
+color_initial_ramp = SubResource("Gradient_o3w48")
+hue_variation_min = -1.0
+hue_variation_max = 1.0
+
 [node name="animations" type="Node2D" parent="."]
 
 [node name="debug-animations" type="AnimationPlayer" parent="animations"]
@@ -297,8 +326,16 @@ texture = ExtResource("6_j5bfj")
 hframes = 4
 
 [node name="combat_attack" type="Sprite2D" parent="animations/sprites"]
-visible = false
 position = Vector2(22, -14)
 scale = Vector2(2, 1.9927279)
 texture = ExtResource("7_o3w48")
 hframes = 7
+
+[node name="combat" type="Node2D" parent="."]
+
+[node name="AttackHitbox" type="Area2D" parent="combat"]
+
+[node name="Attackhitbox" type="CollisionShape2D" parent="combat/AttackHitbox"]
+position = Vector2(85, -3)
+shape = SubResource("RectangleShape2D_o3w48")
+debug_color = Color(1, 0, 0, 0.41960785)

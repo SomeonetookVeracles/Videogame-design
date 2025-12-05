@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="1_qm6ny"]
 [ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://Scenes/Main/Player.tscn" id="2_m2dw3"]
+[ext_resource type="Texture2D" uid="uid://bjf86yusvf63b" path="res://Assets/Static-Bob.png" id="3_m2dw3"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qm6ny"]
 texture = ExtResource("1_qm6ny")
@@ -113,29 +114,26 @@ texture = ExtResource("1_qm6ny")
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_qm6ny")
 
-[sub_resource type="CanvasTexture" id="CanvasTexture_qm6ny"]
-specular_color = Color(0.79149956, 0.09289145, 0.4796419, 1)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qm6ny"]
 size = Vector2(3369, 240)
 
 [node name="Node2D" type="Node2D"]
 
 [node name="Character" parent="." instance=ExtResource("2_m2dw3")]
-position = Vector2(262, -149)
+position = Vector2(262, -177)
 
 [node name="Tilemaps" type="Node2D" parent="."]
 
 [node name="Solids" type="TileMapLayer" parent="Tilemaps"]
 scale = Vector2(2, 2)
-tile_map_data = PackedByteArray("AAAAAAAAAAABAAAAAAABAAAAAAABAAAAAAACAAAAAAABAAAAAAADAAAAAAABAAAAAAAEAAAAAAABAAAAAAAFAAAAAAABAAAAAAAGAAAAAAABAAAAAAAHAAAAAAABAAAAAAAIAAAAAAABAAAAAAAJAAAAAAABAAAAAAAKAAAAAAABAAAAAAAGAPn/AAAFAAAAAAAFAPn/AAAEAAAAAAAEAPn/AAAEAAAAAAADAPn/AAAEAAAAAAACAPn/AAAEAAAAAAABAPn/AAAEAAAAAAAAAPn/AAAEAAAAAAD///n/AAAEAAAAAAD//wAAAAABAAAAAAD+/wAAAAABAAAAAAD+//n/AAADAAAAAAAMAP7/AAABAAAAAAANAP7/AAABAAAAAAAOAP7/AAABAAAAAAAPAP7/AAABAAAAAAAQAP7/AAABAAAAAAARAP7/AAABAAAAAAA=")
+tile_map_data = PackedByteArray("AAAGAPn/AAAFAAAAAAAFAPn/AAAEAAAAAAAEAPn/AAAEAAAAAAADAPn/AAAEAAAAAAACAPn/AAAEAAAAAAABAPn/AAAEAAAAAAAAAPn/AAAEAAAAAAD///n/AAAEAAAAAAD+//n/AAADAAAAAAAMAP7/AAADAAAAAAANAP7/AAAEAAAAAAAOAP7/AAAEAAAAAAAPAP7/AAAEAAAAAAAQAP7/AAAEAAAAAAARAP7/AAAEAAAAAAAKAP//AAAFAAAAAAAJAP//AAAEAAAAAAAIAP//AAAEAAAAAAAHAP//AAAEAAAAAAAGAP//AAAEAAAAAAAFAP//AAAEAAAAAAD9////AAAEAAAAAAD8////AAAEAAAAAAD7////AAAEAAAAAAD6////AAAEAAAAAAD5////AAAEAAAAAAD4////AAAEAAAAAAD3////AAADAAAAAAAEAP//AAAEAAAAAAADAP//AAAEAAAAAAACAP//AAAEAAAAAAABAP//AAAEAAAAAAAAAP//AAAEAAAAAAD/////AAAEAAAAAAD+////AAAEAAAAAAASAP7/AAAFAAAAAAD6//f/AAADAAAAAAD7//f/AAAEAAAAAAD8//f/AAAFAAAAAAD2//b/AAADAAAAAAD3//b/AAAEAAAAAAD4//b/AAAFAAAAAADy//X/AAADAAAAAADz//X/AAAEAAAAAAD0//X/AAAFAAAAAADu//T/AAADAAAAAADv//T/AAAEAAAAAADw//T/AAAFAAAAAADq//P/AAADAAAAAADr//P/AAAEAAAAAADs//P/AAAFAAAAAAA=")
 tile_set = SubResource("TileSet_m2dw3")
 
 [node name="Background" type="Sprite2D" parent="Tilemaps"]
 z_index = -6
 position = Vector2(-2, 5)
 scale = Vector2(4252.919, 4012.4358)
-texture = SubResource("CanvasTexture_qm6ny")
+texture = ExtResource("3_m2dw3")
 
 [node name="Zones" type="Node2D" parent="."]
 modulate = Color(1, 0, 0, 1)
