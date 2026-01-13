@@ -11,17 +11,10 @@ config_version=5
 [application]
 
 config/name="Space Wizards?"
-run/main_scene="res://Scenes/Tempmenu/scenes/opening/opening.tscn"
+run/main_scene="uid://bwfxax3syhe4e"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 run/max_fps=30
 config/icon="uid://bjf86yusvf63b"
-
-[autoload]
-
-AppConfig="*res://addons/maaacks_menus_template/base/nodes/autoloads/app_config/app_config.tscn"
-SceneLoader="*res://addons/maaacks_menus_template/base/nodes/autoloads/scene_loader/scene_loader.tscn"
-ProjectMusicController="*res://addons/maaacks_menus_template/base/nodes/autoloads/music_controller/project_music_controller.tscn"
-ProjectUISoundController="*res://addons/maaacks_menus_template/base/nodes/autoloads/ui_sound_controller/project_ui_sound_controller.tscn"
 
 [display]
 
@@ -35,7 +28,7 @@ project/assembly_name="VGD-2025"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/maaacks_menus_template/plugin.cfg")
+enabled=PackedStringArray()
 
 [file_customization]
 
@@ -44,14 +37,14 @@ folder_colors={
 "res://Scenes/": "red",
 "res://Scenes/Demo/": "red",
 "res://Scenes/Main/": "red",
-"res://Scenes/Tempmenu/": "gray",
+"res://Scenes/menus/": "yellow",
 "res://Scripts/": "red",
 "res://addons/": "green"
 }
 
-[gui]
+[global_group]
 
-theme/custom="res://Scenes/Tempmenu/resources/themes/gravity.tres"
+player=""
 
 [input]
 
@@ -87,9 +80,12 @@ combat_attack={
 ]
 }
 
-[internationalization]
+[layer_names]
 
-locale/translations=PackedStringArray("res://addons/maaacks_menus_template/base/translations/menus_translations.en.translation", "res://addons/maaacks_menus_template/base/translations/menus_translations.fr.translation")
+2d_physics/layer_1="Solids"
+2d_physics/layer_2="Enemies"
+2d_physics/layer_3="Projectiles"
+2d_physics/layer_4="Instant Death"
 
 [maaacks_menus_template]
 
