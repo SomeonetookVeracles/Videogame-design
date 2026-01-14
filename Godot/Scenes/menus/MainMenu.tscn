@@ -308,6 +308,55 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_ghjcc")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ulmac")
 text = "Back"
 
+[node name="KeybindPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -267.0
+offset_top = -194.0
+offset_right = 266.0
+offset_bottom = 193.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="Label" parent="KeybindPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -267.5
+offset_top = -33.0
+offset_right = 267.5
+offset_bottom = 112.0
+grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 9
+theme_override_constants/shadow_offset_y = 18
+theme_override_constants/shadow_outline_size = 12
+theme_override_fonts/font = ExtResource("1_nbr2c")
+theme_override_font_sizes/font_size = 64
+text = "0ptions"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="KBack" type="Button" parent="KeybindPanel"]
+layout_mode = 0
+offset_left = 227.5
+offset_top = 332.0
+offset_right = 305.5
+offset_bottom = 381.0
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.011764706, 0.011764706, 0.011764706, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_nbr2c")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ghjcc")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ulmac")
+text = "Back"
+
 [connection signal="pressed" from="MainButtons/LevelSelect" to="." method="_on_level_select_pressed"]
 [connection signal="pressed" from="MainButtons/Options" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="MainButtons/Exit" to="." method="_on_exit_pressed"]
@@ -316,3 +365,4 @@ text = "Back"
 [connection signal="value_changed" from="OptionsPanel/VBoxContainer/SFXAudioSlider/SFXControl" to="OptionsPanel/Audio Control" method="_on_sfx_control_value_changed"]
 [connection signal="toggled" from="OptionsPanel/VBoxContainer/Fullscreen Check" to="." method="_fullscreen__toggle"]
 [connection signal="pressed" from="OptionsPanel/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="KeybindPanel/KBack" to="." method="_on_k_back_pressed"]

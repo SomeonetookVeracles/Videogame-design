@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ry14n7flj8xt" path="res://Scripts/player.gd" id="1_n3mh5"]
 [ext_resource type="Texture2D" uid="uid://bjf86yusvf63b" path="res://Assets/Static-Bob.png" id="2_5olkl"]
+[ext_resource type="Texture2D" uid="uid://d1sb5o2lf6gjy" path="res://Assets/Sprites/Magic Particle 8x8.png" id="3_fmcob"]
 [ext_resource type="Texture2D" uid="uid://djnsa7adbsgmy" path="res://Assets/Temp Assets/Female Character/SpriteSheets/01 Idle.png" id="3_vocxr"]
 [ext_resource type="Texture2D" uid="uid://b4jqvy72va2wh" path="res://Assets/Temp Assets/Female Character/SpriteSheets/02 Run.png" id="4_a13ad"]
 [ext_resource type="Texture2D" uid="uid://dcgho356wk0gl" path="res://Assets/Temp Assets/Female Character/SpriteSheets/03 Jump.png" id="5_un37i"]
@@ -9,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://boiax14fbq8yg" path="res://Assets/Temp Assets/Female Character/SpriteSheets/Attack/Female Character Attack 01.png" id="7_o3w48"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5olkl"]
-size = Vector2(40.5, 112)
+size = Vector2(40.5, 88)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vocxr"]
 size = Vector2(64, 128)
@@ -169,18 +170,11 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o3w48"]
 size = Vector2(130, 134)
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_o3w48"]
-
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_n3mh5")
-run_speed = 400.0
-jump_velocity = -450.0
-respawn_delay = 0.5
-spawn_delay = 0.4
-attack_animation_speed = 3.0
 
 [node name="hitbox-area" type="CollisionShape2D" parent="."]
-position = Vector2(0, 8)
+position = Vector2(0, 20)
 shape = SubResource("RectangleShape2D_5olkl")
 
 [node name="debug-hitbox" type="Sprite2D" parent="hitbox-area"]
@@ -197,6 +191,7 @@ limit_bottom = 600
 limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 4.0
+editor_draw_limits = true
 
 [node name="static-character" type="Sprite2D" parent="."]
 visible = false
@@ -210,6 +205,7 @@ texture = ExtResource("2_5olkl")
 position = Vector2(3, 48)
 emitting = false
 amount = 64
+texture = ExtResource("3_fmcob")
 lifetime = 0.2
 one_shot = true
 explosiveness = 1.0
@@ -219,13 +215,12 @@ damping_max = 38.144
 angle_min = -345.0
 angle_max = 148.5
 scale_amount_min = 0.5
-scale_amount_max = 8.0
-color = Color(1, 0.05882353, 1, 1)
 
 [node name="dash-particles" type="CPUParticles2D" parent="particles"]
 position = Vector2(-9, 15)
 emitting = false
 amount = 64
+texture = ExtResource("3_fmcob")
 lifetime = 0.4
 one_shot = true
 explosiveness = 0.2
@@ -237,13 +232,12 @@ damping_max = 38.144
 angle_min = -345.0
 angle_max = 148.5
 scale_amount_min = 0.5
-scale_amount_max = 8.0
-color = Color(1, 0.05882353, 1, 1)
 
 [node name="death-particles" type="CPUParticles2D" parent="particles"]
 position = Vector2(6, 13)
 emitting = false
 amount = 256
+texture = ExtResource("3_fmcob")
 lifetime = 0.25
 one_shot = true
 explosiveness = 1.0
@@ -254,33 +248,6 @@ spread = 180.0
 gravity = Vector2(0, 0)
 initial_velocity_max = 404.65
 damping_max = 52.565
-scale_amount_max = 6.0
-color = Color(1, 0.05882353, 1, 1)
-color_ramp = SubResource("Gradient_j5bfj")
-color_initial_ramp = SubResource("Gradient_o3w48")
-hue_variation_min = -1.0
-hue_variation_max = 1.0
-
-[node name="attack-particles" type="CPUParticles2D" parent="particles"]
-position = Vector2(54, 61)
-emitting = false
-amount = 128
-lifetime = 0.15000000000000002
-one_shot = true
-explosiveness = 1.0
-randomness = 1.0
-fixed_fps = 32
-emission_shape = 1
-emission_sphere_radius = 1.0
-particle_flag_align_y = true
-direction = Vector2(0, 0)
-spread = 180.0
-gravity = Vector2(0, 0)
-initial_velocity_max = 404.65
-damping_max = 52.565
-scale_amount_min = 0.0
-scale_amount_max = 2.0
-color = Color(1, 0.05882353, 1, 1)
 color_ramp = SubResource("Gradient_j5bfj")
 color_initial_ramp = SubResource("Gradient_o3w48")
 hue_variation_min = -1.0
@@ -341,9 +308,8 @@ hframes = 7
 [node name="Attackhitbox" type="CollisionShape2D" parent="combat/AttackHitbox"]
 position = Vector2(85, -3)
 shape = SubResource("RectangleShape2D_o3w48")
-debug_color = Color(1, 0, 0, 0.41960785)
 
 [node name="Sprite2D" type="Sprite2D" parent="combat/AttackHitbox/Attackhitbox"]
+visible = false
 position = Vector2(18.75, 24.75)
 scale = Vector2(38.5, 50.5)
-texture = SubResource("PlaceholderTexture2D_o3w48")
