@@ -212,7 +212,7 @@ func _handle_dash() -> void:
 	dash_buffer_timer = 0
 	is_wall_sliding = false
 	wall_stick_timer = 0.0
-	jumps_remaining = max_jumps
+	# REMOVED: jumps_remaining = max_jumps (this was causing the infinite jump bug)
 	
 	_trigger_particles("dash", float(dash_direction))
 	animation_player.play("Dash")

@@ -18,6 +18,8 @@ config/icon="uid://bjf86yusvf63b"
 
 [display]
 
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 window/size/sharp_corners=true
 window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
