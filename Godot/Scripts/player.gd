@@ -380,6 +380,7 @@ func apply_knockback(force: Vector2) -> void:
 		velocity = force
 		is_wall_sliding = false
 
+
 func _die() -> void:
 	if is_dead:
 		return

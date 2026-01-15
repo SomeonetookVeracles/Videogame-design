@@ -141,7 +141,7 @@ tile_set = SubResource("TileSet_m2dw3")
 
 [node name="Background" type="Sprite2D" parent="Tilemaps"]
 z_index = -6
-position = Vector2(-2, 5)
+position = Vector2(3.576279e-07, 4)
 scale = Vector2(4252.919, 4012.4358)
 texture = ExtResource("3_m2dw3")
 
@@ -159,5 +159,3 @@ position = Vector2(260, 528)
 scale = Vector2(39.679996, 1)
 shape = SubResource("RectangleShape2D_qm6ny")
 debug_color = Color(1, 0, 0, 0.41960785)
-
-[connection signal="body_entered" from="Zones/death-zone" to="Character" method="_on_death_zone_entered"]
