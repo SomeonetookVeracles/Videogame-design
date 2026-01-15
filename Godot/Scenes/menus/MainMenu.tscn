@@ -1,60 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://bwfxax3syhe4e"]
+[gd_scene load_steps=5 format=3 uid="uid://bwfxax3syhe4e"]
 
 [ext_resource type="Script" uid="uid://daot6fq1b11i6" path="res://Scripts/main_menu.gd" id="1_ghjcc"]
-[ext_resource type="FontFile" uid="uid://c2bupqg7yyxqg" path="res://Assets/Temp Assets/Pixelout Personal Use Only.ttf" id="1_nbr2c"]
-[ext_resource type="Script" uid="uid://b0yyhugxpgugd" path="res://Scripts/audio_control.gd" id="3_ulmac"]
+[ext_resource type="Texture2D" uid="uid://dvmbb2afohwnv" path="res://icon.svg" id="2_ulmac"]
+[ext_resource type="Texture2D" uid="uid://c5f3gnis0vj0i" path="res://Assets/Sprites/Arrow.jpg" id="3_2hrmo"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ghjcc"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ulmac"]
-texture = SubResource("PlaceholderTexture2D_ghjcc")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nbr2c"]
-bg_color = Color(0.25934565, 0.43079427, 0.9999638, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.0076186024, 0.0076186024, 0.007535007, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_size = 6
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghjcc"]
-bg_color = Color(1, 1, 1, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.0076186024, 0.0076186024, 0.007535007, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_size = 6
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ulmac"]
-bg_color = Color(0.4965278, 0.6391773, 1, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.0076186024, 0.0076186024, 0.007535007, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_size = 6
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_ghjcc"]
-color = Color(1, 1, 1, 1)
-thickness = 5
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_ulmac"]
-color = Color(0.25882354, 0.43137255, 1, 1)
-thickness = 5
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_urqsf"]
+bg_color = Color(0.08078333, 0.08078336, 0.08078327, 1)
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -69,300 +20,75 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ghjcc")
 
-[node name="MainTitle" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -267.75
-offset_top = 38.0
-offset_right = 267.25
-offset_bottom = 183.0
-grow_horizontal = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/shadow_offset_x = 9
-theme_override_constants/shadow_offset_y = 18
-theme_override_constants/shadow_outline_size = 12
-theme_override_fonts/font = ExtResource("1_nbr2c")
-theme_override_font_sizes/font_size = 64
-text = "Space Wizards?"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Background" type="Panel" parent="."]
-visible = false
-z_index = -12
+[node name="BackGround" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_ulmac")
+theme_override_styles/panel = SubResource("StyleBoxFlat_urqsf")
 
-[node name="MainButtons" type="VBoxContainer" parent="."]
+[node name="Title" type="TextureRect" parent="."]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -92.0
-offset_top = -77.5
-offset_right = 92.0
-offset_bottom = 77.5
+offset_left = -512.0
+offset_top = 67.0
+offset_right = 512.0
+offset_bottom = 223.0
 grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 19
+texture = ExtResource("2_ulmac")
 
-[node name="LevelSelect" type="Button" parent="MainButtons"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_colors/font_color = Color(0.011764706, 0.011764706, 0.011764706, 1)
-theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_nbr2c")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ghjcc")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ulmac")
-text = "Level Select
-"
+[node name="Menu" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -600.0
+offset_right = 200.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
 
-[node name="Options" type="Button" parent="MainButtons"]
+[node name="StartGame" type="Label" parent="Menu"]
 layout_mode = 2
-size_flags_vertical = 2
-theme_override_colors/font_color = Color(0.011764706, 0.011764706, 0.011764706, 1)
-theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_nbr2c")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ghjcc")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ulmac")
+theme_override_font_sizes/font_size = 48
+text = "Start Game"
+horizontal_alignment = 1
+
+[node name="Options" type="Label" parent="Menu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
 text = "Options"
+horizontal_alignment = 1
 
-[node name="Exit" type="Button" parent="MainButtons"]
+[node name="Exit" type="Label" parent="Menu"]
 layout_mode = 2
-size_flags_vertical = 4
-theme_override_colors/font_color = Color(0.011764706, 0.011764706, 0.011764706, 1)
-theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_nbr2c")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ghjcc")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ulmac")
+theme_override_font_sizes/font_size = 48
 text = "Exit"
-
-[node name="Background music" type="AudioStreamPlayer" parent="."]
-autoplay = true
-bus = &"Music"
-
-[node name="OptionsPanel" type="Panel" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -267.0
-offset_top = -194.0
-offset_right = 266.0
-offset_bottom = 193.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Header" type="Label" parent="OptionsPanel"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -267.5
-offset_top = -33.0
-offset_right = 267.5
-offset_bottom = 112.0
-grow_horizontal = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/shadow_offset_x = 9
-theme_override_constants/shadow_offset_y = 18
-theme_override_constants/shadow_outline_size = 12
-theme_override_fonts/font = ExtResource("1_nbr2c")
-theme_override_font_sizes/font_size = 64
-text = "0ptions"
 horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="Audio Control" type="Node" parent="OptionsPanel"]
-script = ExtResource("3_ulmac")
-master_bus_name = "Master"
-sfx_bus_name = "SFX"
-music_bus_name = "Music"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="OptionsPanel"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -99.0
-offset_top = 102.0
-offset_right = 99.0
-offset_bottom = 204.0
-grow_horizontal = 2
-alignment = 1
-
-[node name="MasterAudioSlider" type="HBoxContainer" parent="OptionsPanel/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 7
-alignment = 1
-
-[node name="MasterAudioLabel" type="Label" parent="OptionsPanel/VBoxContainer/MasterAudioSlider"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/shadow_offset_x = 9
-theme_override_constants/shadow_offset_y = 18
-theme_override_constants/shadow_outline_size = 12
-theme_override_fonts/font = ExtResource("1_nbr2c")
-text = "Master: "
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MasterControl" type="HSlider" parent="OptionsPanel/VBoxContainer/MasterAudioSlider"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/slider = SubResource("StyleBoxLine_ghjcc")
-theme_override_styles/grabber_area = SubResource("StyleBoxLine_ulmac")
-max_value = 1.0
-step = 0.05
-value = 1.0
-tick_count = 5
-
-[node name="MusicAudioSlider" type="HBoxContainer" parent="OptionsPanel/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 7
-alignment = 1
-
-[node name="MusicAudioLabel" type="Label" parent="OptionsPanel/VBoxContainer/MusicAudioSlider"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/shadow_offset_x = 9
-theme_override_constants/shadow_offset_y = 18
-theme_override_constants/shadow_outline_size = 12
-theme_override_fonts/font = ExtResource("1_nbr2c")
-text = "Music:   "
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MusicControl" type="HSlider" parent="OptionsPanel/VBoxContainer/MusicAudioSlider"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/slider = SubResource("StyleBoxLine_ghjcc")
-theme_override_styles/grabber_area = SubResource("StyleBoxLine_ulmac")
-max_value = 1.0
-step = 0.05
-value = 1.0
-tick_count = 5
-
-[node name="SFXAudioSlider" type="HBoxContainer" parent="OptionsPanel/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 7
-alignment = 1
-
-[node name="SFXAudioLabel" type="Label" parent="OptionsPanel/VBoxContainer/SFXAudioSlider"]
-layout_mode = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/shadow_offset_x = 9
-theme_override_constants/shadow_offset_y = 18
-theme_override_constants/shadow_outline_size = 12
-theme_override_fonts/font = ExtResource("1_nbr2c")
-text = "SFX:       "
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="SFXControl" type="HSlider" parent="OptionsPanel/VBoxContainer/SFXAudioSlider"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/slider = SubResource("StyleBoxLine_ghjcc")
-theme_override_styles/grabber_area = SubResource("StyleBoxLine_ulmac")
-max_value = 1.0
-step = 0.05
-value = 1.0
-tick_count = 5
-
-[node name="Fullscreen Check" type="CheckButton" parent="OptionsPanel/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.011764706, 0.011764706, 0.011764706, 1)
-theme_override_colors/font_pressed_color = Color(0.011764706, 0.011764706, 0.011764706, 1)
-theme_override_fonts/font = ExtResource("1_nbr2c")
-theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_nbr2c")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ulmac")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ulmac")
-text = "Fullscreen"
-icon_alignment = 1
-
-[node name="Back" type="Button" parent="OptionsPanel"]
+[node name="Cursor" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 227.5
-offset_top = 332.0
-offset_right = 305.5
-offset_bottom = 381.0
-size_flags_horizontal = 4
-size_flags_vertical = 8
-theme_override_colors/font_color = Color(0.011764706, 0.011764706, 0.011764706, 1)
-theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_nbr2c")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ghjcc")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ulmac")
-text = "Back"
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("3_2hrmo")
 
-[node name="KeybindPanel" type="Panel" parent="."]
+[node name="Copyright" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 7
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -267.0
-offset_top = -194.0
-offset_right = 266.0
-offset_bottom = 193.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -23.0
+offset_right = 20.0
 grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Header" type="Label" parent="KeybindPanel"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -267.5
-offset_top = -33.0
-offset_right = 267.5
-offset_bottom = 112.0
-grow_horizontal = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
-theme_override_constants/shadow_offset_x = 9
-theme_override_constants/shadow_offset_y = 18
-theme_override_constants/shadow_outline_size = 12
-theme_override_fonts/font = ExtResource("1_nbr2c")
-theme_override_font_sizes/font_size = 64
-text = "0ptions"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="KBack" type="Button" parent="KeybindPanel"]
-layout_mode = 0
-offset_left = 227.5
-offset_top = 332.0
-offset_right = 305.5
-offset_bottom = 381.0
-size_flags_horizontal = 4
-size_flags_vertical = 8
-theme_override_colors/font_color = Color(0.011764706, 0.011764706, 0.011764706, 1)
-theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_nbr2c")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ghjcc")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ulmac")
-text = "Back"
-
-[connection signal="pressed" from="MainButtons/LevelSelect" to="." method="_on_level_select_pressed"]
-[connection signal="pressed" from="MainButtons/Options" to="." method="_on_options_pressed"]
-[connection signal="pressed" from="MainButtons/Exit" to="." method="_on_exit_pressed"]
-[connection signal="value_changed" from="OptionsPanel/VBoxContainer/MasterAudioSlider/MasterControl" to="OptionsPanel/Audio Control" method="_on_master_control_value_changed"]
-[connection signal="value_changed" from="OptionsPanel/VBoxContainer/MusicAudioSlider/MusicControl" to="OptionsPanel/Audio Control" method="_on_music_control_value_changed"]
-[connection signal="value_changed" from="OptionsPanel/VBoxContainer/SFXAudioSlider/SFXControl" to="OptionsPanel/Audio Control" method="_on_sfx_control_value_changed"]
-[connection signal="toggled" from="OptionsPanel/VBoxContainer/Fullscreen Check" to="." method="_fullscreen__toggle"]
-[connection signal="pressed" from="OptionsPanel/Back" to="." method="_on_back_pressed"]
-[connection signal="pressed" from="KeybindPanel/KBack" to="." method="_on_k_back_pressed"]
+grow_vertical = 0
+text = "jipbfpiwbuefifwiubfwpiufwebwefiufpwb"
