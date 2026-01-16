@@ -36,6 +36,8 @@ enabled=PackedStringArray()
 
 folder_colors={
 "res://Assets/": "red",
+"res://Assets/Sprites/": "green",
+"res://Assets/Sprites/Loose Assets/": "pink",
 "res://Scenes/": "red",
 "res://Scenes/Demo/": "red",
 "res://Scenes/Main/": "red",
