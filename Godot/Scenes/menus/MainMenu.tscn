@@ -293,6 +293,18 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_ulmac")
 text = "Fullscreen"
 icon_alignment = 1
 
+[node name="Keybinds" type="Button" parent="OptionsPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.011764706, 0.011764706, 0.011764706, 1)
+theme_override_fonts/font = ExtResource("1_nbr2c")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_nbr2c")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ghjcc")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ulmac")
+text = "   Controls   "
+
 [node name="Back" type="Button" parent="OptionsPanel"]
 layout_mode = 0
 offset_left = 227.5
@@ -338,7 +350,7 @@ theme_override_constants/shadow_offset_y = 18
 theme_override_constants/shadow_outline_size = 12
 theme_override_fonts/font = ExtResource("1_nbr2c")
 theme_override_font_sizes/font_size = 64
-text = "0ptions"
+text = "Keybinds"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -364,5 +376,6 @@ text = "Back"
 [connection signal="value_changed" from="OptionsPanel/VBoxContainer/MusicAudioSlider/MusicControl" to="OptionsPanel/Audio Control" method="_on_music_control_value_changed"]
 [connection signal="value_changed" from="OptionsPanel/VBoxContainer/SFXAudioSlider/SFXControl" to="OptionsPanel/Audio Control" method="_on_sfx_control_value_changed"]
 [connection signal="toggled" from="OptionsPanel/VBoxContainer/Fullscreen Check" to="." method="_fullscreen__toggle"]
+[connection signal="pressed" from="OptionsPanel/VBoxContainer/Keybinds" to="." method="_on_keybinds_pressed"]
 [connection signal="pressed" from="OptionsPanel/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="KeybindPanel/KBack" to="." method="_on_k_back_pressed"]

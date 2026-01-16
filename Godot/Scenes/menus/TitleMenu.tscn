@@ -6,6 +6,21 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7x20p"]
 bg_color = Color(0.08078333, 0.08078336, 0.08078327, 1)
 
+[sub_resource type="Animation" id="Animation_ogooi"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Label:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
 [sub_resource type="Animation" id="Animation_yhy1j"]
 resource_name = "blink"
 length = 2.0
@@ -21,21 +36,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0.39215687), Color(1, 1, 1, 0), Color(1, 1, 1, 0.39215687)]
-}
-
-[sub_resource type="Animation" id="Animation_ogooi"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Label:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_frbap"]
@@ -62,7 +62,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7x20p")
 
-[node name="MainTitle" type="Label" parent="."]
+[node name="Maintitle" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -83,7 +83,7 @@ text = "Space Wizards?"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MainTitle2" type="Label" parent="."]
+[node name="Subtitle" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
