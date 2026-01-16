@@ -26,10 +26,6 @@ window/stretch/scale_mode="integer"
 
 project/assembly_name="VGD-2025"
 
-[editor_plugins]
-
-enabled=PackedStringArray()
-
 [file_customization]
 
 folder_colors={
@@ -40,8 +36,7 @@ folder_colors={
 "res://Scenes/Demo/": "red",
 "res://Scenes/Main/": "red",
 "res://Scenes/menus/": "yellow",
-"res://Scripts/": "red",
-"res://addons/": "green"
+"res://Scripts/": "red"
 }
 
 [global_group]
