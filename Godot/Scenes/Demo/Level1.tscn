@@ -127,6 +127,7 @@ spawn_delay = 0.0
 
 [node name="Solids" type="TileMapLayer" parent="Tilemaps"]
 scale = Vector2(2, 2)
+tile_map_data = PackedByteArray("AAD0////AAABAAEAAAD1////AAABAAEAAAD2////AAABAAEAAAD3////AAABAAEAAAD4////AAABAAEAAAD5////AAABAAEAAAD6////AAABAAEAAAD7////AAABAAEAAAD8////AAABAAEAAAD9////AAABAAEAAADz////AAABAAEAAADz//7/AAABAAEAAADz//3/AAABAAEAAADz//z/AAABAAEAAADz//v/AAABAAEAAADz//r/AAABAAEAAADz//n/AAABAAEAAAD0//n/AAABAAEAAAD1//n/AAABAAEAAAD2//n/AAABAAEAAAD3//n/AAABAAEAAAD4//n/AAABAAEAAAD5//n/AAABAAEAAAD6//n/AAABAAEAAAD7//n/AAABAAEAAAD8//n/AAABAAEAAAD9//n/AAABAAEAAAD9//r/AAABAAEAAAD9//v/AAABAAEAAAD9//z/AAABAAEAAAD9//3/AAABAAEAAAD9//7/AAABAAEAAAA=")
 tile_set = SubResource("TileSet_m2dw3")
 
 [node name="Deadly" type="TileMapLayer" parent="Tilemaps" groups=["deadly"]]
@@ -145,7 +146,7 @@ position = Vector2(0, 19)
 
 [node name="Background" type="ColorRect" parent="."]
 z_index = -4096
-offset_left = -2998.0
-offset_top = -2210.0
-offset_right = 4918.0
-offset_bottom = 3050.0
+offset_left = -2537.0
+offset_top = -2114.0
+offset_right = 5379.0
+offset_bottom = 3146.0
