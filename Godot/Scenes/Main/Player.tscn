@@ -188,11 +188,13 @@ position = Vector2(27, 0)
 scale = Vector2(0.9803404, 1)
 zoom = Vector2(1.4, 1.4)
 process_callback = 0
-limit_top = -600
-limit_bottom = 600
+limit_left = -9999927
+limit_top = -742
+limit_right = 10000073
+limit_bottom = 458
 limit_smoothed = true
 position_smoothing_enabled = true
-position_smoothing_speed = 2.0
+position_smoothing_speed = 3.0
 editor_draw_limits = true
 
 [node name="static-character" type="Sprite2D" parent="."]
