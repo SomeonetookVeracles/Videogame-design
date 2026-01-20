@@ -192,7 +192,7 @@ limit_top = -600
 limit_bottom = 600
 limit_smoothed = true
 position_smoothing_enabled = true
-position_smoothing_speed = 4.0
+position_smoothing_speed = 2.0
 editor_draw_limits = true
 
 [node name="static-character" type="Sprite2D" parent="."]
