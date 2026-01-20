@@ -129,7 +129,8 @@ libraries = {
 }
 autoplay = "blink"
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="Menu Music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_w115i")
+volume_db = -33.015
 autoplay = true
 bus = &"Music"
