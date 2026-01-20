@@ -22,7 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_nbr2c")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MenuOptions" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -37,21 +37,21 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="Level Select" type="Label" parent="VBoxContainer"]
+[node name="Level Select" type="Label" parent="MenuOptions"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_nbr2c")
 theme_override_font_sizes/font_size = 32
 text = "Select Level"
 horizontal_alignment = 1
 
-[node name="Options" type="Label" parent="VBoxContainer"]
+[node name="Options" type="Label" parent="MenuOptions"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_nbr2c")
 theme_override_font_sizes/font_size = 32
 text = "Options"
 horizontal_alignment = 1
 
-[node name="Exit" type="Label" parent="VBoxContainer"]
+[node name="Exit" type="Label" parent="MenuOptions"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_nbr2c")
 theme_override_font_sizes/font_size = 32

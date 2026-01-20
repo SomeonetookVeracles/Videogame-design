@@ -16,6 +16,10 @@ config/features=PackedStringArray("4.5", "GL Compatibility")
 run/max_fps=30
 config/icon="uid://bjf86yusvf63b"
 
+[audio]
+
+buses/default_bus_layout=""
+
 [display]
 
 window/size/sharp_corners=true
