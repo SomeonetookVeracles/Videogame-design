@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=4 uid="uid://drnf86w4ewx28"]
+[gd_scene load_steps=6 format=4 uid="uid://drnf86w4ewx28"]
 
 [ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="1_qm6ny"]
 [ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://Scenes/Main/Player.tscn" id="2_m2dw3"]
@@ -114,9 +114,6 @@ texture = ExtResource("1_qm6ny")
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_qm6ny")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qm6ny"]
-size = Vector2(3369, 240)
-
 [node name="Node2D" type="Node2D"]
 
 [node name="Character" parent="." instance=ExtResource("2_m2dw3")]
@@ -144,18 +141,3 @@ position = Vector2(3.576279e-07, 4)
 scale = Vector2(4252.919, 4012.4358)
 texture = ExtResource("3_m2dw3")
 region_rect = Rect2(49828.43, 2875.6208, 492.45703, 295.61816)
-
-[node name="Zones" type="Node2D" parent="."]
-modulate = Color(1, 0, 0, 1)
-position = Vector2(0, 19)
-
-[node name="death-zone" type="Area2D" parent="Zones"]
-position = Vector2(-267, 365)
-collision_layer = 8
-collision_mask = 8
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Zones/death-zone"]
-position = Vector2(260, 528)
-scale = Vector2(39.679996, 1)
-shape = SubResource("RectangleShape2D_qm6ny")
-debug_color = Color(1, 0, 0, 0.41960785)

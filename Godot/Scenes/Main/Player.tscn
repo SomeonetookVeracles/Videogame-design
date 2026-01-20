@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dyd3r20y2tid0"]
+[gd_scene load_steps=21 format=3 uid="uid://dyd3r20y2tid0"]
 
 [ext_resource type="Script" uid="uid://ry14n7flj8xt" path="res://Scripts/player.gd" id="1_n3mh5"]
 [ext_resource type="Texture2D" uid="uid://bjf86yusvf63b" path="res://Assets/Static-Bob.png" id="2_5olkl"]
@@ -11,9 +11,6 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5olkl"]
 size = Vector2(40.5, 88)
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vocxr"]
-size = Vector2(64, 128)
 
 [sub_resource type="Gradient" id="Gradient_j5bfj"]
 
@@ -177,11 +174,6 @@ script = ExtResource("1_n3mh5")
 [node name="hitbox-area" type="CollisionShape2D" parent="."]
 position = Vector2(0, 20)
 shape = SubResource("RectangleShape2D_5olkl")
-
-[node name="debug-hitbox" type="Sprite2D" parent="hitbox-area"]
-visible = false
-scale = Vector2(1, 0.875)
-texture = SubResource("PlaceholderTexture2D_vocxr")
 
 [node name="player-camera" type="Camera2D" parent="."]
 position = Vector2(27, 0)
