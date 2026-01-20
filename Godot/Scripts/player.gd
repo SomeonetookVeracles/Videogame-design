@@ -31,6 +31,10 @@ extends CharacterBody2D
 @export var spawn_delay := 0.5
 @export var double_jump_particle_scene: PackedScene
 
+@export_group("Camera")
+@export var camera_look_ahead := 100.0
+@export var camera_smoothing := 8.0
+
 # Node references
 @onready var animation_player := $"animations/debug-animations"
 @onready var animations_node := $animations
@@ -47,6 +51,7 @@ extends CharacterBody2D
 	"death": $"particles/death-particles",
 }
 @onready var attack_hitbox := $combat/AttackHitbox
+@onready var camera: Camera2D = $"player-camera"
 
 # State flags
 var is_dashing := false
@@ -86,9 +91,16 @@ func _ready() -> void:
 	_hide_all_sprites()
 	attack_hitbox.monitoring = false
 	animation_player.animation_finished.connect(_on_attack_animation_finished)
+	_setup_camera()
 	await get_tree().create_timer(spawn_delay).timeout
 	is_spawning = false
 	sprites["idle"].visible = true
+
+func _setup_camera() -> void:
+	if camera:
+		camera.enabled = true
+		camera.position_smoothing_enabled = true
+		camera.position_smoothing_speed = camera_smoothing
 
 func _physics_process(delta: float) -> void:
 	if is_dead or is_spawning:
@@ -111,7 +123,20 @@ func _physics_process(delta: float) -> void:
 	
 	_handle_attack()
 	_update_animation()
+	_update_camera(delta)
 	move_and_slide()
+
+func _update_camera(delta: float) -> void:
+	if not camera:
+		return
+	
+	var target_offset := Vector2.ZERO
+	var facing_direction: float = sign(animations_node.scale.x)
+	
+	if facing_direction != 0:
+		target_offset.x = camera_look_ahead * facing_direction
+	
+	camera.position = camera.position.lerp(target_offset, camera_smoothing * delta)
 
 func _update_timers(delta: float) -> void:
 	if is_dashing:
@@ -212,7 +237,6 @@ func _handle_dash() -> void:
 	dash_buffer_timer = 0
 	is_wall_sliding = false
 	wall_stick_timer = 0.0
-	# REMOVED: jumps_remaining = max_jumps (this was causing the infinite jump bug)
 	
 	_trigger_particles("dash", float(dash_direction))
 	animation_player.play("Dash")

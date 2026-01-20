@@ -184,6 +184,7 @@ scale = Vector2(1, 0.875)
 texture = SubResource("PlaceholderTexture2D_vocxr")
 
 [node name="player-camera" type="Camera2D" parent="."]
+position = Vector2(27, 0)
 scale = Vector2(0.9803404, 1)
 zoom = Vector2(1.4, 1.4)
 process_callback = 0
