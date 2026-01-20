@@ -6,7 +6,7 @@ extends Control
 var current_selection = 0
 var menu_options = []
 var can_navigate = true
-var cursor_base_y = 0  # Track base position for bobbing
+var cursor_base_x = 0  # Track base position for bobbing
 
 func _ready():
 	menu_options = menu_items.get_children()
@@ -52,11 +52,11 @@ func update_cursor_position():
 			cursor_height = cursor.texture.get_height() * cursor.scale.y
 		
 		# Calculate the base position
-		cursor_base_y = target_pos.y + (selected_item.size.y / 2) - (cursor_height / 2)
+		cursor_base_x = target_pos.x + (selected_item.size.x / 2) - (cursor_height / 2)
 		
 		cursor.position = Vector2(
 			target_pos.x - 50,
-			cursor_base_y
+			cursor_base_x
 		)
 		
 		# Restart the bobbing animation at the new position
@@ -75,8 +75,8 @@ func add_cursor_bob():
 	
 	# Create new bobbing animation from current position
 	var tween = create_tween().set_loops()
-	tween.tween_property(cursor, "position:y", cursor_base_y + 4, 0.4).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(cursor, "position:y", cursor_base_y, 0.4).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(cursor, "position:x", cursor_base_x + 4, 0.4).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(cursor, "position:x", cursor_base_x, 0.4).set_ease(Tween.EASE_IN_OUT)
 
 func play_flash_animation():
 	var selected_item = menu_options[current_selection]

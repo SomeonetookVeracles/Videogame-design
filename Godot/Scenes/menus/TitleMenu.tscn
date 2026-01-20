@@ -134,4 +134,3 @@ stream = ExtResource("3_w115i")
 volume_db = -20.0
 autoplay = true
 max_polyphony = 2
-bus = &"Music"
