@@ -30,6 +30,10 @@ window/stretch/scale_mode="integer"
 
 project/assembly_name="VGD-2025"
 
+[editor]
+
+movie_writer/movie_file="C:/Users/Owen/Documents/Projects/TSA/Videogame-design/Godot/videofiles/Test.avi"
+
 [file_customization]
 
 folder_colors={

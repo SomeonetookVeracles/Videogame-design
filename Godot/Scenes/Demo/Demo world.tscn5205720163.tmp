@@ -119,8 +119,6 @@ sources/0 = SubResource("TileSetAtlasSource_qm6ny")
 [node name="Character" parent="." instance=ExtResource("2_m2dw3")]
 position = Vector2(-263, -110)
 collision_layer = 9
-game_over_scene = "res://Scenes/menus/MainMenu.tscn"
-death_transition_delay = 0.5
 
 [node name="Tilemaps" type="Node2D" parent="."]
 
