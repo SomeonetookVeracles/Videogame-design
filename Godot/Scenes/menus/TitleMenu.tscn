@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://bkhbmmna01o8"]
 
-[ext_resource type="Script" uid="uid://b1a2r5qqrgx4t" path="res://Scripts/title_menu.gd" id="1_evdin"]
+[ext_resource type="Script" uid="uid://b1a2r5qqrgx4t" path="res://Scripts/Menu/title_menu.gd" id="1_evdin"]
 [ext_resource type="FontFile" uid="uid://c2bupqg7yyxqg" path="res://Assets/Temp Assets/Pixelout Personal Use Only.ttf" id="2_w115i"]
 [ext_resource type="AudioStream" uid="uid://drmgmvfu75rt5" path="res://Assets/Music/Introduction Song_ Titlecard.wav" id="3_w115i"]
 

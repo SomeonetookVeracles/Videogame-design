@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://bwfxax3syhe4e"]
 
-[ext_resource type="Script" uid="uid://bubpgs0rc5qpw" path="res://Scripts/main_menu.gd" id="1_ghjcc"]
 [ext_resource type="FontFile" uid="uid://c2bupqg7yyxqg" path="res://Assets/Temp Assets/Pixelout Personal Use Only.ttf" id="1_nbr2c"]
-[ext_resource type="Texture2D" uid="uid://d1sb5o2lf6gjy" path="res://Assets/Sprites/Magic Particle 8x8.png" id="3_ulmac"]
+[ext_resource type="Script" uid="uid://bubpgs0rc5qpw" path="res://Scripts/Menu/main_menu.gd" id="1_ulmac"]
+[ext_resource type="Texture2D" uid="uid://bitg7ftvocbhe" path="res://Scenes/menus/Mira_Health.png" id="3_ulmac"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nbr2c"]
 bg_color = Color(0.08078333, 0.08078336, 0.08078327, 1)
@@ -14,7 +14,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_ghjcc")
+script = ExtResource("1_ulmac")
+dev_mode = true
 
 [node name="Blackground" type="Panel" parent="."]
 layout_mode = 1

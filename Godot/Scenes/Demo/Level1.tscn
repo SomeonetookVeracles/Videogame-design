@@ -696,8 +696,26 @@ exit_buffer_time = 0.3
 [node name="Character" parent="." instance=ExtResource("1_q64gd")]
 position = Vector2(-263, -110)
 collision_layer = 9
+walk_speed = null
+jump_velocity = null
+gravity = null
+max_jumps = null
+acceleration = null
+friction = null
+air_acceleration = null
+coyote_time = null
+jump_buffer_time = null
+jump_release_multiplier = null
+dash_speed = null
+dash_duration = null
+dash_cooldown = null
+attack_damage = null
+attack_cooldown = null
+attack_knockback = null
 respawn_delay = 0.0
 spawn_delay = 0.0
+camera_look_ahead = null
+camera_smoothing = null
 
 [node name="Tilemaps" type="Node2D" parent="."]
 
