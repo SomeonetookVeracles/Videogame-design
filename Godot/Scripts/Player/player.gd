@@ -40,6 +40,12 @@ signal health_changed(current: int, maximum: int)
 @export_group("Effects")
 @export var double_jump_particle_scene: PackedScene
 
+@export_group("Abilities")
+@export var dash_enabled: bool = true
+@export var double_jump_enabled: bool = true
+@export var health_visible: bool = true
+@export var combat_enabled: bool = true
+
 # Component references (using Node type for compatibility)
 var health: Node
 var movement: Node
@@ -63,16 +69,50 @@ func _ready() -> void:
 	spawn_position = global_position
 	add_to_group("player")
 	
+	# Check level root for ability overrides
+	_check_level_ability_settings()
+	
 	_setup_components()
 	_setup_damage_detection()
 	_setup_camera()
 	_connect_signals()
 	
-	# Initial spawn delay
+	# Apply ability settings
+	_apply_ability_settings()
+	
+	# Spawn delay
 	await get_tree().create_timer(spawn_delay).timeout
 	is_spawning = false
 	visuals.show_sprite("idle")
 	visuals.play_animation("Idle")
+
+
+func _check_level_ability_settings() -> void:
+	var level_root: Node = get_tree().current_scene
+	if not level_root:
+		return
+	
+	if "player_dash_enabled" in level_root:
+		dash_enabled = level_root.player_dash_enabled
+	if "player_double_jump_enabled" in level_root:
+		double_jump_enabled = level_root.player_double_jump_enabled
+	if "player_health_visible" in level_root:
+		health_visible = level_root.player_health_visible
+	if "player_combat_enabled" in level_root:
+		combat_enabled = level_root.player_combat_enabled
+
+
+func _apply_ability_settings() -> void:
+	if movement:
+		if not dash_enabled:
+			movement.dash_cooldown = 999999.0
+		if not double_jump_enabled:
+			movement.max_jumps = 1
+	
+	if health and not health_visible:
+		for orb in health._orb_instances:
+			if is_instance_valid(orb):
+				orb.visible = false
 
 
 func _setup_components() -> void:
@@ -171,7 +211,7 @@ func _physics_process(delta: float) -> void:
 	var can_move: bool = state_machine.can_attack() # Using this as general "can act" check
 	movement.process_movement(delta, can_move)
 	
-	if state_machine.can_attack():
+	if combat_enabled and state_machine.can_attack():
 		combat.process_combat(movement.facing_direction)
 	
 	_update_state()

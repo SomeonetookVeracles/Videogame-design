@@ -1,13 +1,13 @@
 [gd_scene load_steps=21 format=3 uid="uid://dyd3r20y2tid0"]
 
 [ext_resource type="Script" uid="uid://ry14n7flj8xt" path="res://Scripts/Player/player.gd" id="1_n3mh5"]
-[ext_resource type="Texture2D" uid="uid://bjf86yusvf63b" path="res://Assets/Static-Bob.png" id="2_5olkl"]
-[ext_resource type="Texture2D" uid="uid://d1sb5o2lf6gjy" path="res://Assets/Sprites/Magic Particle 8x8.png" id="3_fmcob"]
-[ext_resource type="Texture2D" uid="uid://bxhx07cgouqrw" path="res://Assets/Sprites/Mira/Mira_Idle.png" id="4_fmcob"]
-[ext_resource type="Texture2D" uid="uid://bw2plkq8ja7cs" path="res://Assets/Sprites/Mira/Mira_Run.png" id="5_vdg7p"]
-[ext_resource type="Texture2D" uid="uid://xk56rq7wx8p" path="res://Assets/Sprites/Mira/Mira_Jump.png" id="6_fmcob"]
-[ext_resource type="Texture2D" uid="uid://bq7w0y1o2qwvj" path="res://Assets/Sprites/Mira/Mira_Dash.png" id="7_l34nv"]
-[ext_resource type="Texture2D" uid="uid://boiax14fbq8yg" path="res://Assets/Temp Assets/Female Character/SpriteSheets/Attack/Female Character Attack 01.png" id="7_o3w48"]
+[ext_resource type="Texture2D" uid="uid://bjf86yusvf63b" path="res://assets/Static-Bob.png" id="2_5olkl"]
+[ext_resource type="Texture2D" uid="uid://d1sb5o2lf6gjy" path="res://assets/sprites/Magic Particle 8x8.png" id="3_fmcob"]
+[ext_resource type="Texture2D" uid="uid://bxhx07cgouqrw" path="res://assets/sprites/mira/Mira_Idle.png" id="4_fmcob"]
+[ext_resource type="Texture2D" uid="uid://bw2plkq8ja7cs" path="res://assets/sprites/mira/Mira_Run.png" id="5_vdg7p"]
+[ext_resource type="Texture2D" uid="uid://xk56rq7wx8p" path="res://assets/sprites/mira/Mira_Jump.png" id="6_fmcob"]
+[ext_resource type="Texture2D" uid="uid://bq7w0y1o2qwvj" path="res://assets/sprites/mira/Mira_Dash.png" id="7_l34nv"]
+[ext_resource type="Texture2D" uid="uid://boiax14fbq8yg" path="res://assets/Temp Assets/Female Character/SpriteSheets/Attack/Female Character Attack 01.png" id="7_o3w48"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5olkl"]
 size = Vector2(40.5, 88)
@@ -263,14 +263,14 @@ libraries = {
 
 [node name="Idle" type="Sprite2D" parent="animations/sprites"]
 position = Vector2(0, 2)
-scale = Vector2(2, 2)
+scale = Vector2(1.95, 1.95)
 texture = ExtResource("4_fmcob")
 hframes = 6
 frame = 2
 
 [node name="Run" type="Sprite2D" parent="animations/sprites"]
 visible = false
-scale = Vector2(2, 2)
+scale = Vector2(1.95, 1.95)
 texture = ExtResource("5_vdg7p")
 hframes = 8
 frame = 1
@@ -278,7 +278,7 @@ frame = 1
 [node name="Jump" type="Sprite2D" parent="animations/sprites"]
 visible = false
 position = Vector2(6, 0)
-scale = Vector2(2, 2)
+scale = Vector2(1.95, 1.95)
 texture = ExtResource("6_fmcob")
 hframes = 4
 frame = 2
@@ -286,14 +286,14 @@ frame = 2
 [node name="Dash" type="Sprite2D" parent="animations/sprites"]
 visible = false
 position = Vector2(4, 2)
-scale = Vector2(2, 2)
+scale = Vector2(1.95, 1.95)
 texture = ExtResource("7_l34nv")
 hframes = 4
 
 [node name="combat_attack" type="Sprite2D" parent="animations/sprites"]
 visible = false
 position = Vector2(22, -14)
-scale = Vector2(2, 1.9927279)
+scale = Vector2(1.95, 1.95)
 texture = ExtResource("7_o3w48")
 hframes = 7
 

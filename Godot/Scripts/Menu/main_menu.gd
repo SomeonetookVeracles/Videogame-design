@@ -127,7 +127,7 @@ func select_current_option():
 	if selected_node.name == "DevQuickstart":
 		await get_tree().create_timer(0.1).timeout
 		print("Dev Quickstart selected")
-		get_tree().change_scene_to_file("res://scenes/demo/Demo World.tscn")
+		get_tree().change_scene_to_file("res://scenes/demo/Demo world.tscn")
 		return
 	
 	match current_selection:

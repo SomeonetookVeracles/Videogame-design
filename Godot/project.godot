@@ -37,14 +37,14 @@ movie_writer/movie_file="C:/Users/Owen/Documents/Projects/TSA/Videogame-design/G
 [file_customization]
 
 folder_colors={
-"res://Assets/": "red",
-"res://Assets/Sprites/": "green",
-"res://Assets/Sprites/Loose Assets/": "pink",
-"res://Scenes/": "red",
-"res://Scenes/Demo/": "red",
-"res://Scenes/Main/": "red",
-"res://Scenes/menus/": "yellow",
-"res://Scripts/": "red"
+"res://Scripts/": "red",
+"res://assets/": "red",
+"res://assets/sprites/": "green",
+"res://assets/sprites/Loose Assets/": "pink",
+"res://scenes/": "red",
+"res://scenes/Main/": "red",
+"res://scenes/demo/": "red",
+"res://scenes/menus/": "yellow"
 }
 
 [global_group]
