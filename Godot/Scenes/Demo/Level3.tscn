@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://Scenes/Main/Player.tscn" id="1_sdg8l"]
 [ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="2_skvyi"]
 [ext_resource type="Texture2D" uid="uid://ciknc6lltq60d" path="res://Assets/Sprites/10x10 Tilemap Level 1.png" id="3_x3imb"]
-[ext_resource type="Texture2D" uid="uid://0aunae8etfji" path="res://Assets/Sprites/10x10 Tilemap Level 2.png" id="4_rm3yp"]
+[ext_resource type="Texture2D" uid="uid://5wmibkw6mtqr" path="res://Assets/Sprites/10x10 Tilemap Level 2.png" id="4_rm3yp"]
 [ext_resource type="Texture2D" uid="uid://cv11towp3b3k" path="res://Assets/Sprites/Tilemap Level 1 Part 2.png" id="5_s5qhs"]
 [ext_resource type="Texture2D" uid="uid://du0541yig3635" path="res://Assets/Sprites/10x10 Tilemap Level 3.png" id="6_skvyi"]
 
@@ -870,8 +870,8 @@ position = Vector2(0, 19)
 
 [node name="Background" type="ColorRect" parent="."]
 z_index = -4096
-offset_left = -2671.0
-offset_top = -2322.0
-offset_right = 5245.0
-offset_bottom = 2938.0
+offset_left = -2656.0
+offset_top = -2120.0
+offset_right = 5260.0
+offset_bottom = 3140.0
 color = Color(1, 0.52104384, 0.42715594, 1)
