@@ -1,10 +1,10 @@
 extends CharacterBody2D
 
-## Main player controller orchestrating movement, combat, health, and visuals.
-## Uses component-based architecture for clean separation of concerns.
+## Main player controller
+## Trying smth new with isolating functiosn across several scripts, listed below
 ##
-## Required children:
-## - HealthComponent (auto-created if missing)
+## Children scripts:
+## - HealthComponent (auto-created in feature treeif missing)
 ## - PlayerMovement (auto-created if missing)  
 ## - PlayerCombat (auto-created if missing)
 ## - PlayerVisuals (auto-created if missing)
@@ -34,8 +34,11 @@ signal health_changed(current: int, maximum: int)
 @export var spawn_delay: float = 0.5
 
 @export_group("Camera")
-@export var camera_look_ahead: float = 120.0
-@export var camera_smoothing: float = 12.0
+@export var camera_deadzone: Vector2 = Vector2(80, 50)
+@export var camera_smoothing: float = 5.0
+@export var camera_look_ahead: float = 60.0
+@export var camera_look_ahead_smoothing: float = 3.0
+@export var camera_vertical_bias: float = -20.0
 
 @export_group("Effects")
 @export var double_jump_particle_scene: PackedScene
@@ -61,6 +64,10 @@ var attack_hitbox: Area2D
 # State
 var spawn_position: Vector2 = Vector2.ZERO
 var is_spawning: bool = true
+
+# Camera state
+var _camera_target: Vector2 = Vector2.ZERO
+var _camera_look_offset: float = 0.0
 
 const MIN_KNOCKBACK_SQ: float = 0.01
 
@@ -178,8 +185,15 @@ func _setup_camera() -> void:
 	camera = get_node_or_null("player-camera")
 	if camera:
 		camera.enabled = true
-		camera.position_smoothing_enabled = true
-		camera.position_smoothing_speed = camera_smoothing
+		# Disable built-in smoothing - we handle it manually
+		camera.position_smoothing_enabled = false
+		# Reparent camera to level so it moves independently
+		var level := get_tree().current_scene
+		if level and camera.get_parent() == self:
+			camera.top_level = true
+		# Initialize camera target to player position
+		_camera_target = global_position
+		camera.global_position = _camera_target + Vector2(0, camera_vertical_bias)
 
 
 func _connect_signals() -> void:
@@ -303,8 +317,34 @@ func _update_camera(delta: float) -> void:
 	if not camera:
 		return
 	
-	var target_offset := Vector2(camera_look_ahead * movement.facing_direction, 0.0)
-	camera.position = camera.position.lerp(target_offset, camera_smoothing * delta)
+	# Get player position relative to current camera target
+	var player_offset := global_position - _camera_target
+	
+	# Only move camera if player exits the deadzone box
+	var push := Vector2.ZERO
+	
+	if player_offset.x > camera_deadzone.x:
+		push.x = player_offset.x - camera_deadzone.x
+	elif player_offset.x < -camera_deadzone.x:
+		push.x = player_offset.x + camera_deadzone.x
+	
+	if player_offset.y > camera_deadzone.y:
+		push.y = player_offset.y - camera_deadzone.y
+	elif player_offset.y < -camera_deadzone.y:
+		push.y = player_offset.y + camera_deadzone.y
+	
+	# Apply push to camera target
+	_camera_target += push
+	
+	# Smooth look-ahead based on facing direction
+	var target_look: float = camera_look_ahead * movement.facing_direction
+	_camera_look_offset = lerpf(_camera_look_offset, target_look, camera_look_ahead_smoothing * delta)
+	
+	# Calculate final camera position with look-ahead and vertical bias
+	var final_target := _camera_target + Vector2(_camera_look_offset, camera_vertical_bias)
+	
+	# Smooth camera movement to final target
+	camera.global_position = camera.global_position.lerp(final_target, camera_smoothing * delta)
 
 
 # --- Damage Handling ---
@@ -443,7 +483,7 @@ func _die() -> void:
 	
 	died.emit()
 	
-	# Transition to game over / main menu
+	# Transition to game over FUNCTION
 	await get_tree().create_timer(death_transition_delay).timeout
 	_go_to_game_over()
 

@@ -1,10 +1,15 @@
 extends Node2D
+@export_group("FUCK")
+@export var player_dash_enabled: bool = true
+@export var player_double_jump_enabled: bool = true
+@export var player_health_visible: bool = true
+@export var player_combat_enabled: bool = true
+
 
 @onready var player_camera: Camera2D = $"Character/player-camera"
 @onready var cutscene_camera: Camera2D = $CSCamera
 @onready var camera_area: Area2D = $CSCamera/CameraArea
 @onready var scroll: ScrollContainer = $Control/ScrollContainer
-
 @export var scrollspeed := 50.0
 @export var exit_duration := 1.0
 @export var exit_buffer_time := 2.0

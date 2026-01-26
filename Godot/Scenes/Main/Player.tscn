@@ -1,12 +1,11 @@
-[gd_scene load_steps=21 format=3 uid="uid://dyd3r20y2tid0"]
+[gd_scene load_steps=20 format=3 uid="uid://dyd3r20y2tid0"]
 
 [ext_resource type="Script" uid="uid://ry14n7flj8xt" path="res://Scripts/Player/player.gd" id="1_n3mh5"]
-[ext_resource type="Texture2D" uid="uid://bjf86yusvf63b" path="res://Assets/Static-Bob.png" id="2_5olkl"]
 [ext_resource type="Texture2D" uid="uid://d1sb5o2lf6gjy" path="res://Assets/Sprites/Magic Particle 8x8.png" id="3_fmcob"]
-[ext_resource type="Texture2D" uid="uid://dajf4cypglhfp" path="res://assets/sprites/mira/Mira_Idle.png" id="4_fmcob"]
-[ext_resource type="Texture2D" uid="uid://c8lpmtqsk1a8s" path="res://assets/sprites/mira/Mira_Run.png" id="5_vdg7p"]
-[ext_resource type="Texture2D" uid="uid://bbv0ipndtl1a1" path="res://assets/sprites/mira/Mira_Jump.png" id="6_fmcob"]
-[ext_resource type="Texture2D" uid="uid://dcypctrowsrw" path="res://assets/sprites/mira/Mira_Dash.png" id="7_l34nv"]
+[ext_resource type="Texture2D" uid="uid://dajf4cypglhfp" path="res://Assets/Sprites/Mira/Mira_Idle.png" id="4_fmcob"]
+[ext_resource type="Texture2D" uid="uid://c8lpmtqsk1a8s" path="res://Assets/Sprites/Mira/Mira_Run.png" id="5_vdg7p"]
+[ext_resource type="Texture2D" uid="uid://bbv0ipndtl1a1" path="res://Assets/Sprites/Mira/Mira_Jump.png" id="6_fmcob"]
+[ext_resource type="Texture2D" uid="uid://dcypctrowsrw" path="res://Assets/Sprites/Mira/Mira_Dash.png" id="7_l34nv"]
 [ext_resource type="Texture2D" uid="uid://boiax14fbq8yg" path="res://Assets/Temp Assets/Female Character/SpriteSheets/Attack/Female Character Attack 01.png" id="7_o3w48"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5olkl"]
@@ -176,6 +175,7 @@ position = Vector2(0, 20)
 shape = SubResource("RectangleShape2D_5olkl")
 
 [node name="player-camera" type="Camera2D" parent="."]
+visible = false
 position = Vector2(27, 0)
 scale = Vector2(0.9803404, 1)
 zoom = Vector2(1.4, 1.4)
@@ -188,12 +188,6 @@ limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 3.0
 editor_draw_limits = true
-
-[node name="static-character" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(0, 10)
-scale = Vector2(1.4, 1.4)
-texture = ExtResource("2_5olkl")
 
 [node name="particles" type="Node2D" parent="."]
 
@@ -245,6 +239,7 @@ spread = 180.0
 gravity = Vector2(0, 0)
 initial_velocity_max = 404.65
 damping_max = 52.565
+color = Color(0.7401311, 0.72739464, 1.92523e-06, 1)
 color_ramp = SubResource("Gradient_j5bfj")
 color_initial_ramp = SubResource("Gradient_o3w48")
 hue_variation_min = -1.0
@@ -262,7 +257,7 @@ libraries = {
 [node name="sprites" type="Node2D" parent="animations"]
 
 [node name="Idle" type="Sprite2D" parent="animations/sprites"]
-position = Vector2(0, 2)
+position = Vector2(0, 1.9999989)
 scale = Vector2(1.95, 1.95)
 texture = ExtResource("4_fmcob")
 hframes = 6
@@ -277,7 +272,7 @@ frame = 1
 
 [node name="Jump" type="Sprite2D" parent="animations/sprites"]
 visible = false
-position = Vector2(6, 0)
+position = Vector2(4.9999976, 2.0000002)
 scale = Vector2(1.95, 1.95)
 texture = ExtResource("6_fmcob")
 hframes = 4
