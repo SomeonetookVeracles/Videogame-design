@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://boiax14fbq8yg"
-path="res://.godot/imported/Female Character Attack 01.png-64e0b48633b997af04e6dde5087dff1c.ctex"
+path="res://.godot/imported/Female Character Attack 01.png-0cc8f4a2e77bc8279375436e7840c8da.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Temp Assets/Female Character/SpriteSheets/Attack/Female Character Attack 01.png"
-dest_files=["res://.godot/imported/Female Character Attack 01.png-64e0b48633b997af04e6dde5087dff1c.ctex"]
+source_file="res://assets/Temp Assets/Female Character/SpriteSheets/Attack/Female Character Attack 01.png"
+dest_files=["res://.godot/imported/Female Character Attack 01.png-0cc8f4a2e77bc8279375436e7840c8da.ctex"]
 
 [params]
 

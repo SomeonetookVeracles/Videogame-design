@@ -93,7 +93,7 @@ func _apply_gravity(delta: float) -> void:
 	if parent.is_on_floor() or _is_dashing:
 		return
 	
-	var is_falling := parent.velocity.y > 0.0
+	var _is_falling := parent.velocity.y > 0.0
 	_is_jump_held = Input.is_action_pressed("movement_jump")
 	
 	if parent.velocity.y < 0.0 and not _is_jump_held:

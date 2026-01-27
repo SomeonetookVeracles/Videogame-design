@@ -1,12 +1,12 @@
 [gd_scene load_steps=20 format=3 uid="uid://dyd3r20y2tid0"]
 
 [ext_resource type="Script" uid="uid://ry14n7flj8xt" path="res://Scripts/Player/player.gd" id="1_n3mh5"]
-[ext_resource type="Texture2D" uid="uid://d1sb5o2lf6gjy" path="res://Assets/Sprites/Magic Particle 8x8.png" id="3_fmcob"]
-[ext_resource type="Texture2D" uid="uid://dajf4cypglhfp" path="res://Assets/Sprites/Mira/Mira_Idle.png" id="4_fmcob"]
-[ext_resource type="Texture2D" uid="uid://c8lpmtqsk1a8s" path="res://Assets/Sprites/Mira/Mira_Run.png" id="5_vdg7p"]
-[ext_resource type="Texture2D" uid="uid://bbv0ipndtl1a1" path="res://Assets/Sprites/Mira/Mira_Jump.png" id="6_fmcob"]
-[ext_resource type="Texture2D" uid="uid://dcypctrowsrw" path="res://Assets/Sprites/Mira/Mira_Dash.png" id="7_l34nv"]
-[ext_resource type="Texture2D" uid="uid://boiax14fbq8yg" path="res://Assets/Temp Assets/Female Character/SpriteSheets/Attack/Female Character Attack 01.png" id="7_o3w48"]
+[ext_resource type="Texture2D" uid="uid://d1sb5o2lf6gjy" path="res://assets/sprites/Magic Particle 8x8.png" id="3_fmcob"]
+[ext_resource type="Texture2D" uid="uid://bxhx07cgouqrw" path="res://Assets/Sprites/Mira/Mira_Idle.png" id="4_fmcob"]
+[ext_resource type="Texture2D" uid="uid://bw2plkq8ja7cs" path="res://Assets/Sprites/Mira/Mira_Run.png" id="5_vdg7p"]
+[ext_resource type="Texture2D" uid="uid://xk56rq7wx8p" path="res://Assets/Sprites/Mira/Mira_Jump.png" id="6_fmcob"]
+[ext_resource type="Texture2D" uid="uid://bq7w0y1o2qwvj" path="res://Assets/Sprites/Mira/Mira_Dash.png" id="7_l34nv"]
+[ext_resource type="Texture2D" uid="uid://boiax14fbq8yg" path="res://assets/Temp Assets/Female Character/SpriteSheets/Attack/Female Character Attack 01.png" id="7_o3w48"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5olkl"]
 size = Vector2(40.5, 88)
@@ -164,8 +164,8 @@ _data = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vocxr"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_o3w48"]
-size = Vector2(130, 134)
+[sub_resource type="CircleShape2D" id="CircleShape2D_hsh3d"]
+radius = 72.85
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_n3mh5")
@@ -257,6 +257,7 @@ libraries = {
 [node name="sprites" type="Node2D" parent="animations"]
 
 [node name="Idle" type="Sprite2D" parent="animations/sprites"]
+visible = false
 position = Vector2(0, 1.9999989)
 scale = Vector2(1.95, 1.95)
 texture = ExtResource("4_fmcob")
@@ -286,7 +287,6 @@ texture = ExtResource("7_l34nv")
 hframes = 4
 
 [node name="combat_attack" type="Sprite2D" parent="animations/sprites"]
-visible = false
 position = Vector2(22, -14)
 scale = Vector2(1.95, 1.95)
 texture = ExtResource("7_o3w48")
@@ -297,8 +297,8 @@ hframes = 7
 [node name="AttackHitbox" type="Area2D" parent="combat"]
 
 [node name="Attackhitbox" type="CollisionShape2D" parent="combat/AttackHitbox"]
-position = Vector2(85, -3)
-shape = SubResource("RectangleShape2D_o3w48")
+position = Vector2(74, 1)
+shape = SubResource("CircleShape2D_hsh3d")
 
 [node name="Sprite2D" type="Sprite2D" parent="combat/AttackHitbox/Attackhitbox"]
 visible = false
