@@ -1,16 +1,15 @@
 extends CharacterBody2D
 
 ## Main player controller
-## Trying smth new with isolating functiosn across several scripts, listed below
 ##
-## Children scripts:
-## - HealthComponent (auto-created in feature treeif missing)
-## - PlayerMovement (auto-created if missing)  
-## - PlayerCombat (auto-created if missing)
-## - PlayerVisuals (auto-created if missing)
-## - PlayerStateMachine (auto-created if missing)
+##  children:
+## - HealthComponent 
+## - PlayerMovement
+## - PlayerCombat
+## - PlayerVisuals
+## - PlayerStateMachine
 
-# Preload component scripts for type resolution
+# Preload component scripts
 const HealthComponentScript = preload("res://Scripts/Components/health_component.gd")
 const PlayerMovementScript = preload("res://Scripts/Components/player_movement.gd")
 const PlayerCombatScript = preload("res://Scripts/Components/player_combat.gd")
@@ -42,6 +41,9 @@ signal health_changed(current: int, maximum: int)
 
 @export_group("Effects")
 @export var double_jump_particle_scene: PackedScene
+@export var impact_freeze_duration: float = 0.07
+@export var impact_shake_intensity: float = 6.0
+@export var impact_shake_duration: float = 0.15
 
 @export_group("Abilities")
 @export var dash_enabled: bool = true
@@ -49,7 +51,7 @@ signal health_changed(current: int, maximum: int)
 @export var health_visible: bool = true
 @export var combat_enabled: bool = true
 
-# Component references (using Node type for compatibility)
+# Component references (using Node type because godot gets picky)
 var health: Node
 var movement: Node
 var combat: Node
@@ -430,6 +432,46 @@ func _on_damage_taken(_amount: float, _source: Node) -> void:
 	visuals.trigger_particles("death")
 	state_machine.current_state = PlayerStateMachineScript.State.HURT
 	state_machine.lock_state(0.1)
+	
+	# Impact freeze (hitstop)
+	_do_impact_freeze()
+	
+	# Camera shake
+	_do_camera_shake()
+
+
+func _do_impact_freeze() -> void:
+	if impact_freeze_duration <= 0.0:
+		return
+	
+	Engine.time_scale = 0.05
+	
+	# Use a timer that ignores time scale
+	await get_tree().create_timer(impact_freeze_duration, true, false, true).timeout
+	
+	Engine.time_scale = 1.0
+
+
+func _do_camera_shake() -> void:
+	if not camera or impact_shake_intensity <= 0.0:
+		return
+	
+	var original_offset := camera.offset
+	var _shake_tween := create_tween()
+	var elapsed := 0.0
+	var shake_step := 0.02
+	
+	while elapsed < impact_shake_duration:
+		var intensity: float = impact_shake_intensity * (1.0 - elapsed / impact_shake_duration)
+		var offset := Vector2(
+			randf_range(-intensity, intensity),
+			randf_range(-intensity, intensity)
+		)
+		camera.offset = original_offset + offset
+		await get_tree().create_timer(shake_step).timeout
+		elapsed += shake_step
+	
+	camera.offset = original_offset
 
 
 func _on_health_depleted() -> void:
@@ -483,7 +525,7 @@ func _die() -> void:
 	
 	died.emit()
 	
-	# Transition to game over FUNCTION
+	# Transition to game over / main menu
 	await get_tree().create_timer(death_transition_delay).timeout
 	_go_to_game_over()
 

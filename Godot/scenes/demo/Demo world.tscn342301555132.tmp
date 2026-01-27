@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://4qm7xptckskm" path="res://Scripts/levelscripts/demo_world.gd" id="1_uclb8"]
 [ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://scenes/Main/Player.tscn" id="2_m2dw3"]
 [ext_resource type="Texture2D" uid="uid://bjf86yusvf63b" path="res://assets/Static-Bob.png" id="3_m2dw3"]
-[ext_resource type="PackedScene" uid="uid://oh5hxaqk5vho" path="res://scenes/Main/Enemies/basic_enemy.tscn" id="5_0rdtv"]
+[ext_resource type="PackedScene" uid="uid://dxrd0g1a1ygsc" path="res://scenes/Main/Enemies/Projectile.tscn" id="5_0rdtv"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qm6ny"]
 texture = ExtResource("1_qm6ny")
@@ -117,7 +117,7 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_qm6ny")
 
 [sub_resource type="GDScript" id="GDScript_0rdtv"]
-script/source = "extends Node
+script/source = "extends node2d
 func _ready():
 	# Wait a frame for everything to initialize
 	await get_tree().process_frame
@@ -134,6 +134,9 @@ func _ready():
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_uclb8")
+
+[node name="ParryableProjectile" parent="." groups=["projectiles"] instance=ExtResource("5_0rdtv")]
+position = Vector2(526, -531)
 
 [node name="Character" parent="." instance=ExtResource("2_m2dw3")]
 position = Vector2(-33, -341)
@@ -165,13 +168,3 @@ region_rect = Rect2(49828.43, 2875.6208, 492.45703, 295.61816)
 
 [node name="Test" type="Node" parent="."]
 script = SubResource("GDScript_0rdtv")
-
-[node name="BasicAlien" parent="." instance=ExtResource("5_0rdtv")]
-position = Vector2(243, -321)
-chase_speed = 120.0
-aggro_speed = 160.0
-aggro_range = 480.0
-deaggro_range = 980.0
-preferred_distance = 200.0
-fire_rate = 0.5
-flash_color = Color(0, 0, 0, 1)

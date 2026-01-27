@@ -167,11 +167,4 @@ region_rect = Rect2(49828.43, 2875.6208, 492.45703, 295.61816)
 script = SubResource("GDScript_0rdtv")
 
 [node name="BasicAlien" parent="." instance=ExtResource("5_0rdtv")]
-position = Vector2(243, -321)
-chase_speed = 120.0
-aggro_speed = 160.0
-aggro_range = 480.0
-deaggro_range = 980.0
-preferred_distance = 200.0
-fire_rate = 0.5
-flash_color = Color(0, 0, 0, 1)
+position = Vector2(345, -327)

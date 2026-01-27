@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://oh5hxaqk5vho"]
+
+[ext_resource type="Script" uid="uid://cqdew607tgvx6" path="res://Scripts/Enemies/BasicAlien.gd" id="1_enemy"]
+[ext_resource type="PackedScene" uid="uid://dxrd0g1a1ygsc" path="res://scenes/Main/Enemies/Projectile.tscn" id="2_projectile"]
+[ext_resource type="Texture2D" uid="uid://bb2ai00o324av" path="res://assets/sprites/Loose Assets/image2.png" id="3_lp3hd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(46, 96)
+
+[node name="BasicAlien" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_enemy")
+projectile_scene = ExtResource("2_projectile")
+fire_rate = 1.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 0)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0.99999994, 0)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_lp3hd")

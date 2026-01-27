@@ -1,12 +1,12 @@
 [gd_scene load_steps=21 format=4 uid="uid://dangscl30miyt"]
 
-[ext_resource type="Script" uid="uid://bpl7tunyb34l6" path="res://Scripts/level1.gd" id="1_24dbo"]
-[ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://Scenes/Main/Player.tscn" id="1_q64gd"]
-[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="2_24dbo"]
-[ext_resource type="Texture2D" uid="uid://ciknc6lltq60d" path="res://Assets/Sprites/10x10 Tilemap Level 1.png" id="3_q64gd"]
-[ext_resource type="Texture2D" uid="uid://cv11towp3b3k" path="res://Assets/Sprites/Tilemap Level 1 Part 2.png" id="5_xjvl8"]
-[ext_resource type="Texture2D" uid="uid://wv47tiuojy0f" path="res://Assets/Sprites/SW Bed.png" id="6_r7n7t"]
-[ext_resource type="Texture2D" uid="uid://lqxt5sgkvhpq" path="res://Assets/Sprites/Loose Assets/Funny.jpg" id="7_xn037"]
+[ext_resource type="Script" uid="uid://bpl7tunyb34l6" path="res://Scripts/levelscripts/level1.gd" id="1_24dbo"]
+[ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://scenes/Main/Player.tscn" id="1_q64gd"]
+[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://assets/Temp Assets/PTST/tileset template 1.png" id="2_24dbo"]
+[ext_resource type="Texture2D" uid="uid://ciknc6lltq60d" path="res://assets/sprites/10x10 Tilemap Level 1.png" id="3_q64gd"]
+[ext_resource type="Texture2D" uid="uid://cv11towp3b3k" path="res://assets/sprites/Tilemap Level 1 Part 2.png" id="5_xjvl8"]
+[ext_resource type="Texture2D" uid="uid://bk6evswp3qdy2" path="res://assets/sprites/SW Bed.png" id="6_r7n7t"]
+[ext_resource type="Texture2D" uid="uid://dbr8hnq7gfp6u" path="res://assets/sprites/Loose Assets/Funny.jpg" id="7_xn037"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q64gd"]
 texture = ExtResource("2_24dbo")
