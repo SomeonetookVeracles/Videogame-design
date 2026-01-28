@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://dxrd0g1a1ygsc"]
+[gd_scene format=3 uid="uid://dxrd0g1a1ygsc"]
 
-[ext_resource type="Script" uid="uid://cbigx5cd8r5g5" path="res://Scripts/ParryableProjectile.gd" id="1_q0c80"]
+[ext_resource type="Script" uid="uid://cbigx5cd8r5g5" path="res://Scripts/Components/ParryableProjectile.gd" id="1_q0c80"]
 [ext_resource type="Texture2D" uid="uid://d1sb5o2lf6gjy" path="res://assets/sprites/Magic Particle 8x8.png" id="2_dv47l"]
 [ext_resource type="Texture2D" uid="uid://dyr0jihel6h05" path="res://assets/sprites/Magic Particle 2x2.png" id="3_uds08"]
 
@@ -10,23 +10,25 @@ radius = 8.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_odg3p"]
 radius = 12.0
 
-[node name="ParryableProjectile" type="Area2D"]
+[node name="ParryableProjectile" type="Area2D" unique_id=1692271254]
 collision_layer = 7
 collision_mask = 7
 script = ExtResource("1_q0c80")
+speed = 900.0
+parry_speed_multiplier = 3.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=826244160]
 shape = SubResource("CircleShape2D_elagk")
 
-[node name="ParryHitbox" type="Area2D" parent="."]
+[node name="ParryHitbox" type="Area2D" parent="." unique_id=1913973391]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ParryHitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ParryHitbox" unique_id=1074648564]
 shape = SubResource("CircleShape2D_odg3p")
 
-[node name="MagicParticle8x8" type="Sprite2D" parent="."]
+[node name="MagicParticle8x8" type="Sprite2D" parent="." unique_id=1392518803]
 texture = ExtResource("2_dv47l")
 
-[node name="Trail" type="CPUParticles2D" parent="."]
+[node name="Trail" type="CPUParticles2D" parent="." unique_id=734045061]
 amount = 48
 texture = ExtResource("3_uds08")
 lifetime = 0.2

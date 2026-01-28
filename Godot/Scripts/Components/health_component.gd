@@ -28,7 +28,7 @@ signal orb_restored(orb_index: int)
 
 @export_group("Orb Appearance")
 @export var orb_scene: PackedScene
-@export var orb_texture: Texture2D = preload("res://assets/sprites/mira/mira_health.png")
+@export var orb_texture: Texture2D = preload("res://assets/sprites/mira/Spritesheets/mira_health.png")
 @export var orb_scale: Vector2 = Vector2.ONE
 @export var orb_z_index: int = -1
 @export var orb_modulate: Color = Color.WHITE

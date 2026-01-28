@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://f1kt4ent737a"]
+
+[ext_resource type="Script" uid="uid://bubpgs0rc5qpw" path="res://Scripts/Menu/OptionsMenu.gd" id="1_kg4e6"]
+[ext_resource type="Texture2D" uid="uid://tpgbtqrro2fd" path="res://assets/sprites/Icons/Mira_Wandsword_icon.png" id="2_0cuga"]
+[ext_resource type="FontFile" uid="uid://c2bupqg7yyxqg" path="res://assets/Temp Assets/Pixelout Personal Use Only.ttf" id="3_y788u"]
+[ext_resource type="AudioStream" uid="uid://drmgmvfu75rt5" path="res://assets/Music/Introduction Song_ Titlecard.wav" id="4_1vipl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nbr2c"]
+bg_color = Color(0.08078333, 0.08078336, 0.08078327, 1)
+
+[node name="OptionsMenu" type="Control" unique_id=2022615735]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kg4e6")
+
+[node name="Blackground" type="Panel" parent="." unique_id=335523424]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nbr2c")
+
+[node name="cursor" type="Sprite2D" parent="." unique_id=1016189247]
+position = Vector2(483, 355)
+texture = ExtResource("2_0cuga")
+
+[node name="MenuOptions" type="VBoxContainer" parent="." unique_id=506093907]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -115.5
+offset_top = -145.0
+offset_right = 115.5
+offset_bottom = 145.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Audio" type="Label" parent="MenuOptions" unique_id=1569461463]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_y788u")
+theme_override_font_sizes/font_size = 32
+text = "Audio"
+horizontal_alignment = 1
+
+[node name="Fullscreen" type="Label" parent="MenuOptions" unique_id=624954401]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_y788u")
+theme_override_font_sizes/font_size = 32
+text = "Fullscreen: disabled"
+horizontal_alignment = 1
+
+[node name="Exit" type="Label" parent="MenuOptions" unique_id=1039723634]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_y788u")
+theme_override_font_sizes/font_size = 32
+text = "Back"
+horizontal_alignment = 1
+
+[node name="Menu Music" type="AudioStreamPlayer" parent="." unique_id=1503579911]
+stream = ExtResource("4_1vipl")
+volume_db = -20.0
+autoplay = true
+max_polyphony = 2

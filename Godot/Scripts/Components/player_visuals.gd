@@ -2,6 +2,7 @@ class_name PlayerVisuals
 extends Node
 
 ## Handles all player visual effects including animations, afterimages, and particles.
+## Combat sprites (attack/parry) overlay on top of movement sprites.
 
 signal animation_finished(anim_name: String)
 
@@ -12,7 +13,7 @@ signal animation_finished(anim_name: String)
 @export var dash_afterimage_extension: float = 0.1
 
 @export_group("Afterimages - Jump")
-@export var jump_afterimage_enabled: bool = false
+@export var jump_afterimage_enabled: bool = true
 @export var jump_afterimage_min_velocity: float = 200.0
 @export var jump_afterimage_max_interval: float = 0.08
 @export var jump_afterimage_min_interval: float = 0.02
@@ -27,6 +28,7 @@ var animations_root: Node2D
 var parent: CharacterBody2D
 
 var sprites: Dictionary = {}
+var combat_sprites: Dictionary = {}
 var particles: Dictionary = {}
 
 var _current_sprite_key: String = "idle"
@@ -35,8 +37,9 @@ var _afterimage_extension_timer: float = 0.0
 var _jump_afterimage_timer: float = 0.0
 var _is_creating_dash_afterimages: bool = false
 
-const SPRITE_KEYS: Array[String] = ["idle", "run", "jump", "dash", "attack"]
-const PARTICLE_KEYS: Array[String] = ["jump", "dash", "death"]
+const SPRITE_KEYS: Array[String] = ["idle", "run", "jump", "dash"]
+const COMBAT_SPRITE_KEYS: Array[String] = ["attack", "parry"]
+const PARTICLE_KEYS: Array[String] = ["jump", "dash", "death", "parry"]
 
 
 func _ready() -> void:
@@ -44,20 +47,23 @@ func _ready() -> void:
 	_cache_nodes()
 	_connect_signals()
 	_hide_all_sprites()
+	_hide_combat_sprites()
 
 
 func _cache_nodes() -> void:
 	animation_player = parent.get_node_or_null(animation_player_path)
 	animations_root = parent.get_node_or_null(animations_root_path)
 	
-	# Cache sprite references
+	# Cache movement sprite references
 	var sprites_container := parent.get_node_or_null("animations/sprites")
 	if sprites_container:
 		sprites["idle"] = sprites_container.get_node_or_null("Idle")
 		sprites["run"] = sprites_container.get_node_or_null("Run")
 		sprites["jump"] = sprites_container.get_node_or_null("Jump")
 		sprites["dash"] = sprites_container.get_node_or_null("Dash")
-		sprites["attack"] = sprites_container.get_node_or_null("combat_attack")
+		# Combat sprites overlay on movement
+		combat_sprites["attack"] = sprites_container.get_node_or_null("combat_attack")
+		combat_sprites["parry"] = sprites_container.get_node_or_null("combat_parry")
 	
 	# Cache particle references
 	var particles_container := parent.get_node_or_null("particles")
@@ -65,6 +71,7 @@ func _cache_nodes() -> void:
 		particles["jump"] = particles_container.get_node_or_null("jump-particles")
 		particles["dash"] = particles_container.get_node_or_null("dash-particles")
 		particles["death"] = particles_container.get_node_or_null("death-particles")
+		particles["parry"] = particles_container.get_node_or_null("parry-particles")
 
 
 func _connect_signals() -> void:
@@ -170,14 +177,63 @@ func _hide_all_sprites() -> void:
 			sprite.visible = false
 
 
+func _hide_combat_sprites() -> void:
+	for sprite in combat_sprites.values():
+		if sprite:
+			sprite.visible = false
+
+
+func show_combat_sprite(sprite_key: String) -> void:
+	_hide_combat_sprites()
+	if combat_sprites.has(sprite_key) and combat_sprites[sprite_key]:
+		combat_sprites[sprite_key].visible = true
+	else:
+		push_warning("PlayerVisuals: Combat sprite not found: " + sprite_key + ". Available: " + str(combat_sprites.keys()))
+
+
+func hide_combat_sprite() -> void:
+	_hide_combat_sprites()
+
+
 func show_sprite(sprite_key: String) -> void:
 	if sprites.has(sprite_key) and sprites[sprite_key]:
 		sprites[sprite_key].visible = true
 
 
-func play_animation(anim_name: String, speed: float = 1.0) -> void:
-	if animation_player and animation_player.current_animation != anim_name:
+func play_animation(anim_name: String, speed: float = 1.0, force_restart: bool = false) -> void:
+	if not animation_player:
+		return
+	
+	if not animation_player.has_animation(anim_name):
+		return
+	
+	if force_restart or animation_player.current_animation != anim_name:
+		animation_player.stop()
 		animation_player.play(anim_name, -1, speed)
+
+
+func play_combat_animation(anim_name: String, speed: float = 1.0) -> void:
+	if not animation_player:
+		push_warning("PlayerVisuals: No animation player found for combat animation")
+		return
+	
+	# Try the requested animation first
+	var actual_anim := anim_name
+	if not animation_player.has_animation(actual_anim):
+		# Fallback: try without "combat_" prefix or with different naming
+		var fallback_name := anim_name.replace("combat_", "")
+		if animation_player.has_animation(fallback_name):
+			actual_anim = fallback_name
+		elif anim_name == "combat_parry" and animation_player.has_animation("combat_attack"):
+			actual_anim = "combat_attack"
+		elif animation_player.has_animation("Attack"):
+			actual_anim = "Attack"
+		else:
+			push_warning("PlayerVisuals: Combat animation not found: " + anim_name)
+			return
+	
+	animation_player.stop()
+	animation_player.play(actual_anim, -1, speed)
 
 
 func trigger_particles(key: String, flip_x: float = 1.0) -> void:

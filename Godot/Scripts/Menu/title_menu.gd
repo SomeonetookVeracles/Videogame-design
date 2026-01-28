@@ -13,4 +13,4 @@ func fade_out():
 	tween.tween_callback(change_scene)
 
 func change_scene():
-	get_tree().change_scene_to_file("res://scenes/menus/mainmenu.tscn")
+	get_tree().change_scene_to_file("res://scenes/main/menus/mainmenu.tscn")

@@ -62,6 +62,9 @@ var _contact_cooldown: float = 0.0
 @onready var contact_area: Area2D = $ContactDamageArea if has_node("ContactDamageArea") else null
 @onready var projectile_spawn: Marker2D = $ProjectileSpawn if has_node("ProjectileSpawn") else null
 
+var _ledge_ray_left: RayCast2D
+var _ledge_ray_right: RayCast2D
+
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -70,6 +73,7 @@ func _ready() -> void:
 	_pick_wander_target()
 	
 	_setup_contact_damage()
+	_setup_ledge_detection()
 
 
 func _setup_contact_damage() -> void:
@@ -97,6 +101,41 @@ func _setup_contact_damage() -> void:
 	
 	if not contact_area.body_entered.is_connected(_on_contact_body_entered):
 		contact_area.body_entered.connect(_on_contact_body_entered)
+
+
+func _setup_ledge_detection() -> void:
+	# Get collision extents for ray positioning
+	var ray_x_offset: float = 12.0
+	var ray_y_start: float = 0.0
+	var ray_length: float = 20.0
+	
+	var main_collision: CollisionShape2D = get_node_or_null("CollisionShape2D")
+	if main_collision and main_collision.shape:
+		if main_collision.shape is RectangleShape2D:
+			ray_x_offset = main_collision.shape.size.x * 0.5 + 4.0
+			ray_y_start = main_collision.shape.size.y * 0.5
+		elif main_collision.shape is CapsuleShape2D:
+			ray_x_offset = main_collision.shape.radius + 4.0
+			ray_y_start = main_collision.shape.height * 0.5
+		elif main_collision.shape is CircleShape2D:
+			ray_x_offset = main_collision.shape.radius + 4.0
+			ray_y_start = main_collision.shape.radius
+	
+	# Left ledge ray
+	_ledge_ray_left = RayCast2D.new()
+	_ledge_ray_left.name = "LedgeRayLeft"
+	_ledge_ray_left.position = Vector2(-ray_x_offset, ray_y_start)
+	_ledge_ray_left.target_position = Vector2(0, ray_length)
+	_ledge_ray_left.enabled = true
+	add_child(_ledge_ray_left)
+	
+	# Right ledge ray
+	_ledge_ray_right = RayCast2D.new()
+	_ledge_ray_right.name = "LedgeRayRight"
+	_ledge_ray_right.position = Vector2(ray_x_offset, ray_y_start)
+	_ledge_ray_right.target_position = Vector2(0, ray_length)
+	_ledge_ray_right.enabled = true
+	add_child(_ledge_ray_right)
 
 
 func _on_contact_body_entered(body: Node2D) -> void:
@@ -217,6 +256,14 @@ func _process_idle(delta: float) -> void:
 
 func _process_wander() -> void:
 	var dir: float = sign(_wander_target.x - global_position.x)
+	
+	# Stop at ledges
+	if _is_ledge_ahead(dir):
+		current_state = State.IDLE
+		_wander_timer = randf_range(wander_pause_min, wander_pause_max)
+		velocity.x = 0.0
+		return
+	
 	velocity.x = dir * wander_speed
 	
 	if absf(global_position.x - _wander_target.x) < 5.0 or is_on_wall():
@@ -233,12 +280,22 @@ func _process_aggro() -> void:
 	var dir_to_player: float = sign(_player.global_position.x - global_position.x)
 	
 	# Keep preferred distance
+	var desired_velocity_x: float = 0.0
 	if distance_to_player < preferred_distance - distance_tolerance:
-		velocity.x = -dir_to_player * aggro_speed
+		desired_velocity_x = -dir_to_player * aggro_speed
 	elif distance_to_player > preferred_distance + distance_tolerance:
-		velocity.x = dir_to_player * chase_speed
+		desired_velocity_x = dir_to_player * chase_speed
+	
+	# Check for ledge before moving
+	var move_dir: float = sign(desired_velocity_x)
+	if move_dir != 0.0 and _is_ledge_ahead(move_dir):
+		# Stop at ledge edge
+		velocity.x = 0.0
 	else:
-		velocity.x = move_toward(velocity.x, 0.0, aggro_speed * 2.0 * get_physics_process_delta_time())
+		if desired_velocity_x != 0.0:
+			velocity.x = desired_velocity_x
+		else:
+			velocity.x = move_toward(velocity.x, 0.0, aggro_speed * 2.0 * get_physics_process_delta_time())
 	
 	facing_direction = dir_to_player
 	
@@ -266,6 +323,18 @@ func _update_facing() -> void:
 		sprite.flip_h = facing_direction < 0
 	if projectile_spawn:
 		projectile_spawn.position.x = absf(projectile_spawn.position.x) * facing_direction
+
+
+func _is_ledge_ahead(direction: float) -> bool:
+	if not is_on_floor():
+		return false
+	
+	if direction > 0 and _ledge_ray_right:
+		return not _ledge_ray_right.is_colliding()
+	elif direction < 0 and _ledge_ray_left:
+		return not _ledge_ray_left.is_colliding()
+	
+	return false
 
 
 func _pick_wander_target() -> void:

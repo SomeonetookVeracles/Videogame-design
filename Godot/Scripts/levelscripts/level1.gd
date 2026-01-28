@@ -36,15 +36,7 @@ func _ready():
 	camera_area.body_exited.connect(_on_camera_area_exited)
 
 	cutscene_camera.enabled = false
-
-	# Start scroller at bottom
-	scroll.scroll_vertical = scroll.get_v_scroll_bar().max_value
-
 func _process(delta):
-	# Scroll text ONLY during cutscene
-	if is_in_camera_zone and cutscene_camera.enabled:
-		scroll.scroll_vertical -= scrollspeed * delta
-
 	# Exit buffer countdown
 	if not is_in_camera_zone and cutscene_camera.enabled and not is_transitioning:
 		exit_buffer_timer += delta
@@ -80,7 +72,6 @@ func _on_camera_area_entered(body):
 
 	if not cutscene_camera.enabled and not is_transitioning:
 		enter_camera_zone()
-		play_scroller()
 
 func _on_camera_area_exited(body):
 	if body.name != "Character":
@@ -126,12 +117,6 @@ func enter_camera_zone():
 	await active_tween.finished
 	is_transitioning = false
 
-func play_scroller():
-	if scroller_started:
-		return
-
-	scroller_started = true
-	scroll.scroll_vertical = scroll.get_v_scroll_bar().max_value
 
 func start_exit_transition():
 	if is_transitioning or is_exiting:
