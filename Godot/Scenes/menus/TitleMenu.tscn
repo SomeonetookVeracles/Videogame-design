@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cg0cmu35kut5b"]
+[gd_scene format=3 uid="uid://buw0e8cscqlv4"]
 
 [ext_resource type="Script" uid="uid://b1a2r5qqrgx4t" path="res://Scripts/Menu/title_menu.gd" id="1_ltjqj"]
 [ext_resource type="FontFile" uid="uid://c2bupqg7yyxqg" path="res://assets/Temp Assets/Pixelout Personal Use Only.ttf" id="2_3qkvr"]
