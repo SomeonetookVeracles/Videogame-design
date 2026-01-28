@@ -135,7 +135,7 @@ func select_current_option():
 			await get_tree().create_timer(0.1).timeout
 			print("Start game selected")
 			# get_tree().change_scene_to_file("res://scenes/game.tscn")
-			get_tree().quit()
+			play_side_transition("res://scenes/main/menus/levelselect.tscn")
 			
 		1:
 			await get_tree().create_timer(0.1).timeout

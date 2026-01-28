@@ -1,8 +1,8 @@
-[gd_scene format=3 uid="uid://buw0e8cscqlv4"]
+[gd_scene format=3 uid="uid://y7scyxn0xhxw"]
 
-[ext_resource type="Script" uid="uid://b1a2r5qqrgx4t" path="res://Scripts/Menu/title_menu.gd" id="1_ltjqj"]
-[ext_resource type="FontFile" uid="uid://c2bupqg7yyxqg" path="res://assets/Temp Assets/Pixelout Personal Use Only.ttf" id="2_3qkvr"]
-[ext_resource type="AudioStream" uid="uid://drmgmvfu75rt5" path="res://assets/Music/Introduction Song_ Titlecard.wav" id="3_716a5"]
+[ext_resource type="Script" uid="uid://b1a2r5qqrgx4t" path="res://Scripts/Menu/title_menu.gd" id="1_127qu"]
+[ext_resource type="FontFile" uid="uid://c2bupqg7yyxqg" path="res://assets/Temp Assets/Pixelout Personal Use Only.ttf" id="2_qw7ap"]
+[ext_resource type="AudioStream" uid="uid://drmgmvfu75rt5" path="res://assets/Music/Introduction Song_ Titlecard.wav" id="3_wbkfe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7x20p"]
 bg_color = Color(0.08078333, 0.08078336, 0.08078327, 1)
@@ -52,7 +52,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_ltjqj")
+script = ExtResource("1_127qu")
 transition_time = 1
 
 [node name="Blackground" type="Panel" parent="." unique_id=982920656]
@@ -79,7 +79,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/shadow_offset_x = 9
 theme_override_constants/shadow_offset_y = 18
 theme_override_constants/shadow_outline_size = 12
-theme_override_fonts/font = ExtResource("2_3qkvr")
+theme_override_fonts/font = ExtResource("2_qw7ap")
 theme_override_font_sizes/font_size = 128
 text = "Space Wizards?"
 horizontal_alignment = 1
@@ -100,7 +100,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_constants/shadow_offset_x = 9
 theme_override_constants/shadow_offset_y = 18
 theme_override_constants/shadow_outline_size = 12
-theme_override_fonts/font = ExtResource("2_3qkvr")
+theme_override_fonts/font = ExtResource("2_qw7ap")
 theme_override_font_sizes/font_size = 64
 text = "A Gameplay Demo"
 horizontal_alignment = 1
@@ -119,7 +119,7 @@ offset_right = 118.5
 offset_bottom = -134.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_fonts/font = ExtResource("2_3qkvr")
+theme_override_fonts/font = ExtResource("2_qw7ap")
 theme_override_font_sizes/font_size = 32
 text = "Press Any Button To Start"
 
@@ -128,7 +128,7 @@ libraries/ = SubResource("AnimationLibrary_frbap")
 autoplay = &"blink"
 
 [node name="Menu Music" type="AudioStreamPlayer" parent="." unique_id=103821114]
-stream = ExtResource("3_716a5")
+stream = ExtResource("3_wbkfe")
 volume_db = -20.0
 autoplay = true
 max_polyphony = 2

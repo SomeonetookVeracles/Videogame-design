@@ -212,6 +212,7 @@ angle_max = 148.5
 scale_amount_min = 0.5
 
 [node name="dash-particles" type="CPUParticles2D" parent="particles" unique_id=1966520135]
+z_index = -4
 position = Vector2(-9, 15)
 emitting = false
 amount = 64
@@ -227,6 +228,7 @@ damping_max = 38.144
 angle_min = -345.0
 angle_max = 148.5
 scale_amount_min = 0.5
+color = Color(0.34901962, 0.72156864, 0.27058825, 1)
 
 [node name="death-particles" type="CPUParticles2D" parent="particles" unique_id=509169839]
 position = Vector2(6, 13)

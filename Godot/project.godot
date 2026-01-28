@@ -44,7 +44,7 @@ folder_colors={
 "res://scenes/": "red",
 "res://scenes/demo/": "red",
 "res://scenes/main/": "red",
-"res://scenes/menus/": "yellow"
+"res://scenes/main/menus/": "yellow"
 }
 
 [global_group]

@@ -110,7 +110,7 @@ func _start_game():
 
 func _back_to_main():
 	print("Quit game selected")
-	play_side_transition("res://scenes/menus/MainMenu.tscn")
+	play_side_transition("res://scenes/main/menus/MainMenu.tscn")
 func _toggle_fullscreen():
 	var current_mode = DisplayServer.window_get_mode()
 	if current_mode == DisplayServer.WINDOW_MODE_WINDOWED:

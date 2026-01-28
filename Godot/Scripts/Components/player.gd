@@ -16,6 +16,7 @@ const PlayerMovementScript = preload("res://Scripts/Components/player_movement.g
 const PlayerCombatScript = preload("res://Scripts/Components/player_combat.gd")
 const PlayerVisualsScript = preload("res://Scripts/Components/player_visuals.gd")
 const PlayerStateMachineScript = preload("res://Scripts/Components/player_state_machine.gd")
+const FloatingBladeScript = preload("res://Scripts/Components/floating_blade.gd")
 
 signal died
 signal respawned
@@ -51,6 +52,7 @@ signal health_changed(current: int, maximum: int)
 @export var double_jump_enabled: bool = true
 @export var health_visible: bool = true
 @export var combat_enabled: bool = true
+@export var floating_blade_enabled: bool = true
 
 # Component references (using Node type for compatibility)
 var health: Node
@@ -58,6 +60,7 @@ var movement: Node
 var combat: Node
 var visuals: Node
 var state_machine: Node
+var floating_blade: Node
 
 # Node references
 var camera: Camera2D
@@ -110,6 +113,8 @@ func _check_level_ability_settings() -> void:
 		health_visible = level_root.player_health_visible
 	if "player_combat_enabled" in level_root:
 		combat_enabled = level_root.player_combat_enabled
+	if "player_floating_blade_enabled" in level_root:
+		floating_blade_enabled = level_root.player_floating_blade_enabled
 
 
 func _apply_ability_settings() -> void:
@@ -123,6 +128,9 @@ func _apply_ability_settings() -> void:
 		for orb in health._orb_instances:
 			if is_instance_valid(orb):
 				orb.visible = false
+	
+	if floating_blade and not floating_blade_enabled:
+		floating_blade.hide_immediate()
 
 
 func _setup_components() -> void:
@@ -144,6 +152,10 @@ func _setup_components() -> void:
 	
 	# Visuals Component
 	visuals = _get_or_create_component("PlayerVisuals", PlayerVisualsScript)
+	
+	# Floating Blade Component (optional)
+	if floating_blade_enabled:
+		floating_blade = _get_or_create_component("FloatingBlade", FloatingBladeScript)
 
 
 func _get_or_create_component(node_name: String, component_script: Script) -> Node:
@@ -218,6 +230,11 @@ func _connect_signals() -> void:
 	
 	# Visual signals
 	visuals.animation_finished.connect(_on_animation_finished)
+	
+	# Floating blade signals (connected to combat events)
+	if floating_blade:
+		combat.attack_started.connect(floating_blade.on_attack_started)
+		combat.attack_ended.connect(floating_blade.on_attack_ended)
 
 
 func _physics_process(delta: float) -> void:
@@ -531,6 +548,9 @@ func _die() -> void:
 	visuals.set_sprite_visible("")
 	velocity = Vector2.ZERO
 	
+	if floating_blade:
+		floating_blade.hide_immediate()
+	
 	died.emit()
 	
 	# Transition to game over / main menu
@@ -564,6 +584,9 @@ func _respawn() -> void:
 	visuals.trigger_particles("death")
 	visuals.show_sprite("idle")
 	visuals.play_animation("Idle")
+	
+	if floating_blade and floating_blade_enabled:
+		floating_blade.show_immediate()
 	
 	respawned.emit()
 

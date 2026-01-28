@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://y4jjwjc54a1l"]
 
-[ext_resource type="Script" uid="uid://bhcj1clq4vtdb" path="res://Scripts/Menu/MainMenu.gd" id="1_ffyt3"]
-[ext_resource type="FontFile" uid="uid://c2bupqg7yyxqg" path="res://assets/Temp Assets/Pixelout Personal Use Only.ttf" id="1_nbr2c"]
-[ext_resource type="Texture2D" uid="uid://tpgbtqrro2fd" path="res://assets/sprites/Icons/Mira_Wandsword_icon.png" id="3_ffyt3"]
-[ext_resource type="AudioStream" uid="uid://drmgmvfu75rt5" path="res://assets/Music/Introduction Song_ Titlecard.wav" id="4_blm1j"]
+[ext_resource type="Script" uid="uid://bhcj1clq4vtdb" path="res://Scripts/Menu/MainMenu.gd" id="1_glsta"]
+[ext_resource type="FontFile" uid="uid://c2bupqg7yyxqg" path="res://assets/Temp Assets/Pixelout Personal Use Only.ttf" id="2_1gt36"]
+[ext_resource type="Texture2D" uid="uid://tpgbtqrro2fd" path="res://assets/sprites/Icons/Mira_Wandsword_icon.png" id="3_hmjbb"]
+[ext_resource type="AudioStream" uid="uid://drmgmvfu75rt5" path="res://assets/Music/Introduction Song_ Titlecard.wav" id="4_c48e0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nbr2c"]
 bg_color = Color(0.08078333, 0.08078336, 0.08078327, 1)
@@ -15,7 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_ffyt3")
+script = ExtResource("1_glsta")
 
 [node name="Blackground" type="Panel" parent="." unique_id=2139184010]
 layout_mode = 1
@@ -43,31 +43,31 @@ alignment = 1
 
 [node name="Level Select" type="Label" parent="MenuOptions" unique_id=519881765]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("1_nbr2c")
+theme_override_fonts/font = ExtResource("2_1gt36")
 theme_override_font_sizes/font_size = 32
 text = "Select Level"
 horizontal_alignment = 1
 
 [node name="Options" type="Label" parent="MenuOptions" unique_id=1477519204]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("1_nbr2c")
+theme_override_fonts/font = ExtResource("2_1gt36")
 theme_override_font_sizes/font_size = 32
 text = "Options"
 horizontal_alignment = 1
 
 [node name="Exit" type="Label" parent="MenuOptions" unique_id=143484816]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("1_nbr2c")
+theme_override_fonts/font = ExtResource("2_1gt36")
 theme_override_font_sizes/font_size = 32
 text = "Exit"
 horizontal_alignment = 1
 
 [node name="cursor" type="Sprite2D" parent="." unique_id=1236559898]
 position = Vector2(420, 273)
-texture = ExtResource("3_ffyt3")
+texture = ExtResource("3_hmjbb")
 
 [node name="Menu Music" type="AudioStreamPlayer" parent="." unique_id=798274493]
-stream = ExtResource("4_blm1j")
+stream = ExtResource("4_c48e0")
 volume_db = -20.0
 autoplay = true
 max_polyphony = 2
