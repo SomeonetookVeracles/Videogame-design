@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dgeimk44hcaw6"]
+[gd_scene format=3 uid="uid://cg0cmu35kut5b"]
 
 [ext_resource type="Script" uid="uid://b1a2r5qqrgx4t" path="res://Scripts/Menu/title_menu.gd" id="1_ltjqj"]
 [ext_resource type="FontFile" uid="uid://c2bupqg7yyxqg" path="res://assets/Temp Assets/Pixelout Personal Use Only.ttf" id="2_3qkvr"]
@@ -45,7 +45,7 @@ _data = {
 &"blink": SubResource("Animation_yhy1j")
 }
 
-[node name="Control" type="Control"]
+[node name="Control" type="Control" unique_id=658448037]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,7 +55,7 @@ grow_vertical = 2
 script = ExtResource("1_ltjqj")
 transition_time = 1
 
-[node name="Blackground" type="Panel" parent="."]
+[node name="Blackground" type="Panel" parent="." unique_id=982920656]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -64,7 +64,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_7x20p")
 
-[node name="Maintitle" type="Label" parent="."]
+[node name="Maintitle" type="Label" parent="." unique_id=366787608]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -85,7 +85,7 @@ text = "Space Wizards?"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Subtitle" type="Label" parent="."]
+[node name="Subtitle" type="Label" parent="." unique_id=391044906]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -106,7 +106,7 @@ text = "A Gameplay Demo"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=1736560]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -123,13 +123,11 @@ theme_override_fonts/font = ExtResource("2_3qkvr")
 theme_override_font_sizes/font_size = 32
 text = "Press Any Button To Start"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_frbap")
-}
-autoplay = "blink"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=500738043]
+libraries/ = SubResource("AnimationLibrary_frbap")
+autoplay = &"blink"
 
-[node name="Menu Music" type="AudioStreamPlayer" parent="."]
+[node name="Menu Music" type="AudioStreamPlayer" parent="." unique_id=103821114]
 stream = ExtResource("3_716a5")
 volume_db = -20.0
 autoplay = true
