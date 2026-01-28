@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cmvl3wmgxg50b"
-path="res://.godot/imported/04 Roll.png-234e164a2e13b0c77d88b2d919d48512.ctex"
+path="res://.godot/imported/04 Roll.png-8e3d46f90902fd104f3e3fb2d919a279.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Temp Assets/Female Character/SpriteSheets/Locomotion/04 Roll.png"
-dest_files=["res://.godot/imported/04 Roll.png-234e164a2e13b0c77d88b2d919d48512.ctex"]
+source_file="res://Assets/Temp Assets/Female Character/SpriteSheets/Locomotion/04 Roll.png"
+dest_files=["res://.godot/imported/04 Roll.png-8e3d46f90902fd104f3e3fb2d919a279.ctex"]
 
 [params]
 
