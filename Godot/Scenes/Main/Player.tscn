@@ -1,12 +1,12 @@
-[gd_scene load_steps=20 format=3 uid="uid://dyd3r20y2tid0"]
+[gd_scene format=3 uid="uid://dyd3r20y2tid0"]
 
-[ext_resource type="Script" uid="uid://ry14n7flj8xt" path="res://Scripts/Player/player.gd" id="1_n3mh5"]
+[ext_resource type="Script" uid="uid://ry14n7flj8xt" path="res://Scripts/Components/player.gd" id="1_n3mh5"]
 [ext_resource type="Texture2D" uid="uid://d1sb5o2lf6gjy" path="res://assets/sprites/Magic Particle 8x8.png" id="3_fmcob"]
-[ext_resource type="Texture2D" uid="uid://bxhx07cgouqrw" path="res://Assets/Sprites/Mira/Mira_Idle.png" id="4_fmcob"]
-[ext_resource type="Texture2D" uid="uid://bw2plkq8ja7cs" path="res://Assets/Sprites/Mira/Mira_Run.png" id="5_vdg7p"]
-[ext_resource type="Texture2D" uid="uid://xk56rq7wx8p" path="res://Assets/Sprites/Mira/Mira_Jump.png" id="6_fmcob"]
-[ext_resource type="Texture2D" uid="uid://bq7w0y1o2qwvj" path="res://Assets/Sprites/Mira/Mira_Dash.png" id="7_l34nv"]
-[ext_resource type="Texture2D" uid="uid://boiax14fbq8yg" path="res://assets/Temp Assets/Female Character/SpriteSheets/Attack/Female Character Attack 01.png" id="7_o3w48"]
+[ext_resource type="Texture2D" uid="uid://bxhx07cgouqrw" path="res://assets/sprites/mira/Spritesheets/Mira_Idle.png" id="4_fmcob"]
+[ext_resource type="Texture2D" uid="uid://bw2plkq8ja7cs" path="res://assets/sprites/mira/Spritesheets/Mira_Run.png" id="5_vdg7p"]
+[ext_resource type="Texture2D" uid="uid://xk56rq7wx8p" path="res://assets/sprites/mira/Spritesheets/Mira_Jump.png" id="6_fmcob"]
+[ext_resource type="Texture2D" uid="uid://bq7w0y1o2qwvj" path="res://assets/sprites/mira/Spritesheets/Mira_Dash.png" id="7_l34nv"]
+[ext_resource type="Texture2D" uid="uid://d2y1jxgdwf35o" path="res://assets/sprites/mira/Spritesheets/Mira_Attack_1.png" id="8_bpfgg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5olkl"]
 size = Vector2(40.5, 88)
@@ -19,6 +19,7 @@ colors = PackedColorArray(0, 0, 0, 1, 0.5479452, 0.5479452, 0.5479452, 1, 0.5375
 
 [sub_resource type="Animation" id="Animation_fmcob"]
 resource_name = "combat_attack"
+length = 0.8
 step = 0.125
 tracks/0/type = "bezier"
 tracks/0/imported = false
@@ -167,14 +168,17 @@ _data = {
 [sub_resource type="CircleShape2D" id="CircleShape2D_hsh3d"]
 radius = 72.85
 
-[node name="Player" type="CharacterBody2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hsh3d"]
+size = Vector2(116, 129.5)
+
+[node name="Player" type="CharacterBody2D" unique_id=141179260]
 script = ExtResource("1_n3mh5")
 
-[node name="hitbox-area" type="CollisionShape2D" parent="."]
+[node name="hitbox-area" type="CollisionShape2D" parent="." unique_id=17695292]
 position = Vector2(0, 20)
 shape = SubResource("RectangleShape2D_5olkl")
 
-[node name="player-camera" type="Camera2D" parent="."]
+[node name="player-camera" type="Camera2D" parent="." unique_id=715290245]
 visible = false
 position = Vector2(27, 0)
 scale = Vector2(0.9803404, 1)
@@ -189,9 +193,9 @@ position_smoothing_enabled = true
 position_smoothing_speed = 3.0
 editor_draw_limits = true
 
-[node name="particles" type="Node2D" parent="."]
+[node name="particles" type="Node2D" parent="." unique_id=344494436]
 
-[node name="jump-particles" type="CPUParticles2D" parent="particles"]
+[node name="jump-particles" type="CPUParticles2D" parent="particles" unique_id=1808460145]
 physics_interpolation_mode = 0
 position = Vector2(0, 23)
 emitting = false
@@ -207,7 +211,7 @@ angle_min = -345.0
 angle_max = 148.5
 scale_amount_min = 0.5
 
-[node name="dash-particles" type="CPUParticles2D" parent="particles"]
+[node name="dash-particles" type="CPUParticles2D" parent="particles" unique_id=1966520135]
 position = Vector2(-9, 15)
 emitting = false
 amount = 64
@@ -224,7 +228,7 @@ angle_min = -345.0
 angle_max = 148.5
 scale_amount_min = 0.5
 
-[node name="death-particles" type="CPUParticles2D" parent="particles"]
+[node name="death-particles" type="CPUParticles2D" parent="particles" unique_id=509169839]
 position = Vector2(6, 13)
 emitting = false
 amount = 256
@@ -245,18 +249,16 @@ color_initial_ramp = SubResource("Gradient_o3w48")
 hue_variation_min = -1.0
 hue_variation_max = 1.0
 
-[node name="animations" type="Node2D" parent="." groups=["player"]]
+[node name="animations" type="Node2D" parent="." unique_id=1670014330 groups=["player"]]
 
-[node name="debug-animations" type="AnimationPlayer" parent="animations"]
+[node name="debug-animations" type="AnimationPlayer" parent="animations" unique_id=1987194578]
 root_node = NodePath("../..")
-libraries = {
-&"": SubResource("AnimationLibrary_5olkl"),
-&"Demo": SubResource("AnimationLibrary_vocxr")
-}
+libraries/ = SubResource("AnimationLibrary_5olkl")
+libraries/Demo = SubResource("AnimationLibrary_vocxr")
 
-[node name="sprites" type="Node2D" parent="animations"]
+[node name="sprites" type="Node2D" parent="animations" unique_id=852641352]
 
-[node name="Idle" type="Sprite2D" parent="animations/sprites"]
+[node name="Idle" type="Sprite2D" parent="animations/sprites" unique_id=1001698747]
 visible = false
 position = Vector2(0, 1.9999989)
 scale = Vector2(1.95, 1.95)
@@ -264,14 +266,14 @@ texture = ExtResource("4_fmcob")
 hframes = 6
 frame = 2
 
-[node name="Run" type="Sprite2D" parent="animations/sprites"]
+[node name="Run" type="Sprite2D" parent="animations/sprites" unique_id=820036560]
 visible = false
 scale = Vector2(1.95, 1.95)
 texture = ExtResource("5_vdg7p")
 hframes = 8
 frame = 1
 
-[node name="Jump" type="Sprite2D" parent="animations/sprites"]
+[node name="Jump" type="Sprite2D" parent="animations/sprites" unique_id=502406673]
 visible = false
 position = Vector2(4.9999976, 2.0000002)
 scale = Vector2(1.95, 1.95)
@@ -279,28 +281,34 @@ texture = ExtResource("6_fmcob")
 hframes = 4
 frame = 2
 
-[node name="Dash" type="Sprite2D" parent="animations/sprites"]
-visible = false
+[node name="Dash" type="Sprite2D" parent="animations/sprites" unique_id=686241554]
 position = Vector2(4, 2)
 scale = Vector2(1.95, 1.95)
 texture = ExtResource("7_l34nv")
 hframes = 4
 
-[node name="combat_attack" type="Sprite2D" parent="animations/sprites"]
+[node name="combat_attack" type="Sprite2D" parent="animations/sprites" unique_id=333604361]
 position = Vector2(22, -14)
 scale = Vector2(1.95, 1.95)
-texture = ExtResource("7_o3w48")
+texture = ExtResource("8_bpfgg")
 hframes = 7
 
-[node name="combat" type="Node2D" parent="."]
+[node name="combat" type="Node2D" parent="." unique_id=899008737]
 
-[node name="AttackHitbox" type="Area2D" parent="combat"]
+[node name="AttackHitbox" type="Area2D" parent="combat" unique_id=2124625531]
 
-[node name="Attackhitbox" type="CollisionShape2D" parent="combat/AttackHitbox"]
+[node name="Attackhitbox" type="CollisionShape2D" parent="combat/AttackHitbox" unique_id=1840287217]
 position = Vector2(74, 1)
 shape = SubResource("CircleShape2D_hsh3d")
 
-[node name="Sprite2D" type="Sprite2D" parent="combat/AttackHitbox/Attackhitbox"]
+[node name="Sprite2D" type="Sprite2D" parent="combat/AttackHitbox/Attackhitbox" unique_id=780292802]
 visible = false
 position = Vector2(18.75, 24.75)
 scale = Vector2(38.5, 50.5)
+
+[node name="ParryHitbox" type="Area2D" parent="combat" unique_id=73861538]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="combat/ParryHitbox" unique_id=2015533156]
+position = Vector2(90, -1.25)
+shape = SubResource("RectangleShape2D_hsh3d")
+debug_color = Color(0.82531345, 0.0016179633, 0.9565559, 0.41960785)

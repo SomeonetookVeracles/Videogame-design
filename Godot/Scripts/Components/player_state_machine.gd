@@ -3,6 +3,7 @@ extends Node
 
 ## Finite state machine for player state management.
 ## Handles transitions and state-specific logic cleanly.
+## Note: Combat (attack/parry) overlays movement and doesn't have its own state.
 
 signal state_changed(from_state: State, to_state: State)
 
@@ -12,7 +13,6 @@ enum State {
 	JUMP,
 	FALL,
 	DASH,
-	ATTACK,
 	HURT,
 	DEAD,
 }
@@ -23,7 +23,6 @@ const STATE_NAMES: Dictionary = {
 	State.JUMP: "jump",
 	State.FALL: "fall",
 	State.DASH: "dash",
-	State.ATTACK: "attack",
 	State.HURT: "hurt",
 	State.DEAD: "dead",
 }
@@ -80,13 +79,21 @@ func is_airborne_state() -> bool:
 	return current_state in [State.JUMP, State.FALL]
 
 
+func can_move() -> bool:
+	return current_state not in [State.HURT, State.DEAD]
+
+
 func can_attack() -> bool:
-	return current_state not in [State.DASH, State.ATTACK, State.HURT, State.DEAD]
+	return current_state not in [State.HURT, State.DEAD]
 
 
 func can_dash() -> bool:
-	return current_state not in [State.DASH, State.ATTACK, State.HURT, State.DEAD]
+	return current_state not in [State.DASH, State.HURT, State.DEAD]
 
 
 func can_jump() -> bool:
-	return current_state not in [State.DASH, State.ATTACK, State.HURT, State.DEAD]
+	return current_state not in [State.HURT, State.DEAD]
+
+
+func can_parry() -> bool:
+	return current_state not in [State.HURT, State.DEAD]

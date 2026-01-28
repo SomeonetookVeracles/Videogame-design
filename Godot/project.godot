@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Space Wizards?"
-run/main_scene="uid://dgeimk44hcaw6"
+run/main_scene="uid://cg0cmu35kut5b"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 run/max_fps=30
 config/icon="uid://bjf86yusvf63b"
@@ -42,8 +42,8 @@ folder_colors={
 "res://assets/sprites/": "green",
 "res://assets/sprites/Loose Assets/": "pink",
 "res://scenes/": "red",
-"res://scenes/Main/": "red",
 "res://scenes/demo/": "red",
+"res://scenes/main/": "red",
 "res://scenes/menus/": "yellow"
 }
 
@@ -112,3 +112,4 @@ copy_path="res://Scenes/Tempmenu/"
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)
