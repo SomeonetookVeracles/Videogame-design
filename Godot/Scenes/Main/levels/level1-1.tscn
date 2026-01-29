@@ -1,13 +1,13 @@
 [gd_scene format=4 uid="uid://beeqnwhb7fjjc"]
 
-[ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://Scenes/Main/Player.tscn" id="1_gqysk"]
-[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="2_0ir2w"]
-[ext_resource type="Texture2D" uid="uid://ciknc6lltq60d" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_yheaf"]
-[ext_resource type="Texture2D" uid="uid://0aunae8etfji" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 2.png" id="4_is3ww"]
-[ext_resource type="Texture2D" uid="uid://cv11towp3b3k" path="res://Assets/Sprites/Tilemaps/Tilemap Level 1 Part 2.png" id="5_od7pn"]
+[ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://Scenes/Main/Player.tscn" id="1_30fsf"]
+[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="2_bcg5h"]
+[ext_resource type="Texture2D" uid="uid://clqcasu8mhako" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_u6jap"]
+[ext_resource type="Texture2D" uid="uid://djb5wocjpyfcc" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 2.png" id="4_66cob"]
+[ext_resource type="Texture2D" uid="uid://cmk23o41qll17" path="res://Assets/Sprites/Tilemaps/Tilemap Level 1 Part 2.png" id="5_inx5f"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oq7ys"]
-texture = ExtResource("2_0ir2w")
+texture = ExtResource("2_bcg5h")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:0/0 = 0
@@ -113,7 +113,7 @@ texture = ExtResource("2_0ir2w")
 6:7/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_raqa7"]
-texture = ExtResource("3_yheaf")
+texture = ExtResource("3_u6jap")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:0/0 = 0
@@ -215,7 +215,7 @@ texture = ExtResource("3_yheaf")
 4:9/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0u2q6"]
-texture = ExtResource("4_is3ww")
+texture = ExtResource("4_66cob")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 2:0/0 = 0
@@ -266,7 +266,7 @@ texture = ExtResource("4_is3ww")
 5:6/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p5jtr"]
-texture = ExtResource("5_od7pn")
+texture = ExtResource("5_inx5f")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -343,7 +343,7 @@ sources/2 = SubResource("TileSetAtlasSource_0u2q6")
 sources/3 = SubResource("TileSetAtlasSource_p5jtr")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0lqxa"]
-texture = ExtResource("2_0ir2w")
+texture = ExtResource("2_bcg5h")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:0/0 = 0
@@ -449,7 +449,7 @@ texture = ExtResource("2_0ir2w")
 6:7/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ssxlm"]
-texture = ExtResource("3_yheaf")
+texture = ExtResource("3_u6jap")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:0/0 = 0
@@ -552,7 +552,7 @@ texture = ExtResource("3_yheaf")
 4:9/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mgeow"]
-texture = ExtResource("5_od7pn")
+texture = ExtResource("5_inx5f")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -621,7 +621,7 @@ texture = ExtResource("5_od7pn")
 5:9/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wphgx"]
-texture = ExtResource("4_is3ww")
+texture = ExtResource("4_66cob")
 0:0/0 = 0
 2:0/0 = 0
 4:0/0 = 0
@@ -771,7 +771,7 @@ sources/0 = SubResource("TileSetAtlasSource_ya6b2")
 
 [node name="Level2" type="Node2D" unique_id=719574688]
 
-[node name="Character" parent="." unique_id=1741163423 instance=ExtResource("1_gqysk")]
+[node name="Character" parent="." unique_id=1741163423 instance=ExtResource("1_30fsf")]
 position = Vector2(-263, -110)
 collision_layer = 9
 respawn_delay = 0.0
