@@ -17,7 +17,7 @@ signal dash_ended
 @export var turn_multiplier: float = 2.0
 
 @export_group("Jumping")
-@export var jump_velocity: float = -420.0
+@export var jump_velocity: float = -620.0
 @export var gravity: float = 1300.0
 @export var fall_gravity_multiplier: float = 1.6
 @export var jump_release_multiplier: float = 3.0

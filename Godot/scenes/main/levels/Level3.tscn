@@ -1166,8 +1166,8 @@ shape = SubResource("RectangleShape2D_futfq")
 
 [node name="Background" type="ColorRect" parent="." unique_id=1211145294]
 z_index = -4096
-offset_left = -3518.0
+offset_left = -3502.0
 offset_top = -1399.0
-offset_right = 4398.0
+offset_right = 4414.0
 offset_bottom = 3861.0
 color = Color(1, 0.52104384, 0.42715594, 1)
