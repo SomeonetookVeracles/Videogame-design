@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://4hsosdixc2yo"]
+
+[ext_resource type="Texture2D" uid="uid://jo3ldnxatmmm" path="res://Assets/Sprites/NPCs/spritesheets/john_idle.png" id="1_dn2du"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_21c1d"]
+size = Vector2(27, 53)
+
+[sub_resource type="Animation" id="Animation_gl5x1"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("idle:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_o1vgs"]
+resource_name = "idle"
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("idle:frame")
+tracks/0/interp = 2
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45000002, 0.5, 0.55, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_sp1ct"]
+_data = {
+&"RESET": SubResource("Animation_gl5x1"),
+&"idle": SubResource("Animation_o1vgs")
+}
+
+[node name="johnscientist" type="CharacterBody2D" unique_id=1752171090]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=489711375]
+position = Vector2(-1.5, 3.5)
+shape = SubResource("RectangleShape2D_21c1d")
+
+[node name="Animations" type="Node2D" parent="." unique_id=2043553056]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Animations" unique_id=33448009]
+libraries/ = SubResource("AnimationLibrary_sp1ct")
+
+[node name="idle" type="Sprite2D" parent="Animations" unique_id=1638265235]
+texture = ExtResource("1_dn2du")
+hframes = 21
