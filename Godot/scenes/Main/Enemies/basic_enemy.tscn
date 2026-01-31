@@ -2,7 +2,103 @@
 
 [ext_resource type="Script" uid="uid://cqdew607tgvx6" path="res://Scripts/Enemies/BasicAlien.gd" id="1_enemy"]
 [ext_resource type="PackedScene" uid="uid://dxrd0g1a1ygsc" path="res://scenes/main/Enemies/Projectile.tscn" id="2_projectile"]
-[ext_resource type="Texture2D" uid="uid://piowvfgipb6u" path="res://Assets/Sprites/Loose Assets/image2.png" id="3_lp3hd"]
+[ext_resource type="Texture2D" uid="uid://bqtqngvcy8klp" path="res://assets/sprites/Enemies/ALIEN 3 IDLE.png" id="3_225k8"]
+[ext_resource type="Texture2D" uid="uid://bude6ox86tijp" path="res://assets/sprites/Enemies/ALIEN 3 ATTACK.png" id="4_by8r0"]
+[ext_resource type="Texture2D" uid="uid://faub8ax7n7ik" path="res://assets/sprites/Enemies/ALIEN 3 WALK.png" id="5_b60wx"]
+
+[sub_resource type="Animation" id="Animation_ouo0u"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Animations/Idle:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Animations/Attack:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Animations/Walk:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_lfacx"]
+resource_name = "Attack"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Animations/Attack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.033333335, 0.06666667, 0.10000001, 0.13333334, 0.16666667, 0.20000002, 0.23333335, 0.26666668, 0.3, 0.33333334, 0.36666667, 0.40000004, 0.43333337, 0.4666667, 0.5, 0.53333336, 0.5666667, 0.6, 0.6333334, 0.6666667, 0.70000005, 0.73333335),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 20, 20]
+}
+
+[sub_resource type="Animation" id="Animation_ggvjs"]
+resource_name = "Idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Animations/Idle:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.033333335, 0.06666667, 0.10000001, 0.13333334, 0.16666667, 0.20000002, 0.23333335, 0.26666668, 0.3, 0.33333334, 0.36666667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+}
+
+[sub_resource type="Animation" id="Animation_xnkvn"]
+resource_name = "Walk"
+step = 0.125
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Animations/Walk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 9]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_e3s20"]
+_data = {
+&"RESET": SubResource("Animation_ouo0u"),
+&"attack": SubResource("Animation_lfacx"),
+&"idle": SubResource("Animation_ggvjs"),
+&"walk": SubResource("Animation_xnkvn")
+}
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(46, 96)
@@ -13,11 +109,31 @@ script = ExtResource("1_enemy")
 projectile_scene = ExtResource("2_projectile")
 fire_rate = 1.0
 
+[node name="Animations" type="Node2D" parent="." unique_id=1120521900]
+position = Vector2(0.99999994, -2.9999998)
+scale = Vector2(0.2, 0.2)
+
+[node name="Idle" type="Sprite2D" parent="Animations" unique_id=1905108983]
+visible = false
+scale = Vector2(8, 8)
+texture = ExtResource("3_225k8")
+hframes = 14
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Animations" unique_id=1231974732]
+root_node = NodePath("../..")
+libraries/ = SubResource("AnimationLibrary_e3s20")
+
+[node name="Attack" type="Sprite2D" parent="Animations" unique_id=1620580042]
+visible = false
+scale = Vector2(8, 8)
+texture = ExtResource("4_by8r0")
+hframes = 21
+
+[node name="Walk" type="Sprite2D" parent="Animations" unique_id=2134874652]
+scale = Vector2(8, 8)
+texture = ExtResource("5_b60wx")
+hframes = 10
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=571406646]
 position = Vector2(1, 0)
 shape = SubResource("RectangleShape2D_body")
-
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1905108983]
-position = Vector2(0.99999994, 0)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("3_lp3hd")

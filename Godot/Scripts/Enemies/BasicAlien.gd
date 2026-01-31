@@ -3,6 +3,15 @@ extends CharacterBody2D
 
 ## Basic alien enemy that wanders, aggros on player, and fires projectiles.
 ## Dies after taking a configurable amount of hits.
+##
+## Expected node structure:
+##   AlienEnemy (CharacterBody2D)
+##   ├── CollisionShape2D
+##   ├── Animations/ (Node2D or Sprite2D - visual container)
+##   ├── AnimationPlayer (sibling to Animations)
+##   └── ProjectileSpawn (Marker2D, optional)
+##
+## Required animations: "idle", "walk", "attack"
 
 signal died
 signal fired_projectile(projectile: Node)
@@ -41,6 +50,11 @@ signal damaged_player(player: Node)
 @export var flash_on_hit: bool = true
 @export var flash_color: Color = Color(1, 1, 1, 1)
 
+@export_group("Animation")
+@export var anim_idle: String = "idle"
+@export var anim_walk: String = "walk"
+@export var anim_attack: String = "attack"
+
 enum State { IDLE, WANDER, AGGRO, ATTACK, HURT, DEAD }
 
 var current_state: State = State.IDLE
@@ -56,8 +70,10 @@ var _invincibility_timer: float = 0.0
 var _aggro_timer: float = 0.0
 var _player: Node2D = null
 var _contact_cooldown: float = 0.0
+var _current_anim: String = ""
 
-@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
+# Node references - Animations node is the visual container, AnimationPlayer is sibling
+@onready var animations: Node2D = $Animations if has_node("Animations") else null
 @onready var animation_player: AnimationPlayer = $AnimationPlayer if has_node("AnimationPlayer") else null
 @onready var contact_area: Area2D = $ContactDamageArea if has_node("ContactDamageArea") else null
 @onready var projectile_spawn: Marker2D = $ProjectileSpawn if has_node("ProjectileSpawn") else null
@@ -74,8 +90,66 @@ func _ready() -> void:
 	
 	_setup_contact_damage()
 	_setup_ledge_detection()
+	_play_animation(anim_idle)
 
 
+# -------------------------------------------------------------------
+# Animation System
+# -------------------------------------------------------------------
+func _play_animation(anim_name: String, force: bool = false) -> void:
+	if not animation_player:
+		return
+	
+	# Don't restart if already playing (unless forced)
+	if _current_anim == anim_name and not force:
+		return
+	
+	if animation_player.has_animation(anim_name):
+		_current_anim = anim_name
+		animation_player.play(anim_name)
+	else:
+		push_warning("AlienEnemy: Animation '%s' not found" % anim_name)
+
+
+func _update_animation() -> void:
+	# Don't interrupt attack animation until it finishes
+	if _current_anim == anim_attack and animation_player and animation_player.is_playing():
+		return
+	
+	match current_state:
+		State.IDLE:
+			_play_animation(anim_idle)
+		State.WANDER:
+			if absf(velocity.x) > 1.0:
+				_play_animation(anim_walk)
+			else:
+				_play_animation(anim_idle)
+		State.AGGRO:
+			if absf(velocity.x) > 1.0:
+				_play_animation(anim_walk)
+			else:
+				_play_animation(anim_idle)
+		State.ATTACK:
+			_play_animation(anim_attack)
+		State.HURT:
+			_play_animation(anim_idle)  # Or add a "hurt" animation
+		State.DEAD:
+			_play_animation(anim_idle)  # Or add a "death" animation
+
+
+func _update_facing() -> void:
+	# Flip the Animations node for visual direction
+	if animations:
+		animations.scale.x = absf(animations.scale.x) * facing_direction
+	
+	# Update projectile spawn position
+	if projectile_spawn:
+		projectile_spawn.position.x = absf(projectile_spawn.position.x) * facing_direction
+
+
+# -------------------------------------------------------------------
+# Contact Damage Setup
+# -------------------------------------------------------------------
 func _setup_contact_damage() -> void:
 	if not contact_area:
 		contact_area = Area2D.new()
@@ -104,7 +178,6 @@ func _setup_contact_damage() -> void:
 
 
 func _setup_ledge_detection() -> void:
-	# Get collision extents for ray positioning
 	var ray_x_offset: float = 12.0
 	var ray_y_start: float = 0.0
 	var ray_length: float = 20.0
@@ -121,7 +194,6 @@ func _setup_ledge_detection() -> void:
 			ray_x_offset = main_collision.shape.radius + 4.0
 			ray_y_start = main_collision.shape.radius
 	
-	# Left ledge ray
 	_ledge_ray_left = RayCast2D.new()
 	_ledge_ray_left.name = "LedgeRayLeft"
 	_ledge_ray_left.position = Vector2(-ray_x_offset, ray_y_start)
@@ -129,7 +201,6 @@ func _setup_ledge_detection() -> void:
 	_ledge_ray_left.enabled = true
 	add_child(_ledge_ray_left)
 	
-	# Right ledge ray
 	_ledge_ray_right = RayCast2D.new()
 	_ledge_ray_right.name = "LedgeRayRight"
 	_ledge_ray_right.position = Vector2(ray_x_offset, ray_y_start)
@@ -138,6 +209,9 @@ func _setup_ledge_detection() -> void:
 	add_child(_ledge_ray_right)
 
 
+# -------------------------------------------------------------------
+# Contact Damage
+# -------------------------------------------------------------------
 func _on_contact_body_entered(body: Node2D) -> void:
 	if _contact_cooldown > 0.0:
 		return
@@ -163,6 +237,9 @@ func _deal_contact_damage(player: Node2D) -> void:
 		damaged_player.emit(player)
 
 
+# -------------------------------------------------------------------
+# Physics Process
+# -------------------------------------------------------------------
 func _physics_process(delta: float) -> void:
 	if current_state == State.DEAD:
 		return
@@ -173,6 +250,7 @@ func _physics_process(delta: float) -> void:
 	_process_state(delta)
 	_apply_gravity(delta)
 	_update_facing()
+	_update_animation()
 	_check_contact_damage()
 	
 	move_and_slide()
@@ -183,8 +261,8 @@ func _update_timers(delta: float) -> void:
 		_invincibility_timer -= delta
 		if _invincibility_timer <= 0.0:
 			_invincible = false
-			if sprite:
-				sprite.modulate = Color.WHITE
+			if animations:
+				animations.modulate = Color.WHITE
 	
 	_fire_timer = maxf(0.0, _fire_timer - delta)
 	_wander_timer = maxf(0.0, _wander_timer - delta)
@@ -205,6 +283,9 @@ func _check_contact_damage() -> void:
 		_deal_contact_damage(_player)
 
 
+# -------------------------------------------------------------------
+# State Machine
+# -------------------------------------------------------------------
 func _update_state() -> void:
 	if current_state == State.HURT or current_state == State.DEAD:
 		return
@@ -257,7 +338,10 @@ func _process_idle(delta: float) -> void:
 func _process_wander() -> void:
 	var dir: float = sign(_wander_target.x - global_position.x)
 	
-	# Stop at ledges
+	# Update facing while wandering
+	if dir != 0.0:
+		facing_direction = dir
+	
 	if _is_ledge_ahead(dir):
 		current_state = State.IDLE
 		_wander_timer = randf_range(wander_pause_min, wander_pause_max)
@@ -279,17 +363,14 @@ func _process_aggro() -> void:
 	var distance_to_player := global_position.distance_to(_player.global_position)
 	var dir_to_player: float = sign(_player.global_position.x - global_position.x)
 	
-	# Keep preferred distance
 	var desired_velocity_x: float = 0.0
 	if distance_to_player < preferred_distance - distance_tolerance:
 		desired_velocity_x = -dir_to_player * aggro_speed
 	elif distance_to_player > preferred_distance + distance_tolerance:
 		desired_velocity_x = dir_to_player * chase_speed
 	
-	# Check for ledge before moving
 	var move_dir: float = sign(desired_velocity_x)
 	if move_dir != 0.0 and _is_ledge_ahead(move_dir):
-		# Stop at ledge edge
 		velocity.x = 0.0
 	else:
 		if desired_velocity_x != 0.0:
@@ -318,13 +399,6 @@ func _apply_gravity(delta: float) -> void:
 		velocity.y = 0.0
 
 
-func _update_facing() -> void:
-	if sprite:
-		sprite.flip_h = facing_direction < 0
-	if projectile_spawn:
-		projectile_spawn.position.x = absf(projectile_spawn.position.x) * facing_direction
-
-
 func _is_ledge_ahead(direction: float) -> bool:
 	if not is_on_floor():
 		return false
@@ -343,11 +417,22 @@ func _pick_wander_target() -> void:
 	_wander_timer = randf_range(wander_pause_min, wander_pause_max)
 
 
+# -------------------------------------------------------------------
+# Combat
+# -------------------------------------------------------------------
 func _fire_projectile() -> void:
 	if not projectile_scene:
 		return
 	
 	_fire_timer = 1.0 / fire_rate
+	current_state = State.ATTACK
+	_play_animation(anim_attack, true)
+	
+	# Wait a brief moment for attack animation wind-up
+	await get_tree().create_timer(0.15).timeout
+	
+	if current_state != State.ATTACK:
+		return  # State changed during wind-up
 	
 	var projectile: Node2D = projectile_scene.instantiate()
 	get_parent().add_child(projectile)
@@ -375,8 +460,8 @@ func _fire_projectile() -> void:
 	
 	fired_projectile.emit(projectile)
 	
-	current_state = State.ATTACK
-	await get_tree().create_timer(0.5).timeout
+	# Wait for attack animation to finish before returning to aggro
+	await get_tree().create_timer(0.35).timeout
 	if current_state == State.ATTACK:
 		current_state = State.AGGRO
 
@@ -390,8 +475,8 @@ func take_damage(_amount: float, _source: Node = null, knockback: Vector2 = Vect
 	if knockback.length_squared() > 0.01:
 		velocity = knockback
 	
-	if flash_on_hit and sprite:
-		sprite.modulate = flash_color
+	if flash_on_hit and animations:
+		animations.modulate = flash_color
 	
 	_invincible = true
 	_invincibility_timer = invincibility_duration
@@ -411,14 +496,17 @@ func _die() -> void:
 	
 	died.emit()
 	
-	if sprite:
+	if animations:
 		var tween := create_tween()
-		tween.tween_property(sprite, "modulate:a", 0.0, 0.3)
+		tween.tween_property(animations, "modulate:a", 0.0, 0.3)
 		tween.finished.connect(queue_free)
 	else:
 		queue_free()
 
 
+# -------------------------------------------------------------------
+# Public API
+# -------------------------------------------------------------------
 func get_contact_damage() -> float:
 	return contact_damage
 

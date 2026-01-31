@@ -1,12 +1,13 @@
 [gd_scene format=4 uid="uid://beeqnwhb7fjjc"]
 
 [ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://scenes/main/Player.tscn" id="1_30fsf"]
-[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="2_bcg5h"]
-[ext_resource type="Texture2D" uid="uid://clqcasu8mhako" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_u6jap"]
-[ext_resource type="Texture2D" uid="uid://djb5wocjpyfcc" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 2.png" id="4_66cob"]
-[ext_resource type="Texture2D" uid="uid://cmk23o41qll17" path="res://Assets/Sprites/Tilemaps/Tilemap Level 1 Part 2.png" id="5_inx5f"]
-[ext_resource type="Texture2D" uid="uid://djtpg5osamov8" path="res://Assets/Sprites/Tilemaps/Elevator.png" id="6_lsaoh"]
-[ext_resource type="Texture2D" uid="uid://d273h8ki471fb" path="res://Assets/Sprites/NPCs/spritesheets/Librarian_idle.png" id="7_5hmxv"]
+[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://assets/Temp Assets/PTST/tileset template 1.png" id="2_bcg5h"]
+[ext_resource type="Texture2D" uid="uid://clqcasu8mhako" path="res://assets/sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_u6jap"]
+[ext_resource type="Texture2D" uid="uid://djb5wocjpyfcc" path="res://assets/sprites/Tilemaps/10x10 Tilemap Level 2.png" id="4_66cob"]
+[ext_resource type="Texture2D" uid="uid://cmk23o41qll17" path="res://assets/sprites/Tilemaps/Tilemap Level 1 Part 2.png" id="5_inx5f"]
+[ext_resource type="Texture2D" uid="uid://djtpg5osamov8" path="res://assets/sprites/Tilemaps/Elevator.png" id="6_lsaoh"]
+[ext_resource type="Texture2D" uid="uid://bvrnlwq2nxiyk" path="res://assets/sprites/NPCs/spritesheets/Librarian_idle.png" id="7_5hmxv"]
+[ext_resource type="Texture2D" uid="uid://jo3ldnxatmmm" path="res://assets/sprites/NPCs/spritesheets/john_idle.png" id="8_i1qk0"]
 
 [sub_resource type="GDScript" id="GDScript_lsaoh"]
 resource_name = "level1-1"
@@ -667,7 +668,6 @@ sources/3 = SubResource("TileSetAtlasSource_wphgx")
 sources/2 = SubResource("TileSetAtlasSource_mgeow")
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_3eyky"]
-load_path = "res://.godot/imported/tileset template 1.png-1fda0aefc07a031f02845477e608798b.ctex"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ya6b2"]
 texture = SubResource("CompressedTexture2D_3eyky")
@@ -1025,6 +1025,323 @@ func skip() -> void:
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i1qk0"]
 size = Vector2(118, 20)
 
+[sub_resource type="GDScript" id="GDScript_7xqka"]
+resource_name = "iubfpi"
+script/source = "extends Node2D  # or CharacterBody3D / Node2D
+
+@onready var anim_player: AnimationPlayer = $\"Librarian Animaitons\"
+
+func _ready():
+	if anim_player.current_animation != \"idle\":
+		anim_player.play(\"idle\")
+"
+
+[sub_resource type="GDScript" id="GDScript_i1qk0"]
+resource_name = "Librarian "
+script/source = "class_name DialogueComponent
+extends Node
+
+## Simple dialogue system with rolling text.
+## Attach as child of any Node2D. Press jump near character to talk.
+
+signal dialogue_started
+signal dialogue_finished
+
+@export_group(\"Content\")
+@export_multiline var dialogue_lines: Array[String] = [ \"Oh, hello Mari! This is the Wizard Tower, our officially sanctioned magical portion of the ship!\", \"It's alittle smaller than we'd like, but we're making it work.\" , \"This room houses books containing all of the magical history and knowledge you might need, but today, you're gonna test out a new simulation spell on the crystal ball\",]
+@export var speaker_name: String = \"Mai, Librarian\"
+@export var can_repeat: bool = true
+
+@export_group(\"Interaction\")
+@export var interaction_range: float = 80.0
+@export var interaction_action: String = \"movement_jump\"
+
+@export_group(\"Text\")
+@export var chars_per_second: float = 25.0
+@export var font_size: int = 14
+
+@export_group(\"Box\")
+@export var box_width: float = 220.0
+@export var box_offset: Vector2 = Vector2(0, -50)
+@export var padding: float = 10.0
+@export var bg_color: Color = Color(0.05, 0.05, 0.1, 0.95)
+@export var border_color: Color = Color(0.3, 0.3, 0.4, 1.0)
+
+@export_group(\"Prompt\")
+@export var show_prompt: bool = true
+@export var prompt_text: String = \"Press [Jump]\"
+@export var prompt_offset: Vector2 = Vector2(0, -30)
+
+var _parent: Node2D
+var _in_range: bool = false
+var _active: bool = false
+var _has_talked: bool = false
+var _line_idx: int = 0
+var _char_idx: int = 0
+var _timer: float = 0.0
+var _done: bool = false
+var _waiting: bool = false
+
+var _canvas: CanvasLayer
+var _box: PanelContainer
+var _vbox: VBoxContainer
+var _name_label: Label
+var _text_label: Label
+var _arrow: Label
+var _area: Area2D
+var _prompt: Label
+
+
+func _ready() -> void:
+	_parent = get_parent() as Node2D
+	_build_area()
+	_build_ui()
+
+
+func _build_area() -> void:
+	_area = Area2D.new()
+	_area.collision_layer = 0
+	_area.collision_mask = 1
+	
+	var shape := CollisionShape2D.new()
+	var circle := CircleShape2D.new()
+	circle.radius = interaction_range
+	shape.shape = circle
+	_area.add_child(shape)
+	
+	_area.body_entered.connect(_on_player_enter)
+	_area.body_exited.connect(_on_player_exit)
+	
+	if _parent:
+		_parent.add_child.call_deferred(_area)
+	else:
+		add_child(_area)
+
+
+func _build_ui() -> void:
+	# Use CanvasLayer so UI is always on top and in screen space
+	_canvas = CanvasLayer.new()
+	_canvas.layer = 100
+	add_child(_canvas)
+	
+	# Main container
+	_box = PanelContainer.new()
+	_box.visible = false
+	_canvas.add_child(_box)
+	
+	# Style
+	var style := StyleBoxFlat.new()
+	style.bg_color = bg_color
+	style.border_color = border_color
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(4)
+	style.set_content_margin_all(padding)
+	_box.add_theme_stylebox_override(\"panel\", style)
+	
+	# VBox for content
+	_vbox = VBoxContainer.new()
+	_vbox.add_theme_constant_override(\"separation\", 4)
+	_box.add_child(_vbox)
+	
+	# Name label
+	_name_label = Label.new()
+	_name_label.add_theme_font_size_override(\"font_size\", font_size - 2)
+	_name_label.add_theme_color_override(\"font_color\", Color(0.6, 0.8, 1.0))
+	_name_label.text = speaker_name
+	_name_label.visible = speaker_name != \"\"
+	_vbox.add_child(_name_label)
+	
+	# Text label
+	_text_label = Label.new()
+	_text_label.add_theme_font_size_override(\"font_size\", font_size)
+	_text_label.add_theme_color_override(\"font_color\", Color.WHITE)
+	_text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_text_label.custom_minimum_size.x = box_width - padding * 2
+	_vbox.add_child(_text_label)
+	
+	# Continue arrow
+	_arrow = Label.new()
+	_arrow.text = \"▼\"
+	_arrow.add_theme_font_size_override(\"font_size\", 10)
+	_arrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_arrow.visible = false
+	_vbox.add_child(_arrow)
+	
+	# Prompt label with background
+	if show_prompt:
+		_prompt = Label.new()
+		_prompt.text = prompt_text
+		_prompt.add_theme_font_size_override(\"font_size\", 10)
+		_prompt.add_theme_color_override(\"font_color\", Color.WHITE)
+		_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_prompt.visible = false
+		
+		# Add background style to prompt
+		var prompt_style := StyleBoxFlat.new()
+		prompt_style.bg_color = Color(0, 0, 0, 0.6)
+		prompt_style.set_corner_radius_all(3)
+		prompt_style.set_content_margin_all(4)
+		_prompt.add_theme_stylebox_override(\"normal\", prompt_style)
+		
+		_canvas.add_child(_prompt)
+
+
+func _process(delta: float) -> void:
+	# Update box position to follow parent
+	if _parent:
+		var screen_pos := _get_screen_pos()
+		
+		if _active and _box:
+			var box_pos := screen_pos + box_offset
+			_box.position = box_pos - Vector2(_box.size.x / 2, _box.size.y)
+		
+		# Always update prompt position so it's ready when shown
+		if _prompt:
+			var prompt_pos := screen_pos + prompt_offset
+			_prompt.position = prompt_pos - Vector2(_prompt.size.x / 2, _prompt.size.y / 2)
+	
+	# Rolling text
+	if _active and not _done:
+		_timer += delta
+		var target := int(_timer * chars_per_second)
+		var full_text: String = dialogue_lines[_line_idx]
+		
+		if target > _char_idx:
+			_char_idx = mini(target, full_text.length())
+			_text_label.text = full_text.substr(0, _char_idx)
+			
+			if _char_idx >= full_text.length():
+				_done = true
+				_waiting = true
+				_arrow.visible = true
+	
+	# Pulse arrow
+	if _arrow.visible:
+		_arrow.modulate.a = 0.5 + 0.5 * sin(Time.get_ticks_msec() * 0.006)
+	
+	# Pulse prompt
+	if _prompt and _prompt.visible:
+		_prompt.modulate.a = 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.004)
+
+
+func _get_screen_pos() -> Vector2:
+	var cam := get_viewport().get_camera_2d()
+	if cam:
+		return _parent.global_position - cam.global_position + get_viewport().get_visible_rect().size / 2
+	else:
+		return _parent.get_global_transform_with_canvas().origin
+
+
+func _on_player_enter(body: Node2D) -> void:
+	if body.is_in_group(\"player\"):
+		_in_range = true
+		if _prompt and not _active and (can_repeat or not _has_talked):
+			_prompt.visible = true
+
+
+func _on_player_exit(body: Node2D) -> void:
+	if body.is_in_group(\"player\"):
+		_in_range = false
+		if _prompt:
+			_prompt.visible = false
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(interaction_action):
+		if not _active and _in_range and (can_repeat or not _has_talked):
+			_open()
+			get_viewport().set_input_as_handled()
+		elif _active:
+			if not _done:
+				_skip_to_end()
+			elif _waiting:
+				_next()
+			get_viewport().set_input_as_handled()
+
+
+func _open() -> void:
+	_active = true
+	_line_idx = 0
+	_start_line()
+	
+	if _prompt:
+		_prompt.visible = false
+	
+	_box.visible = true
+	_box.modulate.a = 0
+	_box.scale = Vector2(0.8, 0.8)
+	
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(_box, \"modulate:a\", 1.0, 0.15)
+	tw.tween_property(_box, \"scale\", Vector2.ONE, 0.15).set_ease(Tween.EASE_OUT)
+	
+	dialogue_started.emit()
+
+
+func _start_line() -> void:
+	_char_idx = 0
+	_timer = 0.0
+	_done = false
+	_waiting = false
+	_arrow.visible = false
+	_text_label.text = \"\"
+
+
+func _skip_to_end() -> void:
+	var full_text: String = dialogue_lines[_line_idx]
+	_char_idx = full_text.length()
+	_text_label.text = full_text
+	_done = true
+	_waiting = true
+	_arrow.visible = true
+
+
+func _next() -> void:
+	_line_idx += 1
+	_waiting = false
+	_arrow.visible = false
+	
+	if _line_idx >= dialogue_lines.size():
+		_close()
+	else:
+		_start_line()
+
+
+func _close() -> void:
+	_active = false
+	_waiting = false
+	_has_talked = true
+	
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(_box, \"modulate:a\", 0.0, 0.1)
+	tw.tween_property(_box, \"scale\", Vector2(0.8, 0.8), 0.1).set_ease(Tween.EASE_IN)
+	tw.finished.connect(func(): _box.visible = false)
+	
+	if _prompt and _in_range and can_repeat:
+		_prompt.visible = true
+	
+	dialogue_finished.emit()
+
+
+# Public API
+
+func start_dialogue() -> void:
+	if not _active:
+		_open()
+
+func end_dialogue() -> void:
+	if _active:
+		_close()
+
+func is_active() -> bool:
+	return _active
+
+func set_lines(lines: Array[String]) -> void:
+	dialogue_lines = lines
+	_line_idx = 0
+	_has_talked = false
+"
+
 [sub_resource type="Animation" id="Animation_i1qk0"]
 length = 0.001
 tracks/0/type = "value"
@@ -1062,330 +1379,484 @@ _data = {
 &"idle": SubResource("Animation_7xqka")
 }
 
-[sub_resource type="GDScript" id="GDScript_i1qk0"]
-resource_name = "Librarian "
+[sub_resource type="GDScript" id="GDScript_mvipo"]
+resource_name = "John Dialogue 1"
 script/source = "class_name DialogueComponent
 extends Node
 
-signal dialogue_started
-signal dialogue_line_shown(line_index: int)
+## Simple dialogue system with rolling text.
+## Attach as child of any Node2D. Press jump near character to talk.
 
-@export_group(\"Dialogue Content\")
-@export_multiline var dialogue_lines: Array[String] = []
-@export var speaker_name: String = \"\"
+signal dialogue_started
+signal dialogue_finished
+
+@export_group(\"Content\")
+@export_multiline var dialogue_lines: Array[String] = [ \"Look into the crystal ball for
+today's training, lad.\",]
+@export var speaker_name: String = \"John Scientist, Scientist\"
 @export var can_repeat: bool = true
 
 @export_group(\"Interaction\")
-@export var interaction_range: float = 150.0
+@export var interaction_range: float = 80.0
 @export var interaction_action: String = \"movement_jump\"
-@export var advance_action: String = \"movement_jump\"
-@export var show_prompt: bool = true
-@export var prompt_text: String = \"Press [Jump] to talk\"
 
-@export_group(\"Text Display\")
-@export var characters_per_second: float = 30.0
-
-@export_group(\"Appearance\")
-@export var box_offset: Vector2 = Vector2(0, -60)
-@export var padding: Vector2 = Vector2(12, 8)
-@export var background_color: Color = Color(0.1, 0.1, 0.15, 0.95)
-@export var border_color: Color = Color(0.4, 0.4, 0.5, 1.0)
-@export var border_width: float = 2.0
-@export var corner_radius: float = 6.0
-@export var text_color: Color = Color.WHITE
-@export var name_color: Color = Color(0.6, 0.8, 1.0)
+@export_group(\"Text\")
+@export var chars_per_second: float = 25.0
 @export var font_size: int = 14
-@export var name_font_size: int = 12
 
-@export_group(\"Auto Size Limits\")
-@export var min_box_width: float = 120.0
-@export var min_box_height: float = 60.0
-@export var max_box_width: float = 320.0
-@export var max_box_height: float = 180.0
+@export_group(\"Box\")
+@export var box_width: float = 220.0
+@export var box_offset: Vector2 = Vector2(0, -50)
+@export var padding: float = 10.0
+@export var bg_color: Color = Color(0.05, 0.05, 0.1, 0.95)
+@export var border_color: Color = Color(0.3, 0.3, 0.4, 1.0)
 
-@export_group(\"Animation\")
-@export var popup_duration: float = 0.15
+@export_group(\"Prompt\")
+@export var show_prompt: bool = true
+@export var prompt_text: String = \"Press [Jump]\"
+@export var prompt_offset: Vector2 = Vector2(0, -30)
 
-
-# -------------------------------------------------------------------
-# Internal state
-# -------------------------------------------------------------------
 var _parent: Node2D
-var _dialogue_active: bool = false
-var _current_line: int = 0
-var _displayed_characters: int = 0
-var _current_text: String = \"\"
-var _text_timer: float = 0.0
-var _text_complete: bool = false
-var _waiting_for_input: bool = false
-var _has_shown_dialogue: bool = false
+var _in_range: bool = false
+var _active: bool = false
+var _has_talked: bool = false
+var _line_idx: int = 0
+var _char_idx: int = 0
+var _timer: float = 0.0
+var _done: bool = false
+var _waiting: bool = false
 
-# UI
-var _dialogue_box: Control
-var _panel: Panel
+var _canvas: CanvasLayer
+var _box: PanelContainer
+var _vbox: VBoxContainer
 var _name_label: Label
-var _text_label: RichTextLabel
-var _continue_indicator: Label
-var _prompt_label: Label
-var _detection_area: Area2D
+var _text_label: Label
+var _arrow: Label
+var _area: Area2D
+var _prompt: Label
 
 
 func _ready() -> void:
 	_parent = get_parent() as Node2D
-	_setup_detection_area()
-	_setup_dialogue_ui()
-	_setup_prompt()
+	_build_area()
+	_build_ui()
 
 
-# -------------------------------------------------------------------
-# Detection
-# -------------------------------------------------------------------
-func _setup_detection_area() -> void:
-	_detection_area = Area2D.new()
-
+func _build_area() -> void:
+	_area = Area2D.new()
+	_area.collision_layer = 0
+	_area.collision_mask = 1
+	
+	var shape := CollisionShape2D.new()
+	var circle := CircleShape2D.new()
+	circle.radius = interaction_range
+	shape.shape = circle
+	_area.add_child(shape)
+	
+	_area.body_entered.connect(_on_player_enter)
+	_area.body_exited.connect(_on_player_exit)
+	
 	if _parent:
-		_parent.add_child(_detection_area)
+		_parent.add_child.call_deferred(_area)
 	else:
-		add_child(_detection_area)
-
-	var collision := CollisionShape2D.new()
-	var shape := CircleShape2D.new()
-	shape.radius = interaction_range
-	collision.shape = shape
-	_detection_area.add_child(collision)
-
-	_detection_area.collision_layer = 0
-	_detection_area.collision_mask = 1
-	_detection_area.body_entered.connect(_on_body_entered)
+		add_child(_area)
 
 
-# -------------------------------------------------------------------
-# UI setup
-# -------------------------------------------------------------------
-func _setup_dialogue_ui() -> void:
-	_dialogue_box = Control.new()
-	_dialogue_box.visible = false
-	_dialogue_box.scale = Vector2.ZERO
-	_dialogue_box.z_index = 100
-
-	if _parent:
-		_parent.add_child.call_deferred(_dialogue_box)
-	else:
-		add_child(_dialogue_box)
-
-	_panel = Panel.new()
-	_dialogue_box.add_child(_panel)
-
+func _build_ui() -> void:
+	# Use CanvasLayer so UI is always on top and in screen space
+	_canvas = CanvasLayer.new()
+	_canvas.layer = 100
+	add_child(_canvas)
+	
+	# Main container
+	_box = PanelContainer.new()
+	_box.visible = false
+	_canvas.add_child(_box)
+	
+	# Style
 	var style := StyleBoxFlat.new()
-	style.bg_color = background_color
+	style.bg_color = bg_color
 	style.border_color = border_color
-	style.border_width_left = int(border_width)
-	style.border_width_right = int(border_width)
-	style.border_width_top = int(border_width)
-	style.border_width_bottom = int(border_width)
-	style.corner_radius_top_left = int(corner_radius)
-	style.corner_radius_top_right = int(corner_radius)
-	style.corner_radius_bottom_left = int(corner_radius)
-	style.corner_radius_bottom_right = int(corner_radius)
-	_panel.add_theme_stylebox_override(\"panel\", style)
-
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(4)
+	style.set_content_margin_all(padding)
+	_box.add_theme_stylebox_override(\"panel\", style)
+	
+	# VBox for content
+	_vbox = VBoxContainer.new()
+	_vbox.add_theme_constant_override(\"separation\", 4)
+	_box.add_child(_vbox)
+	
+	# Name label
 	_name_label = Label.new()
+	_name_label.add_theme_font_size_override(\"font_size\", font_size - 2)
+	_name_label.add_theme_color_override(\"font_color\", Color(0.6, 0.8, 1.0))
 	_name_label.text = speaker_name
-	_name_label.visible = not speaker_name.is_empty()
-	_name_label.add_theme_font_size_override(\"font_size\", name_font_size)
-	_name_label.add_theme_color_override(\"font_color\", name_color)
-	_panel.add_child(_name_label)
-
-	_text_label = RichTextLabel.new()
-	_text_label.bbcode_enabled = true
-	_text_label.fit_content = true
-	_text_label.scroll_active = false
+	_name_label.visible = speaker_name != \"\"
+	_vbox.add_child(_name_label)
+	
+	# Text label
+	_text_label = Label.new()
+	_text_label.add_theme_font_size_override(\"font_size\", font_size)
+	_text_label.add_theme_color_override(\"font_color\", Color.WHITE)
 	_text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_text_label.add_theme_font_size_override(\"normal_font_size\", font_size)
-	_text_label.add_theme_color_override(\"default_color\", text_color)
-	_panel.add_child(_text_label)
+	_text_label.custom_minimum_size.x = box_width - padding * 2
+	_vbox.add_child(_text_label)
+	
+	# Continue arrow
+	_arrow = Label.new()
+	_arrow.text = \"▼\"
+	_arrow.add_theme_font_size_override(\"font_size\", 10)
+	_arrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_arrow.visible = false
+	_vbox.add_child(_arrow)
+	
+	# Prompt label with background
+	if show_prompt:
+		_prompt = Label.new()
+		_prompt.text = prompt_text
+		_prompt.add_theme_font_size_override(\"font_size\", 10)
+		_prompt.add_theme_color_override(\"font_color\", Color.WHITE)
+		_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_prompt.visible = false
+		
+		# Add background style to prompt
+		var prompt_style := StyleBoxFlat.new()
+		prompt_style.bg_color = Color(0, 0, 0, 0.6)
+		prompt_style.set_corner_radius_all(3)
+		prompt_style.set_content_margin_all(4)
+		_prompt.add_theme_stylebox_override(\"normal\", prompt_style)
+		
+		_canvas.add_child(_prompt)
 
-	_continue_indicator = Label.new()
-	_continue_indicator.text = \"▼\"
-	_continue_indicator.visible = false
-	_panel.add_child(_continue_indicator)
 
-
-func _setup_prompt() -> void:
-	if not show_prompt:
-		return
-
-	_prompt_label = Label.new()
-	_prompt_label.text = prompt_text
-	_prompt_label.visible = false
-	_prompt_label.z_index = 99
-
+func _process(delta: float) -> void:
+	# Update box position to follow parent
 	if _parent:
-		_parent.add_child.call_deferred(_prompt_label)
+		var screen_pos := _get_screen_pos()
+		
+		if _active and _box:
+			var box_pos := screen_pos + box_offset
+			_box.position = box_pos - Vector2(_box.size.x / 2, _box.size.y)
+		
+		# Always update prompt position so it's ready when shown
+		if _prompt:
+			var prompt_pos := screen_pos + prompt_offset
+			_prompt.position = prompt_pos - Vector2(_prompt.size.x / 2, _prompt.size.y / 2)
+	
+	# Rolling text
+	if _active and not _done:
+		_timer += delta
+		var target := int(_timer * chars_per_second)
+		var full_text: String = dialogue_lines[_line_idx]
+		
+		if target > _char_idx:
+			_char_idx = mini(target, full_text.length())
+			_text_label.text = full_text.substr(0, _char_idx)
+			
+			if _char_idx >= full_text.length():
+				_done = true
+				_waiting = true
+				_arrow.visible = true
+	
+	# Pulse arrow
+	if _arrow.visible:
+		_arrow.modulate.a = 0.5 + 0.5 * sin(Time.get_ticks_msec() * 0.006)
+	
+	# Pulse prompt
+	if _prompt and _prompt.visible:
+		_prompt.modulate.a = 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.004)
+
+
+func _get_screen_pos() -> Vector2:
+	var cam := get_viewport().get_camera_2d()
+	if cam:
+		return _parent.global_position - cam.global_position + get_viewport().get_visible_rect().size / 2
 	else:
-		add_child(_prompt_label)
-
-	_prompt_label.position = box_offset + Vector2(-50, -20)
+		return _parent.get_global_transform_with_canvas().origin
 
 
-# -------------------------------------------------------------------
-# Input
-# -------------------------------------------------------------------
+func _on_player_enter(body: Node2D) -> void:
+	if body.is_in_group(\"player\"):
+		_in_range = true
+		if _prompt and not _active and (can_repeat or not _has_talked):
+			_prompt.visible = true
+
+
+func _on_player_exit(body: Node2D) -> void:
+	if body.is_in_group(\"player\"):
+		_in_range = false
+		if _prompt:
+			_prompt.visible = false
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if not _dialogue_active and event.is_action_pressed(interaction_action):
-		if can_repeat or not _has_shown_dialogue:
-			_start_dialogue()
-		return
+	if event.is_action_pressed(interaction_action):
+		if not _active and _in_range and (can_repeat or not _has_talked):
+			_open()
+			get_viewport().set_input_as_handled()
+		elif _active:
+			if not _done:
+				_skip_to_end()
+			elif _waiting:
+				_next()
+			get_viewport().set_input_as_handled()
 
-	if _dialogue_active and event.is_action_pressed(advance_action):
-		if not _text_complete:
-			_complete_current_line()
-		elif _waiting_for_input:
-			_advance_dialogue()
 
-
-# -------------------------------------------------------------------
-# Dialogue flow
-# -------------------------------------------------------------------
-func _start_dialogue() -> void:
-	if dialogue_lines.is_empty():
-		return
-
-	_dialogue_active = true
-	_has_shown_dialogue = true
-	_current_line = 0
-
-	if _prompt_label:
-		_prompt_label.visible = false
-
-	_dialogue_box.visible = true
-	_dialogue_box.scale = Vector2.ZERO
-
-	var tween := create_tween()
-	tween.tween_property(_dialogue_box, \"scale\", Vector2.ONE, popup_duration)
-
-	await tween.finished
-	_show_current_line()
+func _open() -> void:
+	_active = true
+	_line_idx = 0
+	_start_line()
+	
+	if _prompt:
+		_prompt.visible = false
+	
+	_box.visible = true
+	_box.modulate.a = 0
+	_box.scale = Vector2(0.8, 0.8)
+	
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(_box, \"modulate:a\", 1.0, 0.15)
+	tw.tween_property(_box, \"scale\", Vector2.ONE, 0.15).set_ease(Tween.EASE_OUT)
+	
 	dialogue_started.emit()
 
 
-func _show_current_line() -> void:
-	if _current_line >= dialogue_lines.size():
-		_end_dialogue()
-		return
-
-	_current_text = dialogue_lines[_current_line]
-	await _resize_dialogue_box_for_text(_current_text)
-
-	_displayed_characters = 0
-	_text_timer = 0.0
-	_text_complete = false
-	_waiting_for_input = false
-	_continue_indicator.visible = false
+func _start_line() -> void:
+	_char_idx = 0
+	_timer = 0.0
+	_done = false
+	_waiting = false
+	_arrow.visible = false
 	_text_label.text = \"\"
 
-	dialogue_line_shown.emit(_current_line)
+
+func _skip_to_end() -> void:
+	var full_text: String = dialogue_lines[_line_idx]
+	_char_idx = full_text.length()
+	_text_label.text = full_text
+	_done = true
+	_waiting = true
+	_arrow.visible = true
 
 
-func _advance_dialogue() -> void:
-	_current_line += 1
-	if _current_line >= dialogue_lines.size():
-		_end_dialogue()
+func _next() -> void:
+	_line_idx += 1
+	_waiting = false
+	_arrow.visible = false
+	
+	if _line_idx >= dialogue_lines.size():
+		_close()
 	else:
-		_show_current_line()
+		_start_line()
 
 
-func _end_dialogue() -> void:
-	_dialogue_active = false
-	_waiting_for_input = false
-
-	var tween := create_tween()
-	tween.tween_property(_dialogue_box, \"scale\", Vector2.ZERO, popup_duration * 0.7)
-	await tween.finished
-
-	_dialogue_box.visible = false
-
-	if _prompt_label and can_repeat:
-		_prompt_label.visible = true
-
-
-# -------------------------------------------------------------------
-# Rolling text
-# -------------------------------------------------------------------
-func _process(delta: float) -> void:
-	if _dialogue_active and not _text_complete:
-		_text_timer += delta
-		var chars: int = int(_text_timer * characters_per_second)
-		if chars > _displayed_characters:
-			_displayed_characters = min(chars, _current_text.length())
-			_text_label.text = _current_text.substr(0, _displayed_characters)
-
-			if _displayed_characters >= _current_text.length():
-				_text_complete = true
-				_waiting_for_input = true
-				_continue_indicator.visible = true
+func _close() -> void:
+	_active = false
+	_waiting = false
+	_has_talked = true
+	
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(_box, \"modulate:a\", 0.0, 0.1)
+	tw.tween_property(_box, \"scale\", Vector2(0.8, 0.8), 0.1).set_ease(Tween.EASE_IN)
+	tw.finished.connect(func(): _box.visible = false)
+	
+	if _prompt and _in_range and can_repeat:
+		_prompt.visible = true
+	
+	dialogue_finished.emit()
 
 
-func _complete_current_line() -> void:
-	_text_label.text = _current_text
-	_text_complete = true
-	_waiting_for_input = true
-	_continue_indicator.visible = true
+# Public API
 
+func start_dialogue() -> void:
+	if not _active:
+		_open()
 
-# -------------------------------------------------------------------
-# Auto resize (strict typed)
-# -------------------------------------------------------------------
-func _resize_dialogue_box_for_text(text: String) -> void:
-	_text_label.text = text
-	await get_tree().process_frame
+func end_dialogue() -> void:
+	if _active:
+		_close()
 
-	var text_size: Vector2 = _text_label.get_content_size()
+func is_active() -> bool:
+	return _active
 
-	var name_height: float
-	if _name_label.visible:
-		name_height = float(name_font_size + 4)
-	else:
-		name_height = 0.0
-
-	var width: float = clamp(
-		text_size.x + padding.x * 2.0,
-		min_box_width,
-		max_box_width
-	)
-
-	var height: float = clamp(
-		text_size.y + padding.y * 2.0 + name_height + 16.0,
-		min_box_height,
-		max_box_height
-	)
-
-	var new_size := Vector2(width, height)
-
-	_panel.size = new_size
-	_dialogue_box.size = new_size
-	_dialogue_box.position = box_offset - new_size / 2.0
-
-	_name_label.position = Vector2(padding.x, padding.y)
-	_text_label.position = Vector2(padding.x, padding.y + name_height)
-	_text_label.size = Vector2(
-		width - padding.x * 2.0,
-		height - padding.y * 2.0 - name_height - 16.0
-	)
-
-	_continue_indicator.position = Vector2(
-		width - padding.x - 16.0,
-		height - padding.y - 16.0
-	)
-
-
-# -------------------------------------------------------------------
-# Detection callback
-# -------------------------------------------------------------------
-func _on_body_entered(_body: Node2D) -> void:
-	if _prompt_label and not _dialogue_active:
-		_prompt_label.visible = true
+func set_lines(lines: Array[String]) -> void:
+	dialogue_lines = lines
+	_line_idx = 0
+	_has_talked = false
 "
+
+[sub_resource type="GDScript" id="GDScript_8g3e7"]
+resource_name = "AreaTransitionScript"
+script/source = "class_name AreaTransition
+extends Area2D
+
+## Area transition that prompts player to press a key to enter a new level.
+## Shows prompt when player is in range, fades to black, then loads next scene.
+## 
+## Setup: Create Area2D with CollisionShape2D child, attach this script to Area2D.
+
+signal transition_started
+signal transition_completed
+
+@export_group(\"Destination\")
+@export_file(\"*.tscn\") var next_scene: String = \"\"
+@export var spawn_point_name: String = \"\"
+
+@export_group(\"Interaction\")
+@export var interaction_action: String = \"movement_jump\"
+@export var auto_trigger: bool = false  ## Skip prompt, trigger immediately on enter
+
+@export_group(\"Prompt\")
+@export var show_prompt: bool = true
+@export var prompt_text: String = \"Press [Jump] to Enter\"
+@export var prompt_offset: Vector2 = Vector2(0, -40)
+
+@export_group(\"Fade\")
+@export var fade_color: Color = Color.BLACK
+@export var fade_duration: float = 0.5
+@export var hold_duration: float = 0.3
+
+var _in_range: bool = false
+var _transitioning: bool = false
+
+var _canvas: CanvasLayer
+var _prompt: Label
+var _fade_rect: ColorRect
+
+
+func _ready() -> void:
+	# Connect to own signals since we're the Area2D
+	body_entered.connect(_on_player_enter)
+	body_exited.connect(_on_player_exit)
+	
+	_build_ui()
+
+
+func _build_ui() -> void:
+	_canvas = CanvasLayer.new()
+	_canvas.layer = 100
+	add_child(_canvas)
+	
+	# Prompt label
+	if show_prompt:
+		_prompt = Label.new()
+		_prompt.text = prompt_text
+		_prompt.add_theme_font_size_override(\"font_size\", 10)
+		_prompt.add_theme_color_override(\"font_color\", Color.WHITE)
+		_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_prompt.visible = false
+		
+		var prompt_style := StyleBoxFlat.new()
+		prompt_style.bg_color = Color(0, 0, 0, 0.6)
+		prompt_style.set_corner_radius_all(3)
+		prompt_style.set_content_margin_all(4)
+		_prompt.add_theme_stylebox_override(\"normal\", prompt_style)
+		
+		_canvas.add_child(_prompt)
+	
+	# Fade rect (covers entire screen)
+	_fade_rect = ColorRect.new()
+	_fade_rect.color = fade_color
+	_fade_rect.color.a = 0.0
+	_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_fade_rect.visible = false
+	_canvas.add_child(_fade_rect)
+
+
+func _process(_delta: float) -> void:
+	# Update prompt position
+	if _prompt:
+		var screen_pos := _get_screen_pos()
+		var pos := screen_pos + prompt_offset
+		_prompt.position = pos - Vector2(_prompt.size.x / 2, _prompt.size.y / 2)
+	
+	# Pulse prompt
+	if _prompt and _prompt.visible:
+		_prompt.modulate.a = 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.004)
+
+
+func _get_screen_pos() -> Vector2:
+	var cam := get_viewport().get_camera_2d()
+	if cam:
+		return global_position - cam.global_position + get_viewport().get_visible_rect().size / 2
+	else:
+		return get_global_transform_with_canvas().origin
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _transitioning:
+		return
+	
+	if _in_range and not auto_trigger and event.is_action_pressed(interaction_action):
+		_start_transition()
+		get_viewport().set_input_as_handled()
+
+
+func _on_player_enter(body: Node2D) -> void:
+	if body.is_in_group(\"player\"):
+		_in_range = true
+		
+		if auto_trigger and not _transitioning:
+			_start_transition()
+		elif _prompt and not _transitioning:
+			_prompt.visible = true
+
+
+func _on_player_exit(body: Node2D) -> void:
+	if body.is_in_group(\"player\"):
+		_in_range = false
+		if _prompt:
+			_prompt.visible = false
+
+
+func _start_transition() -> void:
+	if _transitioning:
+		return
+	
+	if next_scene.is_empty():
+		push_error(\"AreaTransition: No next_scene set!\")
+		return
+	
+	_transitioning = true
+	
+	if _prompt:
+		_prompt.visible = false
+	
+	transition_started.emit()
+	
+	# Fade to black
+	_fade_rect.visible = true
+	_fade_rect.color.a = 0.0
+	
+	var tw := create_tween()
+	tw.tween_property(_fade_rect, \"color:a\", 1.0, fade_duration).set_ease(Tween.EASE_IN)
+	tw.tween_interval(hold_duration)
+	tw.tween_callback(_load_next_scene)
+
+
+func _load_next_scene() -> void:
+	# Pass spawn point to next scene
+	if not spawn_point_name.is_empty():
+		get_tree().root.set_meta(\"spawn_point\", spawn_point_name)
+	
+	transition_completed.emit()
+	get_tree().change_scene_to_file(next_scene)
+
+
+# Public API
+
+func trigger() -> void:
+	if not _transitioning:
+		_start_transition()
+
+func is_transitioning() -> bool:
+	return _transitioning
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8g3e7"]
+size = Vector2(101, 149)
 
 [node name="Level2" type="Node2D" unique_id=719574688]
 script = SubResource("GDScript_lsaoh")
@@ -1428,6 +1899,7 @@ scale = Vector2(2, 2)
 tile_set = SubResource("TileSet_dpvab")
 
 [node name="Invisibles (use for placeholders)" type="TileMapLayer" parent="Tilemaps" unique_id=1589335435]
+visible = false
 modulate = Color(1, 0, 1, 1)
 z_index = -7
 scale = Vector2(2, 2)
@@ -1447,16 +1919,19 @@ offset_bottom = 3206.0
 [node name="Background" type="ColorRect" parent="Background" unique_id=1428585616]
 z_index = -4096
 layout_mode = 0
-offset_left = -32.0
-offset_top = -42.0
-offset_right = 7891.0
-offset_bottom = 5307.0
+offset_left = -62.0
+offset_top = -40.0
+offset_right = 7861.0
+offset_bottom = 5309.0
 color = Color(0, 0, 0, 1)
 
 [node name="ElevatorEntrance" type="AnimatableBody2D" parent="." unique_id=1376244511]
 z_index = -1
 position = Vector2(-273, 318)
 script = SubResource("GDScript_5hmxv")
+move_distance = 352.0
+move_duration = 2.0
+player_offset = Vector2(0, -62)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ElevatorEntrance" unique_id=1074047501]
 position = Vector2(0, 12)
@@ -1471,40 +1946,49 @@ texture = ExtResource("6_lsaoh")
 
 [node name="Librarian" type="Node2D" parent="." unique_id=844486362]
 position = Vector2(276, -102)
+script = SubResource("GDScript_7xqka")
+
+[node name="DialogueComponent" type="Node2D" parent="Librarian" unique_id=1326537673]
+position = Vector2(-2, -1)
+script = SubResource("GDScript_i1qk0")
+interaction_range = 150.0
+prompt_offset = Vector2(0, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="Librarian" unique_id=881095712]
-position = Vector2(2, 19.999977)
-scale = Vector2(-1.4108443, 1.695785)
+position = Vector2(1, 7.000001)
+scale = Vector2(-1.664, 2)
 texture = ExtResource("7_5hmxv")
 hframes = 12
 
 [node name="Librarian Animaitons" type="AnimationPlayer" parent="Librarian" unique_id=1131575221]
 libraries/ = SubResource("AnimationLibrary_mvipo")
 
-[node name="DialogueComponent" type="Node2D" parent="Librarian" unique_id=1326537673]
-position = Vector2(277, -100)
-script = SubResource("GDScript_i1qk0")
-dialogue_lines = null
-speaker_name = null
-can_repeat = null
-interaction_range = null
-interaction_action = null
-advance_action = null
-show_prompt = null
-prompt_text = null
-characters_per_second = null
-box_offset = null
-padding = null
-background_color = null
-border_color = null
-border_width = null
-corner_radius = null
-text_color = null
-name_color = null
-font_size = null
-name_font_size = null
-min_box_width = null
-min_box_height = null
-max_box_width = null
-max_box_height = null
-popup_duration = null
+[node name="John" type="Node2D" parent="." unique_id=716011639]
+position = Vector2(215, -103)
+script = SubResource("GDScript_7xqka")
+
+[node name="DialogueComponent" type="Node2D" parent="John" unique_id=1160625114]
+position = Vector2(-106, -7)
+script = SubResource("GDScript_mvipo")
+
+[node name="Sprite2D" type="Sprite2D" parent="John" unique_id=921546040]
+position = Vector2(-103.00001, 12)
+scale = Vector2(1.664, 2)
+texture = ExtResource("8_i1qk0")
+hframes = 21
+
+[node name="Librarian Animaitons" type="AnimationPlayer" parent="John" unique_id=1082977014]
+libraries/ = SubResource("AnimationLibrary_mvipo")
+
+[node name="AreaTransitionZone" type="Area2D" parent="." unique_id=1682083327]
+position = Vector2(509, -41)
+script = SubResource("GDScript_8g3e7")
+next_scene = "uid://niohcflvoiu4"
+fade_color = Color(0.98695356, 0.3414061, 0.5461528, 1)
+fade_duration = 5.0
+hold_duration = 2.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AreaTransitionZone" unique_id=93474361]
+position = Vector2(-1.5, -64.5)
+shape = SubResource("RectangleShape2D_8g3e7")
+debug_color = Color(0.6413663, 0.524609, 0, 0.41960785)

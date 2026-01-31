@@ -1,11 +1,15 @@
 class_name PlayerMovement
 extends Node
+
+## Handles all player movement physics including walking, jumping, dashing.
 ## Designed for tight, responsive 2D platformer controls.
 
 signal jumped(is_double_jump: bool)
 signal landed
 signal dash_started(direction: int)
 signal dash_ended
+signal slowed(amount: float, duration: float)
+signal slow_ended
 
 @export_group("Walking")
 @export var walk_speed: float = 280.0
@@ -15,13 +19,13 @@ signal dash_ended
 @export var turn_multiplier: float = 2.0
 
 @export_group("Jumping")
-@export var jump_velocity: float = -520.0
+@export var jump_velocity: float = -420.0
 @export var gravity: float = 1300.0
-@export var fall_gravity_multiplier: float = 1.3
-@export var jump_release_multiplier: float = 6.0
+@export var fall_gravity_multiplier: float = 1.6
+@export var jump_release_multiplier: float = 3.0
 @export var max_jumps: int = 2
 @export var coyote_time: float = 0.15
-@export var jump_buffer_time: float = 0.3
+@export var jump_buffer_time: float = 0.15
 @export var terminal_velocity_multiplier: float = 2.0
 
 @export_group("Dashing")
@@ -42,6 +46,10 @@ var _is_dashing: bool = false
 var _dash_timer: float = 0.0
 var _dash_cooldown_timer: float = 0.0
 var _dash_direction: int = 0
+
+var _speed_multiplier: float = 1.0
+var _slow_timer: float = 0.0
+var _is_slowed: bool = false
 
 const MIN_VELOCITY_SQ: float = 25.0
 
@@ -71,6 +79,14 @@ func _update_timers(delta: float) -> void:
 	
 	_dash_cooldown_timer = maxf(0.0, _dash_cooldown_timer - delta)
 	_jump_buffer_timer = maxf(0.0, _jump_buffer_timer - delta)
+	
+	# Slow effect timer
+	if _is_slowed:
+		_slow_timer -= delta
+		if _slow_timer <= 0.0:
+			_is_slowed = false
+			_speed_multiplier = 1.0
+			slow_ended.emit()
 
 
 func _update_coyote_time() -> void:
@@ -91,7 +107,7 @@ func _apply_gravity(delta: float) -> void:
 	if parent.is_on_floor() or _is_dashing:
 		return
 	
-	var _is_falling := parent.velocity.y > 0.0
+	var is_falling := parent.velocity.y > 0.0
 	_is_jump_held = Input.is_action_pressed("movement_jump")
 	
 	if parent.velocity.y < 0.0 and not _is_jump_held:
@@ -118,6 +134,10 @@ func _process_dash() -> void:
 	_is_dashing = true
 	_dash_timer = dash_duration
 	_dash_cooldown_timer = dash_cooldown
+	
+	# Dashing clears slow effect
+	if _is_slowed:
+		clear_slow()
 	
 	dash_started.emit(_dash_direction)
 
@@ -152,14 +172,16 @@ func _process_horizontal_movement(delta: float) -> void:
 	
 	var direction := Input.get_axis("movement_left", "movement_right")
 	var on_floor := parent.is_on_floor()
+	var current_max_speed := walk_speed * _speed_multiplier
 	
 	if direction != 0.0:
 		var accel := acceleration if on_floor else air_acceleration
-		parent.velocity.x = move_toward(parent.velocity.x, direction * walk_speed, accel * delta)
+		accel *= _speed_multiplier  # Slower acceleration when slowed
+		parent.velocity.x = move_toward(parent.velocity.x, direction * current_max_speed, accel * delta)
 		
 		# Snappier turning on ground
 		if on_floor and sign(direction) != sign(parent.velocity.x) and parent.velocity.x * parent.velocity.x > MIN_VELOCITY_SQ:
-			parent.velocity.x = move_toward(parent.velocity.x, direction * walk_speed, acceleration * turn_multiplier * delta)
+			parent.velocity.x = move_toward(parent.velocity.x, direction * current_max_speed, acceleration * turn_multiplier * delta)
 		
 		facing_direction = sign(direction)
 	else:
@@ -194,3 +216,25 @@ func reset_jumps() -> void:
 
 func get_jumps_remaining() -> int:
 	return _jumps_remaining
+
+
+func apply_slow(amount: float, duration: float) -> void:
+	_speed_multiplier = amount
+	_slow_timer = duration
+	_is_slowed = true
+	slowed.emit(amount, duration)
+
+
+func clear_slow() -> void:
+	_is_slowed = false
+	_speed_multiplier = 1.0
+	_slow_timer = 0.0
+	slow_ended.emit()
+
+
+func is_slowed() -> bool:
+	return _is_slowed
+
+
+func get_speed_multiplier() -> float:
+	return _speed_multiplier

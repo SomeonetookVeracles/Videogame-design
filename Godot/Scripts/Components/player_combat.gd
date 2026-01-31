@@ -156,7 +156,7 @@ func _on_hitbox_body_entered(body: Node2D) -> void:
 		body.apply_knockback(knockback)
 
 
-func _on_hitbox_area_entered(area: Area2D) -> void:
+func _on_hitbox_area_entered(_area: Area2D) -> void:
 	# Attack hitbox only damages enemies, doesn't parry
 	pass
 

@@ -141,7 +141,7 @@ func select_current_option():
 			await get_tree().create_timer(0.1).timeout
 			print("Options selected")
 			# Play smooth side transition to OptionsMenu
-			play_side_transition("res://scenes/menus/OptionsMenu.tscn")
+			play_side_transition("res://scenes/main/menus/OptionsMenu.tscn")
 			
 		2:
 			await get_tree().create_timer(0.1).timeout

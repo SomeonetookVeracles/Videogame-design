@@ -1,9 +1,12 @@
 [gd_scene format=4 uid="uid://niohcflvoiu4"]
 
 [ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://scenes/main/Player.tscn" id="1_0u2q6"]
-[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="2_wphgx"]
-[ext_resource type="Texture2D" uid="uid://clqcasu8mhako" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_4lkfm"]
-[ext_resource type="Texture2D" uid="uid://djb5wocjpyfcc" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 2.png" id="4_mh4g6"]
+[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://assets/Temp Assets/PTST/tileset template 1.png" id="2_wphgx"]
+[ext_resource type="Texture2D" uid="uid://clqcasu8mhako" path="res://assets/sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_4lkfm"]
+[ext_resource type="Texture2D" uid="uid://djb5wocjpyfcc" path="res://assets/sprites/Tilemaps/10x10 Tilemap Level 2.png" id="4_mh4g6"]
+[ext_resource type="PackedScene" uid="uid://b6kfne5ybhcdq" path="res://scenes/main/Enemies/Stunner.tscn" id="5_q7gqv"]
+[ext_resource type="PackedScene" uid="uid://oh5hxaqk5vho" path="res://scenes/main/Enemies/basic_enemy.tscn" id="6_q1daa"]
+[ext_resource type="AudioStream" uid="uid://bhq3appqs2pj5" path="res://Crystal Ball-2.wav" id="7_q1daa"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oq7ys"]
 texture = ExtResource("2_wphgx")
@@ -512,7 +515,6 @@ sources/1 = SubResource("TileSetAtlasSource_ssxlm")
 sources/3 = SubResource("TileSetAtlasSource_wphgx")
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_3eyky"]
-load_path = "res://.godot/imported/tileset template 1.png-1fda0aefc07a031f02845477e608798b.ctex"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ya6b2"]
 texture = SubResource("CompressedTexture2D_3eyky")
@@ -625,10 +627,239 @@ physics_layer_0/collision_layer = 0
 physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_ya6b2")
 
+[sub_resource type="GDScript" id="GDScript_8g3e7"]
+resource_name = "AreaTransitionScript"
+script/source = "class_name AreaTransition
+extends Node2D
+
+## Area transition that prompts player to press a key to enter a new level.
+## This node IS the door/portal - place it where you want the transition zone.
+## Player must be in group \"player\" and on collision layer 1.
+
+signal transition_started
+signal transition_completed
+
+@export_group(\"Destination\")
+@export_file(\"*.tscn\") var next_scene: String = \"\"
+@export var spawn_point_name: String = \"\"
+
+@export_group(\"Interaction\")
+@export var interaction_action: String = \"movement_jump\"
+@export var auto_trigger: bool = false
+
+@export_group(\"Detection\")
+@export var detection_size: Vector2 = Vector2(40, 60)
+
+@export_group(\"Prompt\")
+@export var show_prompt: bool = true
+@export var prompt_text: String = \"Press [Jump] to Enter\"
+@export var prompt_offset: Vector2 = Vector2(0, -50)
+
+@export_group(\"Fade\")
+@export var fade_color: Color = Color.BLACK
+@export var fade_duration: float = 0.5
+@export var hold_duration: float = 0.3
+
+var _in_range: bool = false
+var _transitioning: bool = false
+var _player_ref: Node2D = null
+
+var _area: Area2D
+var _prompt: Label
+var _fade_layer: CanvasLayer
+var _fade_rect: ColorRect
+
+
+func _ready() -> void:
+	_build_detection_area()
+	_build_prompt()
+	_build_fade_overlay()
+
+
+func _build_detection_area() -> void:
+	_area = Area2D.new()
+	_area.name = \"DetectionArea\"
+	_area.collision_layer = 0
+	_area.collision_mask = 1
+	_area.monitoring = true
+	_area.monitorable = false
+	add_child(_area)
+	
+	var collision := CollisionShape2D.new()
+	var shape := RectangleShape2D.new()
+	shape.size = detection_size
+	collision.shape = shape
+	_area.add_child(collision)
+	
+	_area.body_entered.connect(_on_body_entered)
+	_area.body_exited.connect(_on_body_exited)
+
+
+func _build_prompt() -> void:
+	if not show_prompt:
+		return
+	
+	_prompt = Label.new()
+	_prompt.name = \"Prompt\"
+	_prompt.text = prompt_text
+	_prompt.visible = false
+	_prompt.z_index = 50
+	add_child(_prompt)
+	
+	# Styling
+	_prompt.add_theme_font_size_override(\"font_size\", 11)
+	_prompt.add_theme_color_override(\"font_color\", Color.WHITE)
+	_prompt.add_theme_constant_override(\"outline_size\", 2)
+	_prompt.add_theme_color_override(\"font_outline_color\", Color.BLACK)
+	
+	# Background box
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0, 0, 0, 0.75)
+	style.set_corner_radius_all(4)
+	style.set_content_margin_all(6)
+	_prompt.add_theme_stylebox_override(\"normal\", style)
+	
+	# Position will be updated in _process to center properly
+	_prompt.position = prompt_offset
+
+
+func _build_fade_overlay() -> void:
+	_fade_layer = CanvasLayer.new()
+	_fade_layer.name = \"FadeLayer\"
+	_fade_layer.layer = 100
+	add_child(_fade_layer)
+	
+	_fade_rect = ColorRect.new()
+	_fade_rect.name = \"FadeRect\"
+	_fade_rect.color = Color(fade_color.r, fade_color.g, fade_color.b, 0.0)
+	_fade_rect.visible = false
+	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_fade_layer.add_child(_fade_rect)
+	
+	# Set anchors manually for full screen coverage
+	_fade_rect.anchor_left = 0.0
+	_fade_rect.anchor_top = 0.0
+	_fade_rect.anchor_right = 1.0
+	_fade_rect.anchor_bottom = 1.0
+	_fade_rect.offset_left = 0.0
+	_fade_rect.offset_top = 0.0
+	_fade_rect.offset_right = 0.0
+	_fade_rect.offset_bottom = 0.0
+
+
+func _process(_delta: float) -> void:
+	if _prompt and _prompt.visible:
+		# Pulse effect
+		_prompt.modulate.a = 0.7 + 0.3 * sin(Time.get_ticks_msec() * 0.005)
+		
+		# Keep prompt centered on offset
+		_prompt.position = prompt_offset - _prompt.size * 0.5
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _transitioning:
+		return
+	if not _in_range:
+		return
+	if auto_trigger:
+		return
+	
+	if event.is_action_pressed(interaction_action):
+		get_viewport().set_input_as_handled()
+		_start_transition()
+
+
+func _on_body_entered(body: Node2D) -> void:
+	if not body.is_in_group(\"player\"):
+		return
+	
+	_in_range = true
+	_player_ref = body
+	
+	if _transitioning:
+		return
+	
+	if auto_trigger:
+		_start_transition()
+	elif _prompt:
+		_prompt.visible = true
+
+
+func _on_body_exited(body: Node2D) -> void:
+	if not body.is_in_group(\"player\"):
+		return
+	
+	_in_range = false
+	_player_ref = null
+	
+	if _prompt:
+		_prompt.visible = false
+
+
+func _start_transition() -> void:
+	if _transitioning:
+		return
+	
+	if next_scene.is_empty():
+		push_error(\"AreaTransition: next_scene is not set!\")
+		return
+	
+	_transitioning = true
+	
+	if _prompt:
+		_prompt.visible = false
+	
+	transition_started.emit()
+	
+	# Fade to black
+	_fade_rect.visible = true
+	_fade_rect.color.a = 0.0
+	
+	var tween := create_tween()
+	tween.tween_property(_fade_rect, \"color:a\", 1.0, fade_duration)
+	tween.tween_interval(hold_duration)
+	tween.tween_callback(_change_scene)
+
+
+func _change_scene() -> void:
+	# Store spawn point for destination scene
+	if not spawn_point_name.is_empty():
+		get_tree().root.set_meta(\"spawn_point\", spawn_point_name)
+	
+	transition_completed.emit()
+	
+	var result := get_tree().change_scene_to_file(next_scene)
+	if result != OK:
+		push_error(\"AreaTransition: Failed to load '%s' (error %d)\" % [next_scene, result])
+		_transitioning = false
+		_fade_rect.visible = false
+
+
+# -------------------------------------------------------------------
+# Public API
+# -------------------------------------------------------------------
+
+func trigger() -> void:
+	\"\"\"Force start the transition.\"\"\"
+	if not _transitioning:
+		_start_transition()
+
+
+func is_transitioning() -> bool:
+	return _transitioning
+
+
+func is_player_in_range() -> bool:
+	return _in_range
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8g3e7"]
+size = Vector2(121.625, 122)
+
 [node name="Level2" type="Node2D" unique_id=526409564]
 
 [node name="Character" parent="." unique_id=794498693 instance=ExtResource("1_0u2q6")]
-position = Vector2(-263, -110)
+position = Vector2(-240, -96)
 collision_layer = 9
 respawn_delay = 0.0
 spawn_delay = 0.0
@@ -675,8 +906,52 @@ position = Vector2(0, 19)
 
 [node name="Background" type="ColorRect" parent="." unique_id=17152855]
 z_index = -4096
-offset_left = -3395.0
-offset_top = -2114.0
-offset_right = 4521.0
-offset_bottom = 3146.0
+offset_left = -3687.0
+offset_top = -1868.0
+offset_right = 4229.0
+offset_bottom = 3392.0
 color = Color(1, 0.654902, 1, 1)
+
+[node name="Node2D" type="Node2D" parent="." unique_id=1829144480]
+position = Vector2(136, -132)
+
+[node name="StunnerEnemy" parent="Node2D" unique_id=667800998 instance=ExtResource("5_q7gqv")]
+visible = false
+position = Vector2(1855, 96)
+scale = Vector2(2, 2)
+panic_range = 200.0
+safe_range = 400.0
+
+[node name="StunnerEnemy2" parent="Node2D" unique_id=1051759204 instance=ExtResource("5_q7gqv")]
+position = Vector2(2156, -387)
+scale = Vector2(2, 2)
+panic_range = 200.0
+safe_range = 400.0
+
+[node name="BasicAlien" parent="Node2D" unique_id=1370573406 instance=ExtResource("6_q1daa")]
+z_index = 5
+position = Vector2(1224, -77)
+
+[node name="BasicAlien2" parent="Node2D" unique_id=1470331552 instance=ExtResource("6_q1daa")]
+z_index = 5
+position = Vector2(1294, -81)
+
+[node name="BasicAlien3" parent="Node2D" unique_id=882891576 instance=ExtResource("6_q1daa")]
+z_index = 5
+position = Vector2(2769, -445)
+
+[node name="AreaTransitionZone" type="Area2D" parent="." unique_id=1682083327]
+z_index = 5
+position = Vector2(1484, -585)
+script = SubResource("GDScript_8g3e7")
+next_scene = "uid://x6nj67enlma"
+auto_trigger = true
+detection_size = Vector2(120, 100)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AreaTransitionZone" unique_id=93474361]
+position = Vector2(-19, 12)
+shape = SubResource("RectangleShape2D_8g3e7")
+debug_color = Color(0.6413663, 0.524609, 0, 0.41960785)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="AreaTransitionZone" unique_id=487834297]
+stream = ExtResource("7_q1daa")

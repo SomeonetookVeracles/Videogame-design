@@ -5,39 +5,6 @@
 
 [sub_resource type="GDScript" id="GDScript_f32x5"]
 resource_name = "JohnScientist"
-script/source = "extends CharacterBody2D
-
-@export var speed: float = 120.0
-@export var target_node_path: NodePath
-@export var arrival_distance: float = 4.0
-@onready var anim_player: AnimationPlayer = $johnscientist/animations/AnimationPlayer
-@onready var text_box: Label = $TextBox
-@onready var target_node: Node2D = $Target
-
-var moving := true
-
-func _ready():
-	pass
-func _physics_process(delta):
-	if not moving or target_node == null:
-		return
-
-	var direction: Vector2 = target_node.global_position - global_position
-
-	if direction.length() <= arrival_distance:
-		_stop_moving()
-		return
-
-	direction = direction.normalized()
-	velocity = direction * speed
-
-	move_and_slide()
-
-func _stop_moving():
-	moving = false
-	velocity = Vector2.ZERO
-	anim_player.play(\"Idle\")
-"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_21c1d"]
 size = Vector2(27, 53)
@@ -117,7 +84,7 @@ _data = {
 &"Walk": SubResource("Animation_o271q")
 }
 
-[node name="BossScientist" type="CharacterBody2D" unique_id=1752171090]
+[node name="johnscientist" type="CharacterBody2D" unique_id=1752171090]
 collision_layer = 0
 collision_mask = 0
 script = SubResource("GDScript_f32x5")

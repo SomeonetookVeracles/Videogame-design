@@ -45,21 +45,28 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="Audio" type="Label" parent="MenuOptions" unique_id=1569461463]
+[node name="Level1" type="Label" parent="MenuOptions" unique_id=1569461463]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_ywqtu")
 theme_override_font_sizes/font_size = 32
-text = "Audio"
+text = "Level 1"
 horizontal_alignment = 1
 
-[node name="Fullscreen" type="Label" parent="MenuOptions" unique_id=624954401]
+[node name="Level2" type="Label" parent="MenuOptions" unique_id=624954401]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_ywqtu")
 theme_override_font_sizes/font_size = 32
-text = "Fullscreen: disabled"
+text = "Level 2"
 horizontal_alignment = 1
 
-[node name="Exit" type="Label" parent="MenuOptions" unique_id=1039723634]
+[node name="Level3" type="Label" parent="MenuOptions" unique_id=1039723634]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_ywqtu")
+theme_override_font_sizes/font_size = 32
+text = "Level 3"
+horizontal_alignment = 1
+
+[node name="Back" type="Label" parent="MenuOptions" unique_id=770812267]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_ywqtu")
 theme_override_font_sizes/font_size = 32

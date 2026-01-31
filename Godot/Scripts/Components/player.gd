@@ -1,7 +1,6 @@
 extends CharacterBody2D
 
-## Main player controller orchestrating movement, combat, health, and visuals.
-## Uses component-based architecture for clean separation of concerns.
+## Main player controller.
 ##
 ## Required children:
 ## - HealthComponent (auto-created if missing)

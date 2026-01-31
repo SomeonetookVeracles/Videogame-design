@@ -1,11 +1,11 @@
 [gd_scene format=4 uid="uid://dd8rknhqr5x3e"]
 
 [ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://scenes/main/Player.tscn" id="1_uskkc"]
-[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="2_vhyvv"]
-[ext_resource type="Texture2D" uid="uid://dhaaq2trjhste" path="res://Assets/Sprites/Tilemaps/Alien Wreckage.png" id="3_gaa8y"]
-[ext_resource type="Texture2D" uid="uid://3xgim4rrnq17" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 3.png" id="4_86q45"]
-[ext_resource type="Texture2D" uid="uid://b74ey3wcsvcfq" path="res://Assets/Sprites/Tilemaps/Alien Wreckage Tilemap Background Wreckage.png" id="5_sgpep"]
-[ext_resource type="Texture2D" uid="uid://cdbwq24b2ly18" path="res://Assets/Sprites/Tilemaps/Alien Wreckage Entrance.png" id="6_yuptk"]
+[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://assets/Temp Assets/PTST/tileset template 1.png" id="2_vhyvv"]
+[ext_resource type="Texture2D" uid="uid://dhaaq2trjhste" path="res://assets/sprites/Tilemaps/Alien Wreckage.png" id="3_gaa8y"]
+[ext_resource type="Texture2D" uid="uid://3xgim4rrnq17" path="res://assets/sprites/Tilemaps/10x10 Tilemap Level 3.png" id="4_86q45"]
+[ext_resource type="Texture2D" uid="uid://b74ey3wcsvcfq" path="res://assets/sprites/Tilemaps/Alien Wreckage Tilemap Background Wreckage.png" id="5_sgpep"]
+[ext_resource type="Texture2D" uid="uid://cdbwq24b2ly18" path="res://assets/sprites/Tilemaps/Alien Wreckage Entrance.png" id="6_yuptk"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oq7ys"]
 texture = ExtResource("2_vhyvv")
@@ -1374,7 +1374,6 @@ sources/6 = SubResource("TileSetAtlasSource_rl881")
 sources/7 = SubResource("TileSetAtlasSource_2isex")
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_3eyky"]
-load_path = "res://.godot/imported/tileset template 1.png-1fda0aefc07a031f02845477e608798b.ctex"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ya6b2"]
 texture = SubResource("CompressedTexture2D_3eyky")
@@ -1487,6 +1486,235 @@ physics_layer_0/collision_layer = 0
 physics_layer_0/collision_mask = 0
 sources/0 = SubResource("TileSetAtlasSource_ya6b2")
 
+[sub_resource type="GDScript" id="GDScript_505se"]
+resource_name = "AreaTransitionScript"
+script/source = "class_name AreaTransition
+extends Node2D
+
+## Area transition that prompts player to press a key to enter a new level.
+## This node IS the door/portal - place it where you want the transition zone.
+## Player must be in group \"player\" and on collision layer 1.
+
+signal transition_started
+signal transition_completed
+
+@export_group(\"Destination\")
+@export_file(\"*.tscn\") var next_scene: String = \"\"
+@export var spawn_point_name: String = \"\"
+
+@export_group(\"Interaction\")
+@export var interaction_action: String = \"movement_jump\"
+@export var auto_trigger: bool = false
+
+@export_group(\"Detection\")
+@export var detection_size: Vector2 = Vector2(40, 60)
+
+@export_group(\"Prompt\")
+@export var show_prompt: bool = true
+@export var prompt_text: String = \"Press [Jump] to Enter\"
+@export var prompt_offset: Vector2 = Vector2(0, -50)
+
+@export_group(\"Fade\")
+@export var fade_color: Color = Color.BLACK
+@export var fade_duration: float = 0.5
+@export var hold_duration: float = 0.3
+
+var _in_range: bool = false
+var _transitioning: bool = false
+var _player_ref: Node2D = null
+
+var _area: Area2D
+var _prompt: Label
+var _fade_layer: CanvasLayer
+var _fade_rect: ColorRect
+
+
+func _ready() -> void:
+	_build_detection_area()
+	_build_prompt()
+	_build_fade_overlay()
+
+
+func _build_detection_area() -> void:
+	_area = Area2D.new()
+	_area.name = \"DetectionArea\"
+	_area.collision_layer = 0
+	_area.collision_mask = 1
+	_area.monitoring = true
+	_area.monitorable = false
+	add_child(_area)
+	
+	var collision := CollisionShape2D.new()
+	var shape := RectangleShape2D.new()
+	shape.size = detection_size
+	collision.shape = shape
+	_area.add_child(collision)
+	
+	_area.body_entered.connect(_on_body_entered)
+	_area.body_exited.connect(_on_body_exited)
+
+
+func _build_prompt() -> void:
+	if not show_prompt:
+		return
+	
+	_prompt = Label.new()
+	_prompt.name = \"Prompt\"
+	_prompt.text = prompt_text
+	_prompt.visible = false
+	_prompt.z_index = 50
+	add_child(_prompt)
+	
+	# Styling
+	_prompt.add_theme_font_size_override(\"font_size\", 11)
+	_prompt.add_theme_color_override(\"font_color\", Color.WHITE)
+	_prompt.add_theme_constant_override(\"outline_size\", 2)
+	_prompt.add_theme_color_override(\"font_outline_color\", Color.BLACK)
+	
+	# Background box
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0, 0, 0, 0.75)
+	style.set_corner_radius_all(4)
+	style.set_content_margin_all(6)
+	_prompt.add_theme_stylebox_override(\"normal\", style)
+	
+	# Position will be updated in _process to center properly
+	_prompt.position = prompt_offset
+
+
+func _build_fade_overlay() -> void:
+	_fade_layer = CanvasLayer.new()
+	_fade_layer.name = \"FadeLayer\"
+	_fade_layer.layer = 100
+	add_child(_fade_layer)
+	
+	_fade_rect = ColorRect.new()
+	_fade_rect.name = \"FadeRect\"
+	_fade_rect.color = Color(fade_color.r, fade_color.g, fade_color.b, 0.0)
+	_fade_rect.visible = false
+	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_fade_layer.add_child(_fade_rect)
+	
+	# Set anchors manually for full screen coverage
+	_fade_rect.anchor_left = 0.0
+	_fade_rect.anchor_top = 0.0
+	_fade_rect.anchor_right = 1.0
+	_fade_rect.anchor_bottom = 1.0
+	_fade_rect.offset_left = 0.0
+	_fade_rect.offset_top = 0.0
+	_fade_rect.offset_right = 0.0
+	_fade_rect.offset_bottom = 0.0
+
+
+func _process(_delta: float) -> void:
+	if _prompt and _prompt.visible:
+		# Pulse effect
+		_prompt.modulate.a = 0.7 + 0.3 * sin(Time.get_ticks_msec() * 0.005)
+		
+		# Keep prompt centered on offset
+		_prompt.position = prompt_offset - _prompt.size * 0.5
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _transitioning:
+		return
+	if not _in_range:
+		return
+	if auto_trigger:
+		return
+	
+	if event.is_action_pressed(interaction_action):
+		get_viewport().set_input_as_handled()
+		_start_transition()
+
+
+func _on_body_entered(body: Node2D) -> void:
+	if not body.is_in_group(\"player\"):
+		return
+	
+	_in_range = true
+	_player_ref = body
+	
+	if _transitioning:
+		return
+	
+	if auto_trigger:
+		_start_transition()
+	elif _prompt:
+		_prompt.visible = true
+
+
+func _on_body_exited(body: Node2D) -> void:
+	if not body.is_in_group(\"player\"):
+		return
+	
+	_in_range = false
+	_player_ref = null
+	
+	if _prompt:
+		_prompt.visible = false
+
+
+func _start_transition() -> void:
+	if _transitioning:
+		return
+	
+	if next_scene.is_empty():
+		push_error(\"AreaTransition: next_scene is not set!\")
+		return
+	
+	_transitioning = true
+	
+	if _prompt:
+		_prompt.visible = false
+	
+	transition_started.emit()
+	
+	# Fade to black
+	_fade_rect.visible = true
+	_fade_rect.color.a = 0.0
+	
+	var tween := create_tween()
+	tween.tween_property(_fade_rect, \"color:a\", 1.0, fade_duration)
+	tween.tween_interval(hold_duration)
+	tween.tween_callback(_change_scene)
+
+
+func _change_scene() -> void:
+	# Store spawn point for destination scene
+	if not spawn_point_name.is_empty():
+		get_tree().root.set_meta(\"spawn_point\", spawn_point_name)
+	
+	transition_completed.emit()
+	
+	var result := get_tree().change_scene_to_file(next_scene)
+	if result != OK:
+		push_error(\"AreaTransition: Failed to load '%s' (error %d)\" % [next_scene, result])
+		_transitioning = false
+		_fade_rect.visible = false
+
+
+# -------------------------------------------------------------------
+# Public API
+# -------------------------------------------------------------------
+
+func trigger() -> void:
+	\"\"\"Force start the transition.\"\"\"
+	if not _transitioning:
+		_start_transition()
+
+
+func is_transitioning() -> bool:
+	return _transitioning
+
+
+func is_player_in_range() -> bool:
+	return _in_range
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ecjkj"]
+size = Vector2(121.625, 122)
+
 [node name="Level2" type="Node2D" unique_id=719574688]
 
 [node name="Character" parent="." unique_id=1741163423 instance=ExtResource("1_uskkc")]
@@ -1544,3 +1772,15 @@ offset_top = -2054.0
 offset_right = 4758.0
 offset_bottom = 3206.0
 color = Color(0, 0, 0, 1)
+
+[node name="AreaTransitionZone" type="Area2D" parent="." unique_id=1596015854]
+z_index = 5
+position = Vector2(-633, 566)
+script = SubResource("GDScript_505se")
+next_scene = "uid://dd8rknhqr5x3e"
+auto_trigger = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AreaTransitionZone" unique_id=530580661]
+position = Vector2(3976, -467)
+shape = SubResource("RectangleShape2D_ecjkj")
+debug_color = Color(0.6413663, 0.524609, 0, 0.41960785)

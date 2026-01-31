@@ -1,0 +1,203 @@
+[gd_scene format=3 uid="uid://cqv35ymugqnqk"]
+
+[sub_resource type="GDScript" id="GDScript_8g3e7"]
+resource_name = "AreaTransitionScript"
+script/source = "class_name AreaTransition
+extends Node
+
+## Area transition that prompts player to press a key to enter a new level.
+## Shows prompt when player is in range, fades to black, then loads next scene.
+
+signal transition_started
+signal transition_completed
+
+@export_group(\"Destination\")
+@export_file(\"*.tscn\") var next_scene: String = \"\"
+@export var spawn_point_name: String = \"\"
+
+@export_group(\"Interaction\")
+@export var interaction_action: String = \"movement_jump\"
+@export var auto_trigger: bool = false  ## Skip prompt, trigger immediately on enter
+
+@export_group(\"Detection\")
+@export var detection_size: Vector2 = Vector2(40, 60)
+@export var detection_offset: Vector2 = Vector2.ZERO
+
+@export_group(\"Prompt\")
+@export var show_prompt: bool = true
+@export var prompt_text: String = \"Press [Jump] to Enter\"
+@export var prompt_offset: Vector2 = Vector2(0, -40)
+
+@export_group(\"Fade\")
+@export var fade_color: Color = Color.BLACK
+@export var fade_duration: float = 0.5
+@export var hold_duration: float = 0.3
+
+var _parent: Node2D
+var _in_range: bool = false
+var _transitioning: bool = false
+
+var _area: Area2D
+var _canvas: CanvasLayer
+var _prompt: Label
+var _fade_rect: ColorRect
+
+
+func _ready() -> void:
+	_parent = get_parent() as Node2D
+	_build_area()
+	_build_ui()
+
+
+func _build_area() -> void:
+	_area = Area2D.new()
+	_area.collision_layer = 0
+	_area.collision_mask = 1
+	_area.monitoring = true
+	
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = detection_size
+	shape.shape = rect
+	shape.position = detection_offset
+	_area.add_child(shape)
+	
+	_area.body_entered.connect(_on_player_enter)
+	_area.body_exited.connect(_on_player_exit)
+	
+	if _parent:
+		_parent.add_child(_area)
+	else:
+		add_child(_area)
+
+
+func _build_ui() -> void:
+	_canvas = CanvasLayer.new()
+	_canvas.layer = 100
+	add_child(_canvas)
+	
+	# Prompt label
+	if show_prompt:
+		_prompt = Label.new()
+		_prompt.text = prompt_text
+		_prompt.add_theme_font_size_override(\"font_size\", 10)
+		_prompt.add_theme_color_override(\"font_color\", Color.WHITE)
+		_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_prompt.visible = false
+		
+		var prompt_style := StyleBoxFlat.new()
+		prompt_style.bg_color = Color(0, 0, 0, 0.6)
+		prompt_style.set_corner_radius_all(3)
+		prompt_style.set_content_margin_all(4)
+		_prompt.add_theme_stylebox_override(\"normal\", prompt_style)
+		
+		_canvas.add_child(_prompt)
+	
+	# Fade rect (covers entire screen)
+	_fade_rect = ColorRect.new()
+	_fade_rect.color = fade_color
+	_fade_rect.color.a = 0.0
+	_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_fade_rect.visible = false
+	_canvas.add_child(_fade_rect)
+
+
+func _process(_delta: float) -> void:
+	# Update prompt position
+	if _prompt and _parent:
+		var screen_pos := _get_screen_pos()
+		var pos := screen_pos + prompt_offset
+		_prompt.position = pos - Vector2(_prompt.size.x / 2, _prompt.size.y / 2)
+	
+	# Pulse prompt
+	if _prompt and _prompt.visible:
+		_prompt.modulate.a = 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.004)
+
+
+func _get_screen_pos() -> Vector2:
+	var cam := get_viewport().get_camera_2d()
+	if cam:
+		return _parent.global_position - cam.global_position + get_viewport().get_visible_rect().size / 2
+	else:
+		return _parent.get_global_transform_with_canvas().origin
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _transitioning:
+		return
+	
+	if _in_range and not auto_trigger and event.is_action_pressed(interaction_action):
+		_start_transition()
+		get_viewport().set_input_as_handled()
+
+
+func _on_player_enter(body: Node2D) -> void:
+	if body.is_in_group(\"player\"):
+		_in_range = true
+		
+		if auto_trigger and not _transitioning:
+			_start_transition()
+		elif _prompt and not _transitioning:
+			_prompt.visible = true
+
+
+func _on_player_exit(body: Node2D) -> void:
+	if body.is_in_group(\"player\"):
+		_in_range = false
+		if _prompt:
+			_prompt.visible = false
+
+
+func _start_transition() -> void:
+	if _transitioning:
+		return
+	
+	if next_scene.is_empty():
+		push_error(\"AreaTransition: No next_scene set!\")
+		return
+	
+	_transitioning = true
+	
+	if _prompt:
+		_prompt.visible = false
+	
+	transition_started.emit()
+	
+	# Fade to black
+	_fade_rect.visible = true
+	_fade_rect.color.a = 0.0
+	
+	var tw := create_tween()
+	tw.tween_property(_fade_rect, \"color:a\", 1.0, fade_duration).set_ease(Tween.EASE_IN)
+	tw.tween_interval(hold_duration)
+	tw.tween_callback(_load_next_scene)
+
+
+func _load_next_scene() -> void:
+	# Pass spawn point to next scene
+	if not spawn_point_name.is_empty():
+		get_tree().root.set_meta(\"spawn_point\", spawn_point_name)
+	
+	transition_completed.emit()
+	get_tree().change_scene_to_file(next_scene)
+
+
+# Public API
+
+func trigger() -> void:
+	if not _transitioning:
+		_start_transition()
+
+func is_transitioning() -> bool:
+	return _transitioning
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8g3e7"]
+
+[node name="AreaTransitionZone" type="Area2D" unique_id=1682083327]
+script = SubResource("GDScript_8g3e7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=93474361]
+shape = SubResource("RectangleShape2D_8g3e7")
+debug_color = Color(0.6413663, 0.524609, 0, 0.41960785)

@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" uid="uid://bpl7tunyb34l6" path="res://Scripts/levelscripts/level1.gd" id="1_24dbo"]
 [ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://scenes/main/Player.tscn" id="1_q64gd"]
-[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="2_24dbo"]
-[ext_resource type="Texture2D" uid="uid://clqcasu8mhako" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_q64gd"]
-[ext_resource type="Texture2D" uid="uid://cmk23o41qll17" path="res://Assets/Sprites/Tilemaps/Tilemap Level 1 Part 2.png" id="5_xjvl8"]
-[ext_resource type="Texture2D" uid="uid://cmbfb5g6ynpqu" path="res://Assets/Sprites/Tilemaps/SW Bed.png" id="6_r7n7t"]
-[ext_resource type="Texture2D" uid="uid://djtpg5osamov8" path="res://Assets/Sprites/Tilemaps/Elevator.png" id="7_ujoru"]
+[ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://assets/Temp Assets/PTST/tileset template 1.png" id="2_24dbo"]
+[ext_resource type="Texture2D" uid="uid://clqcasu8mhako" path="res://assets/sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_q64gd"]
+[ext_resource type="Texture2D" uid="uid://cmk23o41qll17" path="res://assets/sprites/Tilemaps/Tilemap Level 1 Part 2.png" id="5_xjvl8"]
+[ext_resource type="Texture2D" uid="uid://cmbfb5g6ynpqu" path="res://assets/sprites/Tilemaps/SW Bed.png" id="6_r7n7t"]
+[ext_resource type="Texture2D" uid="uid://djtpg5osamov8" path="res://assets/sprites/Tilemaps/Elevator.png" id="7_ujoru"]
+[ext_resource type="FontFile" uid="uid://c2bupqg7yyxqg" path="res://assets/Temp Assets/Pixelout Personal Use Only.ttf" id="8_gxly3"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q64gd"]
 texture = ExtResource("2_24dbo")
@@ -998,9 +999,14 @@ func reset() -> void:
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_08y0q"]
 size = Vector2(118, 20)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8mabg"]
+bg_color = Color(0.08078333, 0.08078336, 0.08078327, 1)
+
 [node name="Level1" type="Node2D" unique_id=1435651699]
 script = ExtResource("1_24dbo")
 exit_buffer_time = 0.3
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1059255198]
 
 [node name="Character" parent="." unique_id=533639275 instance=ExtResource("1_q64gd")]
 position = Vector2(-263, -110)
@@ -1116,3 +1122,78 @@ modulate = Color(1, 0.7764706, 1, 1)
 position = Vector2(0, 3.9999998)
 scale = Vector2(2.5, 2.5)
 texture = ExtResource("7_ujoru")
+
+[node name="Node2D" type="Node2D" parent="." unique_id=738140942]
+
+[node name="Blackground" type="Panel" parent="Node2D" unique_id=56963763]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 887.8997
+offset_top = -612.0
+offset_right = 887.8997
+offset_bottom = -612.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8mabg")
+
+[node name="Maintitle" type="Label" parent="Node2D" unique_id=1192455772]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 353.14972
+offset_top = -540.0
+offset_right = 1422.1497
+offset_bottom = -395.0
+grow_horizontal = 2
+rotation = 0.0010327116
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 9
+theme_override_constants/shadow_offset_y = 18
+theme_override_constants/shadow_outline_size = 12
+theme_override_fonts/font = ExtResource("8_gxly3")
+theme_override_font_sizes/font_size = 128
+text = "Space Wizards?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Node2D" unique_id=1607967654]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 594.14966
+offset_top = -449.0
+offset_right = 1181.1497
+offset_bottom = -304.0
+grow_horizontal = 2
+rotation = 0.0010327116
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 9
+theme_override_constants/shadow_offset_y = 18
+theme_override_constants/shadow_outline_size = 12
+theme_override_fonts/font = ExtResource("8_gxly3")
+theme_override_font_sizes/font_size = 64
+text = "A Gameplay Demo"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Game code" type="Label" parent="Node2D" unique_id=1021510326]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 592.0
+offset_top = -138.0
+offset_right = 1179.0
+offset_bottom = 7.0
+grow_horizontal = 2
+rotation = 0.0010327116
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/shadow_offset_x = 9
+theme_override_constants/shadow_offset_y = 18
+theme_override_constants/shadow_outline_size = 12
+theme_override_fonts/font = ExtResource("8_gxly3")
+theme_override_font_sizes/font_size = 32
+text = "VGDHS~21281-6
+"
+horizontal_alignment = 1
+vertical_alignment = 1
