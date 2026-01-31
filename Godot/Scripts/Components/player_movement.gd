@@ -1,7 +1,5 @@
 class_name PlayerMovement
 extends Node
-
-## Handles all player movement physics including walking, jumping, dashing.
 ## Designed for tight, responsive 2D platformer controls.
 
 signal jumped(is_double_jump: bool)
@@ -17,13 +15,13 @@ signal dash_ended
 @export var turn_multiplier: float = 2.0
 
 @export_group("Jumping")
-@export var jump_velocity: float = -420.0
+@export var jump_velocity: float = -520.0
 @export var gravity: float = 1300.0
-@export var fall_gravity_multiplier: float = 1.6
-@export var jump_release_multiplier: float = 3.0
+@export var fall_gravity_multiplier: float = 1.3
+@export var jump_release_multiplier: float = 6.0
 @export var max_jumps: int = 2
 @export var coyote_time: float = 0.15
-@export var jump_buffer_time: float = 0.15
+@export var jump_buffer_time: float = 0.3
 @export var terminal_velocity_multiplier: float = 2.0
 
 @export_group("Dashing")

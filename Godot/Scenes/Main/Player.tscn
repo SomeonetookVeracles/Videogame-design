@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://dyd3r20y2tid0"]
 
 [ext_resource type="Script" uid="uid://ry14n7flj8xt" path="res://Scripts/Components/player.gd" id="1_n3mh5"]
-[ext_resource type="Texture2D" uid="uid://d1sb5o2lf6gjy" path="res://assets/sprites/Magic Particle 8x8.png" id="3_fmcob"]
-[ext_resource type="Texture2D" uid="uid://bxhx07cgouqrw" path="res://assets/sprites/mira/Spritesheets/Mira_Idle.png" id="4_fmcob"]
-[ext_resource type="Texture2D" uid="uid://bw2plkq8ja7cs" path="res://assets/sprites/mira/Spritesheets/Mira_Run.png" id="5_vdg7p"]
-[ext_resource type="Texture2D" uid="uid://xk56rq7wx8p" path="res://assets/sprites/mira/Spritesheets/Mira_Jump.png" id="6_fmcob"]
-[ext_resource type="Texture2D" uid="uid://bq7w0y1o2qwvj" path="res://assets/sprites/mira/Spritesheets/Mira_Dash.png" id="7_l34nv"]
-[ext_resource type="Texture2D" uid="uid://d2y1jxgdwf35o" path="res://assets/sprites/mira/Spritesheets/Mira_Attack_1.png" id="8_bpfgg"]
+[ext_resource type="Texture2D" uid="uid://d1sb5o2lf6gjy" path="res://Assets/Sprites/Magic Particle 8x8.png" id="3_fmcob"]
+[ext_resource type="Texture2D" uid="uid://drdjrbe13d0dw" path="res://assets/sprites/mira/Spritesheets/Mira_Idle.png" id="4_fmcob"]
+[ext_resource type="Texture2D" uid="uid://lnr0jdg61a0l" path="res://assets/sprites/mira/Spritesheets/Mira_Run.png" id="5_vdg7p"]
+[ext_resource type="Texture2D" uid="uid://cbk7663f1ep1q" path="res://assets/sprites/mira/Spritesheets/Mira_Jump.png" id="6_fmcob"]
+[ext_resource type="Texture2D" uid="uid://dq0b3lxxhl5yn" path="res://assets/sprites/mira/Spritesheets/Mira_Dash.png" id="7_l34nv"]
+[ext_resource type="Texture2D" uid="uid://pnhhgba2pjto" path="res://assets/sprites/mira/Spritesheets/Mira_Attack_1.png" id="8_bpfgg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5olkl"]
 size = Vector2(40.5, 88)
@@ -210,6 +210,7 @@ damping_max = 38.144
 angle_min = -345.0
 angle_max = 148.5
 scale_amount_min = 0.5
+color = Color(0.34901962, 0.72156864, 0.27058825, 1)
 
 [node name="dash-particles" type="CPUParticles2D" parent="particles" unique_id=1966520135]
 z_index = -4

@@ -1,9 +1,9 @@
 extends Node2D
 @export_group("FUCK")
-@export var player_dash_enabled: bool = true
-@export var player_double_jump_enabled: bool = true
-@export var player_health_visible: bool = true
-@export var player_combat_enabled: bool = true
+@export var player_dash_enabled: bool = false
+@export var player_double_jump_enabled: bool = false
+@export var player_health_visible: bool = false
+@export var player_combat_enabled: bool = false
 
 
 @onready var player_camera: Camera2D = $"Character/player-camera"

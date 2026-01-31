@@ -171,17 +171,12 @@ func _on_parry_hitbox_area_entered(area: Area2D) -> void:
 		projectile = area
 	elif area.get_parent() and area.get_parent().has_method("parry"):
 		projectile = area.get_parent()
-	
 	if not projectile:
-		return
-	
+		return	
 	# Try to parry - projectile decides if timing is right
 	var was_parried: bool = projectile.parry(parent, attack_damage * parry_damage_multiplier)
-	
 	if was_parried:
 		_successful_parry(projectile)
-
-
 func _successful_parry(projectile: Node) -> void:
 	# Freeze frame effect
 	if parry_freeze_duration > 0.0:
@@ -190,16 +185,10 @@ func _successful_parry(projectile: Node) -> void:
 		Engine.time_scale = 1.0
 	await get_tree().create_timer(.5).timeout  # This makes it more clean by letting the animation finish
 	parry_succeeded.emit(projectile)
-
-
 func is_attacking() -> bool:
 	return _is_attacking
-
-
 func is_parrying() -> bool:
 	return false  # Parry is now instant, not a state
-
-
 func force_end_attack() -> void:
 	if _is_attacking:
 		_end_attack()

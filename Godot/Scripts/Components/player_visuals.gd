@@ -13,7 +13,7 @@ signal animation_finished(anim_name: String)
 @export var dash_afterimage_extension: float = 0.1
 
 @export_group("Afterimages - Jump")
-@export var jump_afterimage_enabled: bool = true
+@export var jump_afterimage_enabled: bool = false
 @export var jump_afterimage_min_velocity: float = 200.0
 @export var jump_afterimage_max_interval: float = 0.08
 @export var jump_afterimage_min_interval: float = 0.02

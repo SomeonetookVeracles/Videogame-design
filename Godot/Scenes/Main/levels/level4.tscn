@@ -1,11 +1,11 @@
 [gd_scene format=4 uid="uid://dd8rknhqr5x3e"]
 
-[ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://Scenes/Main/Player.tscn" id="1_uskkc"]
+[ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://scenes/main/Player.tscn" id="1_uskkc"]
 [ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="2_vhyvv"]
 [ext_resource type="Texture2D" uid="uid://dhaaq2trjhste" path="res://Assets/Sprites/Tilemaps/Alien Wreckage.png" id="3_gaa8y"]
-[ext_resource type="Texture2D" uid="uid://du0541yig3635" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 3.png" id="4_86q45"]
+[ext_resource type="Texture2D" uid="uid://3xgim4rrnq17" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 3.png" id="4_86q45"]
 [ext_resource type="Texture2D" uid="uid://b74ey3wcsvcfq" path="res://Assets/Sprites/Tilemaps/Alien Wreckage Tilemap Background Wreckage.png" id="5_sgpep"]
-[ext_resource type="Texture2D" uid="uid://mb02hhe5p47j" path="res://Assets/Sprites/Tilemaps/Alien Wreckage Entrance.png" id="6_yuptk"]
+[ext_resource type="Texture2D" uid="uid://cdbwq24b2ly18" path="res://Assets/Sprites/Tilemaps/Alien Wreckage Entrance.png" id="6_yuptk"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oq7ys"]
 texture = ExtResource("2_vhyvv")

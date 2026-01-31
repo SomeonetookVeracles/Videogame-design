@@ -43,9 +43,9 @@ signal health_changed(current: int, maximum: int)
 
 @export_group("Effects")
 @export var double_jump_particle_scene: PackedScene
-@export var impact_freeze_duration: float = 0.07
-@export var impact_shake_intensity: float = 6.0
-@export var impact_shake_duration: float = 0.15
+@export var impact_freeze_duration: float = 0.12
+@export var impact_shake_intensity: float = 100.0
+@export var impact_shake_duration: float = 0.2
 
 @export_group("Abilities")
 @export var dash_enabled: bool = true

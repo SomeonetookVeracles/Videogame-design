@@ -1,9 +1,9 @@
 [gd_scene format=4 uid="uid://niohcflvoiu4"]
 
-[ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://Scenes/Main/Player.tscn" id="1_0u2q6"]
+[ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://scenes/main/Player.tscn" id="1_0u2q6"]
 [ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="2_wphgx"]
-[ext_resource type="Texture2D" uid="uid://ciknc6lltq60d" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_4lkfm"]
-[ext_resource type="Texture2D" uid="uid://0aunae8etfji" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 2.png" id="4_mh4g6"]
+[ext_resource type="Texture2D" uid="uid://clqcasu8mhako" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_4lkfm"]
+[ext_resource type="Texture2D" uid="uid://djb5wocjpyfcc" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 2.png" id="4_mh4g6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oq7ys"]
 texture = ExtResource("2_wphgx")

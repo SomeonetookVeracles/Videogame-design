@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cqdew607tgvx6" path="res://Scripts/Enemies/BasicAlien.gd" id="1_enemy"]
 [ext_resource type="PackedScene" uid="uid://dxrd0g1a1ygsc" path="res://scenes/main/Enemies/Projectile.tscn" id="2_projectile"]
-[ext_resource type="Texture2D" uid="uid://bb2ai00o324av" path="res://assets/sprites/Loose Assets/image2.png" id="3_lp3hd"]
+[ext_resource type="Texture2D" uid="uid://piowvfgipb6u" path="res://Assets/Sprites/Loose Assets/image2.png" id="3_lp3hd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(46, 96)

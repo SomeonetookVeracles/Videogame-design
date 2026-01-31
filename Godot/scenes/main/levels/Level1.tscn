@@ -1,12 +1,12 @@
 [gd_scene format=4 uid="uid://dangscl30miyt"]
 
 [ext_resource type="Script" uid="uid://bpl7tunyb34l6" path="res://Scripts/levelscripts/level1.gd" id="1_24dbo"]
-[ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://Scenes/Main/Player.tscn" id="1_q64gd"]
+[ext_resource type="PackedScene" uid="uid://dyd3r20y2tid0" path="res://scenes/main/Player.tscn" id="1_q64gd"]
 [ext_resource type="Texture2D" uid="uid://bjpt4p2rw5uqu" path="res://Assets/Temp Assets/PTST/tileset template 1.png" id="2_24dbo"]
-[ext_resource type="Texture2D" uid="uid://ciknc6lltq60d" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_q64gd"]
-[ext_resource type="Texture2D" uid="uid://cv11towp3b3k" path="res://Assets/Sprites/Tilemaps/Tilemap Level 1 Part 2.png" id="5_xjvl8"]
-[ext_resource type="Texture2D" uid="uid://wv47tiuojy0f" path="res://Assets/Sprites/Tilemaps/SW Bed.png" id="6_r7n7t"]
-[ext_resource type="Texture2D" uid="uid://lqxt5sgkvhpq" path="res://Assets/Sprites/Loose Assets/Funny.jpg" id="7_xn037"]
+[ext_resource type="Texture2D" uid="uid://clqcasu8mhako" path="res://Assets/Sprites/Tilemaps/10x10 Tilemap Level 1.png" id="3_q64gd"]
+[ext_resource type="Texture2D" uid="uid://cmk23o41qll17" path="res://Assets/Sprites/Tilemaps/Tilemap Level 1 Part 2.png" id="5_xjvl8"]
+[ext_resource type="Texture2D" uid="uid://cmbfb5g6ynpqu" path="res://Assets/Sprites/Tilemaps/SW Bed.png" id="6_r7n7t"]
+[ext_resource type="Texture2D" uid="uid://djtpg5osamov8" path="res://Assets/Sprites/Tilemaps/Elevator.png" id="7_ujoru"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q64gd"]
 texture = ExtResource("2_24dbo")
@@ -702,6 +702,302 @@ sources/0 = SubResource("TileSetAtlasSource_xn037")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_24dbo"]
 size = Vector2(1000, 646)
 
+[sub_resource type="GDScript" id="GDScript_hu26g"]
+resource_name = "Elevator"
+script/source = "class_name ElevatorPlatform
+extends AnimatableBody2D
+
+## Elevator platform that triggers scene transition when player stands on it.
+## Detects player on top, disables their movement, moves up while fading to black,
+## then loads the next scene.
+
+signal player_entered
+signal elevator_started
+signal transition_started
+signal transition_completed
+
+@export_group(\"Next Scene\")
+@export_file(\"*.tscn\") var next_scene: String = \"res://scenes/main/levels/level1-1.tscn\"
+@export var spawn_point_name: String = \"\"  ## Optional: spawn point to use in next scene
+
+@export_group(\"Detection\")
+@export var detection_delay: float = 0.5  ## Time player must stand on elevator before it activates
+@export var require_grounded: bool = true  ## Player must be on floor to trigger
+
+@export_group(\"Elevator Movement\")
+@export var move_distance: float = 200.0  ## How far up the elevator moves
+@export var move_duration: float = 2.0  ## How long the movement takes
+@export var move_ease: Tween.EaseType = Tween.EASE_IN_OUT
+@export var move_trans: Tween.TransitionType = Tween.TRANS_SINE
+
+@export_group(\"Screen Fade\")
+@export var fade_color: Color = Color.BLACK
+@export var fade_delay: float = 0.5  ## Delay before fade starts (after elevator starts)
+@export var fade_duration: float = 1.5  ## How long the fade takes
+@export var hold_duration: float = 0.3  ## Time to hold black before scene change
+
+@export_group(\"Audio\")
+@export var elevator_sound: AudioStream
+@export var transition_sound: AudioStream
+
+var _player: CharacterBody2D = null
+var _player_on_top: bool = false
+var _detection_timer: float = 0.0
+var _activated: bool = false
+var _detection_area: Area2D
+var _fade_overlay: ColorRect
+var _audio_player: AudioStreamPlayer
+
+
+func _ready() -> void:
+	_setup_detection_area()
+	_setup_fade_overlay()
+	_setup_audio()
+
+
+func _setup_detection_area() -> void:
+	_detection_area = get_node_or_null(\"DetectionArea\")
+	
+	if not _detection_area:
+		_detection_area = Area2D.new()
+		_detection_area.name = \"DetectionArea\"
+		add_child(_detection_area)
+		
+		var collision := CollisionShape2D.new()
+		collision.name = \"CollisionShape2D\"
+		_detection_area.add_child(collision)
+		
+		# Create detection shape based on platform collision
+		var platform_collision: CollisionShape2D = get_node_or_null(\"CollisionShape2D\")
+		if platform_collision and platform_collision.shape:
+			if platform_collision.shape is RectangleShape2D:
+				var rect := RectangleShape2D.new()
+				rect.size = Vector2(platform_collision.shape.size.x * 0.8, 16.0)
+				collision.shape = rect
+				collision.position = Vector2(0, -platform_collision.shape.size.y * 0.5 - 8.0)
+			else:
+				var rect := RectangleShape2D.new()
+				rect.size = Vector2(32.0, 16.0)
+				collision.shape = rect
+				collision.position = Vector2(0, -16.0)
+		else:
+			var rect := RectangleShape2D.new()
+			rect.size = Vector2(32.0, 16.0)
+			collision.shape = rect
+			collision.position = Vector2(0, -16.0)
+	
+	_detection_area.collision_layer = 0
+	_detection_area.collision_mask = 1  # Detect player layer
+	_detection_area.monitoring = true
+	_detection_area.monitorable = false
+	
+	_detection_area.body_entered.connect(_on_body_entered)
+	_detection_area.body_exited.connect(_on_body_exited)
+
+
+func _setup_fade_overlay() -> void:
+	# Create CanvasLayer for UI overlay
+	var canvas := CanvasLayer.new()
+	canvas.name = \"FadeCanvas\"
+	canvas.layer = 100  # On top of everything
+	add_child(canvas)
+	
+	_fade_overlay = ColorRect.new()
+	_fade_overlay.name = \"FadeOverlay\"
+	_fade_overlay.color = Color(fade_color.r, fade_color.g, fade_color.b, 0.0)
+	_fade_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	
+	# Cover entire screen
+	_fade_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	
+	canvas.add_child(_fade_overlay)
+
+
+func _setup_audio() -> void:
+	_audio_player = AudioStreamPlayer.new()
+	_audio_player.name = \"ElevatorAudio\"
+	add_child(_audio_player)
+
+
+func _physics_process(delta: float) -> void:
+	if _activated:
+		return
+	
+	if _player_on_top and _player and is_instance_valid(_player):
+		# Check if player is grounded (if required)
+		if require_grounded and not _player.is_on_floor():
+			_detection_timer = 0.0
+			return
+		
+		_detection_timer += delta
+		
+		if _detection_timer >= detection_delay:
+			_activate_elevator()
+	else:
+		_detection_timer = 0.0
+
+
+func _on_body_entered(body: Node2D) -> void:
+	if body.is_in_group(\"player\") and body is CharacterBody2D:
+		_player = body
+		_player_on_top = true
+		_detection_timer = 0.0
+		player_entered.emit()
+
+
+func _on_body_exited(body: Node2D) -> void:
+	if body == _player:
+		_player_on_top = false
+		_detection_timer = 0.0
+
+
+func _activate_elevator() -> void:
+	if _activated:
+		return
+	
+	_activated = true
+	elevator_started.emit()
+	
+	# Disable player movement
+	_disable_player_movement()
+	
+	# Reparent player to elevator so they move together
+	_attach_player_to_elevator()
+	
+	# Play elevator sound
+	if elevator_sound:
+		_audio_player.stream = elevator_sound
+		_audio_player.play()
+	
+	# Start elevator movement
+	var move_tween := create_tween()
+	move_tween.tween_property(self, \"position:y\", position.y - move_distance, move_duration) \\
+		.set_ease(move_ease).set_trans(move_trans)
+	
+	# Start fade after delay
+	await get_tree().create_timer(fade_delay).timeout
+	_start_fade()
+
+
+func _attach_player_to_elevator() -> void:
+	if not _player or not is_instance_valid(_player):
+		return
+	
+	# Store player's global position before reparenting
+	var player_global_pos := _player.global_position
+	
+	# Remove from current parent
+	var original_parent := _player.get_parent()
+	if original_parent:
+		original_parent.remove_child(_player)
+	
+	# Add as child of elevator
+	add_child(_player)
+	
+	# Restore global position
+	_player.global_position = player_global_pos
+
+
+func _disable_player_movement() -> void:
+	if not _player:
+		return
+	
+	# Try multiple methods to disable player input
+	if _player.has_method(\"set_input_enabled\"):
+		_player.set_input_enabled(false)
+	elif \"is_spawning\" in _player:
+		_player.is_spawning = true  # Reuse spawning flag to block input
+	elif \"movement\" in _player and _player.movement:
+		if _player.movement.has_method(\"set_enabled\"):
+			_player.movement.set_enabled(false)
+	
+	# Stop current velocity
+	_player.velocity = Vector2.ZERO
+
+
+func _enable_player_movement() -> void:
+	if not _player or not is_instance_valid(_player):
+		return
+	
+	if _player.has_method(\"set_input_enabled\"):
+		_player.set_input_enabled(true)
+	elif \"is_spawning\" in _player:
+		_player.is_spawning = false
+	elif \"movement\" in _player and _player.movement:
+		if _player.movement.has_method(\"set_enabled\"):
+			_player.movement.set_enabled(true)
+
+
+func _start_fade() -> void:
+	transition_started.emit()
+	
+	# Play transition sound
+	if transition_sound:
+		_audio_player.stream = transition_sound
+		_audio_player.play()
+	
+	# Fade to black
+	var fade_tween := create_tween()
+	fade_tween.tween_property(_fade_overlay, \"color:a\", 1.0, fade_duration) \\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	
+	await fade_tween.finished
+	
+	# Hold on black
+	await get_tree().create_timer(hold_duration).timeout
+	
+	# Load next scene
+	_load_next_scene()
+
+
+func _load_next_scene() -> void:
+	transition_completed.emit()
+	
+	if next_scene.is_empty():
+		push_warning(\"ElevatorPlatform: No next_scene set!\")
+		_enable_player_movement()
+		# Fade back in if no scene
+		var fade_tween := create_tween()
+		fade_tween.tween_property(_fade_overlay, \"color:a\", 0.0, fade_duration)
+		return
+	
+	if not ResourceLoader.exists(next_scene):
+		push_error(\"ElevatorPlatform: Scene not found: \" + next_scene)
+		return
+	
+	# Store spawn point for next scene if needed
+	if not spawn_point_name.is_empty():
+		# Use autoload or meta to pass spawn point
+		var root := get_tree().root
+		root.set_meta(\"spawn_point\", spawn_point_name)
+	
+	get_tree().change_scene_to_file(next_scene)
+
+
+# --- Public API ---
+
+## Manually trigger the elevator (skip detection)
+func activate() -> void:
+	if not _activated:
+		_activate_elevator()
+
+
+## Check if elevator has been activated
+func is_activated() -> bool:
+	return _activated
+
+
+## Reset elevator (for reuse, if needed)
+func reset() -> void:
+	_activated = false
+	_detection_timer = 0.0
+	_fade_overlay.color.a = 0.0
+	position.y += move_distance  # Reset position
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_08y0q"]
+size = Vector2(118, 20)
+
 [node name="Level1" type="Node2D" unique_id=1435651699]
 script = ExtResource("1_24dbo")
 exit_buffer_time = 0.3
@@ -756,10 +1052,10 @@ position = Vector2(0, 19)
 
 [node name="Background" type="ColorRect" parent="." unique_id=416319676]
 z_index = -4096
-offset_left = -3425.0
-offset_top = -2162.0
-offset_right = 4491.0
-offset_bottom = 3098.0
+offset_left = -2339.0
+offset_top = -2220.0
+offset_right = 5577.0
+offset_bottom = 3040.0
 color = Color(0, 0, 0, 1)
 
 [node name="CSCamera" type="Camera2D" parent="." unique_id=538216073]
@@ -804,4 +1100,19 @@ scroll_following_visible_characters = true
 z_index = -1
 position = Vector2(-91, 644)
 scale = Vector2(0.7199975, 0.64)
-texture = ExtResource("7_xn037")
+texture = ExtResource("7_ujoru")
+
+[node name="Elevator" type="AnimatableBody2D" parent="." unique_id=1689936106]
+position = Vector2(2367, -70)
+script = SubResource("GDScript_hu26g")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Elevator" unique_id=529775999]
+position = Vector2(0, 12)
+shape = SubResource("RectangleShape2D_08y0q")
+debug_color = Color(0.94202137, 8.471012e-06, 0.61021036, 0.41960785)
+
+[node name="ElevatorSprite" type="Sprite2D" parent="Elevator" unique_id=301666493]
+modulate = Color(1, 0.7764706, 1, 1)
+position = Vector2(0, 3.9999998)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("7_ujoru")
